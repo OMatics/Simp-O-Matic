@@ -1,0 +1,41 @@
+{
+    "name": "simpomatic",
+    "description": "Simpomatic is a fren-ly Discord bot.",
+    "keywords": [
+        "discord",
+        "bot",
+        "simp"
+    ],
+    "license": "GPL-3.0",
+    "author": "Sammy et Frens",
+    "version": "0.1.0",
+    "main": "./build/main.js",
+    "types": "./build/main.d.ts",
+    "scripts": {
+        "build": "./build.sh && tsc -b ./tsconfig.json",
+        "start": "node .",
+        "quick": "npm run build && npm run start"
+    },
+    "homepage": "https://github.com/Demonstrandum/simpomatic",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Demonstrandum/simpomatic.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Demonstrandum/simpomatic/issues"
+    },
+    "dependencies": {
+        "typescript": "^3.8.3",
+        "@typeit/discord": "1.0.3",
+        "@types/node": "",
+        "@types/ws": "",
+        "discord.js": "12.0.1",
+        "duckduckgo-images-api": "^1.0.4",
+        "jsdom": "^16.2.0",
+        "tslib": "^1.10.0",
+        "unirest": "^0.6.0"
+    },
+    "engines": {
+        "node": "13.9.0"
+    }
+}

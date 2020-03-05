@@ -1,0 +1,9 @@
+# Secrets!
+secrets.json
+export_secrets.sh
+
+# Node
+node_modules/
+
+# Build dir
+build/

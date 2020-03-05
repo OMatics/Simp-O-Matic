@@ -1,0 +1,9 @@
+{
+    "name": "Simp'O'matic",
+    "tag": "#1634",
+    "permissions": 8,
+
+    "commands": {
+        "prefix": "!"
+    }
+}

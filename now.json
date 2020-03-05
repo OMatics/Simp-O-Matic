@@ -1,0 +1,11 @@
+{
+    "name": "simpomatic",
+    "version": 1,
+    "public": true,
+    "env": {
+        "BOT_API_TOKEN": "@discord-bot-api-token",
+        "CONTEXTUAL_API_KEY": "@contextual-web-api-key",
+        "CLIENT_KEY": "@discord-client-key",
+        "CLIENT_ID": "@discord-client-id"
+    }
+}
