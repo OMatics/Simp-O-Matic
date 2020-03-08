@@ -13,7 +13,7 @@ export const type: (obj: any) => string = (global => obj =>
 export const pp = o => inspect(o, {
     colors: true,
     showHidden: false,
-    depth: 8
+    depth: 50
 });
 
 export const deep_merge_pair = (target, source) => {

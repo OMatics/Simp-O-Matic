@@ -12,6 +12,7 @@ import './extensions';
 import { deep_merge, pp, compile_match, export_config } from './utils';
 import DEFAULT_CONFIG from './default';
 import web_search from './api/web';
+import oed_lookup from './api/oxford';
 import urban_search from './api/urban';
 
 // Anything that hasn't been defined in `bot.json`
@@ -80,7 +81,7 @@ export class SimpOMatic {
         console.log('Received command: ', [command, args]);
 
         switch (command) {
-            case "ping": {
+            case 'ping': {
                 message.reply("PONGGERS!");
                 break;
             } case 'help': {
@@ -88,18 +89,18 @@ export class SimpOMatic {
                 for (const msg of HELP_MESSAGES)
                     message.channel.send(msg);
                 break;
-            } case "id": {
+            } case 'id': {
                 const reply = `User ID: ${message.author.id}
                     Author: ${message.author}
                     Message ID: ${message.id}`.squeeze();
                 console.log(`Replied: ${reply}`);
                 message.reply(reply);
                 break;
-            } case "search": {
+            } case 'search': {
                 const query = args.join(' ');
 
                 web_search({
-                    type: "search",
+                    type: 'web',
                     query,
                     key: SECRETS.rapid.key
                 }).then((res: object) => {
@@ -107,14 +108,15 @@ export class SimpOMatic {
                         message.reply('No such results found.');
                         return;
                     }
-                    message.reply(`Web search for ‘${query}’, found: ${res['value'][0].url}`);
+                    message.reply(`Web search for ‘${query}’,
+                        found: ${res['value'][0].url}`);
                 }).catch(e => message.reply(`Error fetching results:\n${e}`));
                 break;
-            } case "image": {
+            } case 'image': {
                 const query = args.join(' ');
 
                 web_search({
-                    type: "image",
+                    type: 'image',
                     query,
                     key: SECRETS.rapid.key
                 }).then(res => {
@@ -122,34 +124,113 @@ export class SimpOMatic {
                         message.reply('No such images found.');
                         return;
                     }
-                    message.reply(`Image found for ‘${query}’: ${res['value'][0].url}`);
+                    message.reply(`Image found for ‘${query}’:
+                        ${res['value'][0].url}`);
                 }).catch(e =>
                     message.reply(`Error fetching image:\n${e}`));
                 break;
-            } case "urban": {
+            } case 'define': {
+                message.reply('Looking in the Oxford English Dictionary...');
                 const query = args.join(' ');
+
+                const nasty_reply = `Your word (‘${query}’) is nonsense, either \
+                    that or they've forgotten to index it.
+                    I'll let you decide.`.squeeze();
+
+                oed_lookup({
+                    word: query,
+                    lang: CONFIG.lang,
+                    id: SECRETS.oxford.id,
+                    key: SECRETS.oxford.key
+                }).then(res => {
+                    let msg = `Definition for ‘${query}’, yielded:\n`;
+
+                    if (!res['results']
+                    || res['results'].length == 0
+                    || !res['results'][0].lexicalEntries
+                    || res['results'][0].lexicalEntries.length == 0
+                    || res['results'][0].lexicalEntries[0].entries.length == 0
+                    || res['results'][0].lexicalEntries[0].entries[0].senses.length == 0) {
+                        message.reply(nasty_reply);
+                        return;
+                    }
+
+                    const entry = res['results'][0].lexicalEntries[0];
+                    const senses = entry.entries[0].senses;
+                    console.log('Senses:', pp(senses));
+                    for (const sense of Object.values(senses) as any) {
+                        let sense_msg = "";
+                        if (!!sense.definitions && sense.definitions.length > 0) {
+                            for (const definition
+                                of Object.values(sense.definitions) as any) {
+                                sense_msg += `    Defined as:\n>         ${definition.capitalize()}\n`;
+                            }
+                        }
+                        if (!!sense.synonyms && sense.synonyms.length > 0) {
+                            const synonyms = sense.synonyms
+                                .map(s => `‘${s.text}’`)
+                                .join(', ');
+                            sense_msg += `    Synonyms include: ${synonyms}\n`;
+                        }
+                        if (sense_msg.length > 0) {
+                            msg += "In the sense:\n"
+                            msg += sense_msg;
+                        }
+                    }
+                    const prons = Object.values(entry.pronunciations) as any;
+                    if (prons.length > 0) {
+                        msg += "Pronunciations:\n"
+                        for (const pron of prons) {
+                            msg += `    Dialects of ${pron.dialects.join(', ')}:\n`;
+                            msg += `        ${pron.phoneticNotation}: [${pron.phoneticSpelling}]\n`;
+                            if (pron.audioFile) {
+                                msg += `        Audio file: ${pron.audioFile}\n`;
+                                const attach = new MessageAttachment(pron.audioFile);
+                                attach.name = pron.audioFile.split('/').slice(-1)[0];
+                                message.channel.send(attach);
+                            }
+                        }
+                    }
+                    message.channel.send(msg);
+                }).catch(e => {
+                    if (e.status == 404) {
+                        message.channel.send(nasty_reply);
+                    } else {
+                        message.channel.send(`Error getting definition:\n${e}`);
+                    }
+                });
+                break;
+            } case 'urban': {
+                const query = args.join(' ');
+                message.reply('Searching Urban Dictionary...');
                 urban_search({ query, key: SECRETS.rapid.key }).then(res => {
                     if (res['list'].length === 0) {
-                        message.reply(`Congratulations, not even Urban \
+                        message.channel.send(`Congratulations, not even Urban \
                         Dictionary knows what you're trying to say.`.squeeze());
                         return;
                     }
                     const entry = res['list'][0];
                     const def = entry.definition.replace(/\[|\]/g, '');
 
-                    message.reply(`Urban Dictionary defines \
-                        ‘${query}’, as:\n> ${def}`.squeeze());
+                    message.channel.send(`**Urban Dictionary** defines \
+                        ‘${query}’, as:\n>>> ${def.trim()}`.squeeze());
+
+                    let example = entry.example;
+                    if (!!example || example.length > 0) {
+                        example = example.replace(/\[|\]/g, '');
+                        message.channel.send(`\n**Example**:\n>>> ${example}`);
+                    }
                     message.channel.send(`Link: ${entry.permalink}`);
                 }).catch(e => message.reply(`Error fetching definition:\n${e}`));
                 break;
-            } case "milkies": {
+            } case 'milkies': {
                 message.reply(`${(4 + Math.random() * 15).round_to(3)} gallons \
                     of milkies have been deposited in your mouth.`.squeeze());
                 break;
-            } case "say": {2
+            } case 'say': {2
                 message.reply(`Me-sa says: “${args.join(' ')}”`);
                 break;
-            } case "export": {
+            } case 'export': {
                 let export_string = export_config(CONFIG, {});
                 if (export_string.length > 1980) {
                     export_string = export_config(CONFIG, { ugly: true });

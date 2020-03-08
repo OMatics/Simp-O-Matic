@@ -1,6 +1,11 @@
 import unirest from 'unirest';
 
-export const urban_search = options => new Promise((resolve, reject) => {
+type Options = {
+    query : string,
+    key : string
+}
+
+export const urban_search = (options : Options) => new Promise((resolve, reject) => {
     console.log('Searching Urban Dictionary, with options: ', options);
 
     const url = 'https://mashape-community-urban-dictionary.p.rapidapi.com/define';

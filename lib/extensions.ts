@@ -26,12 +26,16 @@ Array.prototype.mut_map = function (f) {
 // String Extensions:
 interface String {
     squeeze() : string
+    capitalize() : string
 }
 
 String.prototype.squeeze = function () {
     return this.split(/[ ]+/).join(' ');
 };
 
+String.prototype.capitalize = function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
 
 // Number Extensions:
 interface Number {

@@ -1,23 +1,18 @@
 import unirest from 'unirest';
 
-export const web_search = options => new Promise((resolve, reject) => {
+type Options = {
+    query : string,
+    type : 'image' | 'web' | 'news',
+    key : string
+}
+
+export const web_search = (options : Options) => new Promise((resolve, reject) => {
     console.log('Searching the web, with options: ', options);
 
-    let api = 'WebSearchAPI';
-    switch (options.type) {
-        case 'image':
-            api = 'ImageSearchAPI';
-            break;
-        case 'web':
-            api = 'WebSearchAPI';
-            break;
-        case 'news':
-            api = 'NewsSearchAPI';
-            break;
-    }
-    const url = `https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/${api}`;
+    const api = `${options.type.capitalize()}SearchAPI`;
+    const url = 'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search';
 
-    const req = unirest('GET', url);
+    const req = unirest('GET', `${url}/${api}`);
 
     req.query({
         "autoCorrect": "false",

@@ -38,6 +38,7 @@
 - `!urban [slang]` — Looks up a piece of slang in the _Urban Dictionary_.
 - `!search [web-search-terms]` — Performs a web-search and returns the most appropriate URL found.
 - `!image [image-search-terms]` — Searches for images specified by the terms given, and send a link to the most relevant one.
+- `!news [news-search-term]` — Sends you the most relevant new on the specified topic area.
 - `!youtube [youtube-search-terms]` — Searches for and returns a relevant _YouTube_ video.
 - `!cron` — Run commands repeatedly based on some timer (Google cron syntax for more info):
   - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.

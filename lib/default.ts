@@ -6,6 +6,7 @@ export default {
     name: "Simp'O'Matic",
     tag: "#1634",
     permissions: 8,
+    lang: 'en',
 
     commands: {
         prefix: '!',
@@ -18,7 +19,9 @@ export default {
             'yt': 'youtube',
             'd': 'define',
             'oed': 'define',
+            'oxford': 'define',
             'ud': 'urban',
+            'u': 'urban',
             'blacklist': 'ignore',
             'whitelist': 'ignore whitelist',
             'w': 'weather',
