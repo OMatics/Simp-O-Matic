@@ -2,10 +2,13 @@
     "name": "simpomatic",
     "version": 1,
     "public": true,
+
     "env": {
         "BOT_API_TOKEN": "@discord-bot-api-token",
-        "CONTEXTUAL_API_KEY": "@contextual-web-api-key",
+        "RAPID_API_KEY": "@rapid-api-key",
         "CLIENT_KEY": "@discord-client-key",
-        "CLIENT_ID": "@discord-client-id"
+        "CLIENT_ID": "@discord-client-id",
+        "OXFORD_ID": "@oxford-dictionary-id",
+        "OXFORD_KEY": "@oxford-dictionary-key"
     }
 }

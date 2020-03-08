@@ -14,8 +14,12 @@ cat <<- JSON
         "id": "$CLIENT_ID"
     },
 
-    "contextual": {
-        "key": "$CONTEXTUAL_API_KEY"
+    "rapid": {
+        "key": "$RAPID_API_KEY"
+    },
+    "oxford": {
+        "id": "$OXFORD_ID",
+        "key": "$OXFORD_KEY"
     }
 }
 JSON

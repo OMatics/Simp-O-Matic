@@ -1,11 +1,17 @@
 #!/bin/sh
 
-[ ! -d "./node_modules" ] && echo "Installing..." && npm install
+bold="$(tput bold)"
+reset="$(tput sgr0)"
+
+[ ! -d "./node_modules" ] && echo "${bold}Installing...${reset}" && yarn install
 rm -rf ./build
-mkdir -p ./build
+mkdir -p ./build ./public
 
-echo "Copying files..."
-cp ./bot.json ./generate_secrets.sh ./build
+echo "${bold}Copying config files...${reset}"
+cp ./bot.json ./generate_secrets.sh ./HELP.md ./build
+
+echo "${bold}Compiling TypeScript...${reset}"
+./node_modules/.bin/tsc -b ./tsconfig.json
 
 
-
+echo -e "\n${bold}Build done.${reset}"

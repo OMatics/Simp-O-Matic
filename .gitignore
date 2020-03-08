@@ -2,8 +2,18 @@
 secrets.json
 export_secrets.sh
 
-# Node
+# Node / NPM / Yarn
 node_modules/
+package-lock.json
+yarn.lock
 
-# Build dir
+# Build files
 build/
+export.json
+export*.json
+
+# Deployment info
+.now
+
+# Logs
+*.log

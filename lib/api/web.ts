@@ -1,6 +1,6 @@
 import unirest from 'unirest';
 
-export const search = options => new Promise((resolve, reject) => {
+export const web_search = options => new Promise((resolve, reject) => {
     console.log('Searching the web, with options: ', options);
 
     let api = 'WebSearchAPI';
@@ -37,3 +37,5 @@ export const search = options => new Promise((resolve, reject) => {
         return resolve(res.body);
     });
 });
+
+export default web_search;

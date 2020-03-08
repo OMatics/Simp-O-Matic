@@ -9,12 +9,17 @@
     "license": "GPL-3.0",
     "author": "Sammy et Frens",
     "version": "0.1.0",
+    "engines": {
+        "node": ">=10.0.0"
+    },
     "main": "./build/main.js",
     "types": "./build/main.d.ts",
     "scripts": {
-        "build": "./build.sh && tsc -b ./tsconfig.json",
+        "build": "./build.sh",
+        "reset": "rm -rf ./build ./node_modules ./yarn.lock ./packages-lock.json",
         "start": "node .",
-        "quick": "npm run build && npm run start"
+        "quick": "yarn run build && yarn run start",
+        "deploy": "now && echo \"Remeber to scale: `now scale [url] 1 1`\""
     },
     "homepage": "https://github.com/Demonstrandum/simpomatic",
     "repository": {
@@ -25,17 +30,16 @@
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
     },
     "dependencies": {
-        "typescript": "^3.8.3",
         "@typeit/discord": "1.0.3",
-        "@types/node": "",
-        "@types/ws": "",
+        "@types/node": "^13.7.7",
+        "@types/ws": "^7.2.2",
+        "deepcopy": "^2.0.0",
         "discord.js": "12.0.1",
-        "duckduckgo-images-api": "^1.0.4",
-        "jsdom": "^16.2.0",
         "tslib": "^1.10.0",
+        "typescript": "^3.8.3",
         "unirest": "^0.6.0"
     },
-    "engines": {
-        "node": "13.9.0"
+    "devDependencies": {
+        "now": "^17.0.4"
     }
 }

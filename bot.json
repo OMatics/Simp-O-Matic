@@ -5,5 +5,20 @@
 
     "commands": {
         "prefix": "!"
+    },
+
+    "rules": {
+        "respond": [
+            {
+                "match": "/Good (Morning|Day) (Star|Sun)shine/i",
+                "response": "The Earth says Hello!"
+            }
+        ],
+        "replace": [
+            {
+                "match": "/Yahweh/i",
+                "response": "Adonai"
+            }
+        ]
     }
 }
