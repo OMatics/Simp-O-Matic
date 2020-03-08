@@ -8,6 +8,7 @@
 - `!help` — Shows this page.
 - `!export` — Exports current configuration, and saves it.
 - `!prefix [new]` — Changes the prefix for sending this bot commands (default is `!`). Can only be one (1) character/symbol/grapheme/rune long.
+- `!ping` — Test the response-time/latency of the bot, by observing the time elapsed between the sending of this command, and the subsequent (one-word) response from the bot.
 - `!id <who>` — Print ID of user, or self if no-one is specified.
 - `!alias` — Manage aliases to commands:
   - `!alias ![the-alias] ![the-command]` — to add a new alias.
@@ -34,13 +35,16 @@
   - `!reject <ls>` — numerically lists all rejection rules.
   - `!reject rm #[rule-index]` — removes the rejection-rule specified by a numerical index.
 - `!replace` — Bots currently do not have the ability to edit other users messages.  We can only wait.
+- `!cron` — Run commands repeatedly based on some timer (look-up cron syntax for more info):
+  - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.
+  - `!cron <ls>` — lists all active cron-jobs numerically.
+  - `!cron rm #[job-index]` — removes a cron-job by index.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
 - `!urban [slang]` — Looks up a piece of slang in the _Urban Dictionary_.
 - `!search [web-search-terms]` — Performs a web-search and returns the most appropriate URL found.
 - `!image [image-search-terms]` — Searches for images specified by the terms given, and send a link to the most relevant one.
 - `!news [news-search-term]` — Sends you the most relevant new on the specified topic area.
 - `!youtube [youtube-search-terms]` — Searches for and returns a relevant _YouTube_ video.
-- `!cron` — Run commands repeatedly based on some timer (Google cron syntax for more info):
-  - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.
-  - `!cron <ls>` — lists all active cron-jobs numerically.
-  - `!cron rm #[job-index]` — removes a cron-job by index.
+- `!say [phrase]` — Repeats what you told it to say.
+- `!milkies` — In case you're feeling thirsty...
+- `!cowsay [phrase]` — Make a cow say something.

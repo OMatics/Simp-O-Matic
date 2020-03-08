@@ -41,9 +41,9 @@ let acc = "";
 let new_messages = [];
 
 for (const msg of help_sections)
-    if (acc.length + msg.length >= 1990) {
+    if (acc.length + msg.length >= 2000) {
         new_messages.push(acc);
-        acc = "";
+        acc = msg;
     } else { acc += msg; }
 
 new_messages.push(acc);
