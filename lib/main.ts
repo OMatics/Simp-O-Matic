@@ -49,17 +49,6 @@ for (const msg of help_sections)
 new_messages.push(acc);
 const HELP_MESSAGES = new_messages;
 
-declare module 'discord.js' {
-    interface Message {
-        answer(...args : any) : void
-    }
-}
-
-Message.prototype.answer = function (...args) {
-    return this.channel.send(`${this.author}, ${args[0]}`,
-        ...(args.slice(1)));
-};
-
 @Discord
 export class SimpOMatic {
     private static _client : Client;
