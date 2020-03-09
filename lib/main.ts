@@ -49,6 +49,11 @@ for (const msg of help_sections)
 new_messages.push(acc);
 const HELP_MESSAGES = new_messages;
 
+console.log('File/Execution locations:', {
+    '__dirname': __dirname,
+    'process.cwd()': process.cwd()
+});
+
 @Discord
 export class SimpOMatic {
     private static _client : Client;
@@ -286,8 +291,10 @@ export class SimpOMatic {
         }
         console.log('Message received:', message.content);
 
-        if (message.content[0] === CONFIG.commands.prefix) {
+        const trimmed = message.content.trim();
+        if (trimmed[0] === CONFIG.commands.prefix) {
             console.log('Message type: command.')
+            message.content = trimmed;
             this.process_command(message);
         } else {
             console.log('Message type: generic.')
