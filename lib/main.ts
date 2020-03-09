@@ -1,5 +1,5 @@
 import { Discord, On, Client } from '@typeit/discord';
-import { Message, MessageAttachment } from 'discord.js';
+import { Message, Attachment } from 'discord.js';
 
 import {
     readFileSync  as  read_file,
@@ -49,7 +49,16 @@ for (const msg of help_sections)
 new_messages.push(acc);
 const HELP_MESSAGES = new_messages;
 
-console.log(HELP_MESSAGES);
+declare module 'discord.js' {
+    interface Message {
+        answer(...args : any) : void
+    }
+}
+
+Message.prototype.answer = function (...args) {
+    return this.channel.send(`${this.author}, ${args[0]}`,
+        ...(args.slice(1)));
+};
 
 @Discord
 export class SimpOMatic {
@@ -82,10 +91,10 @@ export class SimpOMatic {
 
         switch (command) {
             case 'ping': {
-                message.reply("PONGGERS!");
+                message.answer("PONGGERS!");
                 break;
             } case 'help': {
-                message.reply('**HELP:**');
+                message.answer('**HELP:**');
                 for (const msg of HELP_MESSAGES)
                     message.channel.send(msg);
                 break;
@@ -94,7 +103,7 @@ export class SimpOMatic {
                     Author: ${message.author}
                     Message ID: ${message.id}`.squeeze();
                 console.log(`Replied: ${reply}`);
-                message.reply(reply);
+                message.answer(reply);
                 break;
             } case 'search': {
                 const query = args.join(' ');
@@ -105,12 +114,12 @@ export class SimpOMatic {
                     key: SECRETS.rapid.key
                 }).then((res: object) => {
                     if (res['value'].length === 0) {
-                        message.reply('No such results found.');
+                        message.answer('No such results found.');
                         return;
                     }
-                    message.reply(`Web search for ‘${query}’,
+                    message.answer(`Web search for ‘${query}’,
                         found: ${res['value'][0].url}`);
-                }).catch(e => message.reply(`Error fetching results:\n${e}`));
+                }).catch(e => message.answer(`Error fetching results:\n${e}`));
                 break;
             } case 'image': {
                 const query = args.join(' ');
@@ -121,21 +130,24 @@ export class SimpOMatic {
                     key: SECRETS.rapid.key
                 }).then(res => {
                     if (res['value'].length === 0) {
-                        message.reply('No such images found.');
+                        message.answer('No such images found.');
                         return;
                     }
-                    message.reply(`Image found for ‘${query}’:
+                    message.answer(`Image found for ‘${query}’:
                         ${res['value'][0].url}`);
                 }).catch(e =>
-                    message.reply(`Error fetching image:\n${e}`));
+                    message.answer(`Error fetching image:\n${e}`));
                 break;
             } case 'define': {
-                message.reply('Looking in the Oxford English Dictionary...');
+                message.answer('Looking in the Oxford English Dictionary...');
                 const query = args.join(' ');
 
                 const nasty_reply = `Your word (‘${query}’) is nonsense, either \
                     that or they've forgotten to index it.
-                    I'll let you decide.`.squeeze();
+                    I'll let you decide.
+
+                    P.S. Try the _Urban Dictionary_ \
+                    (\`!urban ${query}\`)`.squeeze();
 
                 oed_lookup({
                     word: query,
@@ -151,7 +163,7 @@ export class SimpOMatic {
                     || res['results'][0].lexicalEntries.length == 0
                     || res['results'][0].lexicalEntries[0].entries.length == 0
                     || res['results'][0].lexicalEntries[0].entries[0].senses.length == 0) {
-                        message.reply(nasty_reply);
+                        message.answer(nasty_reply);
                         return;
                     }
 
@@ -177,17 +189,21 @@ export class SimpOMatic {
                             msg += sense_msg;
                         }
                     }
-                    const prons = Object.values(entry.pronunciations) as any;
-                    if (prons.length > 0) {
-                        msg += "Pronunciations:\n"
-                        for (const pron of prons) {
-                            msg += `    Dialects of ${pron.dialects.join(', ')}:\n`;
-                            msg += `        ${pron.phoneticNotation}: [${pron.phoneticSpelling}]\n`;
-                            if (pron.audioFile) {
-                                msg += `        Audio file: ${pron.audioFile}\n`;
-                                const attach = new MessageAttachment(pron.audioFile);
-                                attach.name = pron.audioFile.split('/').slice(-1)[0];
-                                message.channel.send(attach);
+                    if (!!entry.pronunciations) {
+                        const  prons = Object.values(entry.pronunciations) as any;
+                        if (!!prons && prons.length > 0) {
+                            msg += "Pronunciations:\n"
+                            for (const pron of prons) {
+                                msg += `    Dialects of ${pron.dialects.join(', ')}:\n`;
+                                msg += `        ${pron.phoneticNotation}: [${pron.phoneticSpelling}]\n`;
+                                if (pron.audioFile) {
+                                    msg += `        Audio file: ${pron.audioFile}\n`;
+                                    const attach = new Attachment(
+                                        pron.audioFile,
+                                        pron.audioFile.split('/').slice(-1)[0]
+                                    );
+                                    message.channel.send('', attach);
+                                }
                             }
                         }
                     }
@@ -202,7 +218,7 @@ export class SimpOMatic {
                 break;
             } case 'urban': {
                 const query = args.join(' ');
-                message.reply('Searching Urban Dictionary...');
+                message.answer('Searching Urban Dictionary...');
                 urban_search({ query, key: SECRETS.rapid.key }).then(res => {
                     if (res['list'].length === 0) {
                         message.channel.send(`Congratulations, not even Urban \
@@ -218,17 +234,17 @@ export class SimpOMatic {
                     let example = entry.example;
                     if (!!example || example.length > 0) {
                         example = example.replace(/\[|\]/g, '');
-                        message.channel.send(`\n**Example**:\n>>> ${example}`);
+                        message.channel.send(`\n**Example**:\n>>> ${example.trim()}`);
                     }
                     message.channel.send(`Link: ${entry.permalink}`);
-                }).catch(e => message.reply(`Error fetching definition:\n${e}`));
+                }).catch(e => message.answer(`Error fetching definition:\n${e}`));
                 break;
             } case 'milkies': {
-                message.reply(`${(4 + Math.random() * 15).round_to(3)} gallons \
+                message.answer(`${(4 + Math.random() * 15).round_to(3)} gallons \
                     of milkies have been deposited in your mouth.`.squeeze());
                 break;
             } case 'say': {2
-                message.reply(`Me-sa says: “${args.join(' ')}”`);
+                message.answer(`Me-sa says: “${args.join(' ')}”`);
                 break;
             } case 'export': {
                 let export_string = export_config(CONFIG, {});
@@ -249,18 +265,16 @@ export class SimpOMatic {
 
                 if (export_string.length < 1980) {
                     message.channel.send("```json\n" + export_string + "\n```");
-                } else {
-                    const attach = new MessageAttachment(file_dest);
-                    attach.name = file_name;
-                    message.channel.send("**Export:**", attach);
                 }
+                const attach = new Attachment(file_dest, file_name);
+                message.channel.send("**Export:**", attach);
 
-                message.reply(`A copy of this export (\`export-${today}.json\`) \
+                message.answer(`A copy of this export (\`export-${today}.json\`) \
                     has been saved to the local file system.`.squeeze());
                 break;
             }
             default: {
-                message.reply(`
+                message.answer(`
                     :warning: ${CONFIG.commands.not_understood}.
                     > \`${CONFIG.commands.prefix}${command}\``.squeeze());
                 break;
@@ -271,7 +285,7 @@ export class SimpOMatic {
     process_generic(message : Message) {
         const { content } = message;
         if (content.includes('bot'))
-            message.reply("The hell you sayn' about bots?");
+            message.answer("The hell you sayn' about bots?");
         // TODO: Process _rules_ appropriately.
     }
 
@@ -298,3 +312,14 @@ SimpOMatic.start();
 
 // Back-up the resultant CONFIG to an external file.
 write_file(`${process.cwd()}/export.json`, export_config(CONFIG, {}));
+
+// When deploying to now, we need an HTTP server, since
+//  now expects mainly website.
+import { createServer } from 'http';
+// createServer((_req, res) => {
+//     res.writeHead(200, { 'Content-Type': 'text/html' });
+//     res.end(
+//         read_file(`${process.cwd()}/public/index.html`).toString(),
+//         'utf-8');
+// }).listen(3000);
+createServer().listen(3000);

@@ -10,12 +10,12 @@
     "author": "Sammy et Frens",
     "version": "0.1.0",
     "engines": {
-        "node": ">=10.0.0"
+        "node": "10.x"
     },
     "main": "./build/main.js",
     "types": "./build/main.d.ts",
     "scripts": {
-        "build": "./build.sh",
+        "build": "node -v && ./build.sh",
         "reset": "rm -rf ./build ./node_modules ./yarn.lock ./packages-lock.json",
         "start": "node .",
         "quick": "yarn run build && yarn run start",
@@ -30,12 +30,13 @@
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
     },
     "dependencies": {
-        "@typeit/discord": "1.0.3",
-        "@types/node": "^13.7.7",
+        "@discordjs/uws": "^10.149.0",
+        "@typeit/discord": "^1.0.3",
+        "@types/node": "^13.9.0",
         "@types/ws": "^7.2.2",
         "deepcopy": "^2.0.0",
-        "discord.js": "12.0.1",
-        "tslib": "^1.10.0",
+        "discord.js": "11.6.1",
+        "tslib": "^1.11.1",
         "typescript": "^3.8.3",
         "unirest": "^0.6.0"
     },
