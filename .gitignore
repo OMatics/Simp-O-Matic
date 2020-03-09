@@ -1,5 +1,6 @@
 # Secrets!
 secrets.json
+.env
 export_secrets.sh
 
 # Node / NPM / Yarn

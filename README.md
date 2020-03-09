@@ -16,7 +16,7 @@ with GitHub rendering).
 
 ## Getting Up & Running
 
-Make sure you have `node` (`v12.x`) and `yarn`installed
+Make sure you have `node` (`v10.x`) and `yarn` installed
 (`npm` also possible).
 
 - Clean up from previous build/install:
@@ -33,15 +33,10 @@ yarn build
 ```
 - Run the bot locally:
 ```sh
-yarn run
-```
-- Or deploy it with `now`:
-```sh
-yarn deploy
+yarn start
 ```
 
-In both cases (`deploy` or `start`) you'll need your secrets set up
-(API keys etc.).
+When starting the bot, you'll need your secrets set up (API keys etc.).
 
 ### Local Secrets
 
@@ -56,16 +51,7 @@ export OXFORD_ID="exampleExampleExampleExample"
 export OXFORD_KEY="exampleExampleExampleExample"
 ```
 
-### Now Deployment Secrets
-
-`now` has a `secrets` functionality, which will store your secrets, and
-export them as environment variables, for your `now`, you can do:
+### Low on Space
 ```sh
-now secrets add discord-bot-api-token "$BOT_API_TOKEN"
-now secrets add rapid-api-key "$RAPID_API_KEY"
-now secrets add discord-client-key "$CLIENT_KEY"
-now secrets add discord-client-id "$CLIENT_ID"
-now secrets add oxford-dictionary-id "$OXFORD_ID"
-now secrets add oxford-dictionary-key "$OXFORD_KEY"
+yarn --global-folder ./node_modules/ --cache-folder ./node_modules/
 ```
-For some context, have a look in `./now.json`.

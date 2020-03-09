@@ -18,8 +18,7 @@
         "build": "node -v && ./build.sh",
         "reset": "rm -rf ./build ./node_modules ./yarn.lock ./packages-lock.json",
         "start": "node .",
-        "quick": "yarn run build && yarn run start",
-        "deploy": "now && echo \"Remeber to scale: `now scale [url] 1 1`\""
+        "quick": "yarn run build && yarn run start"
     },
     "homepage": "https://github.com/Demonstrandum/simpomatic",
     "repository": {
@@ -30,7 +29,6 @@
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
     },
     "dependencies": {
-        "@discordjs/uws": "^10.149.0",
         "@typeit/discord": "^1.0.3",
         "@types/node": "^13.9.0",
         "@types/ws": "^7.2.2",

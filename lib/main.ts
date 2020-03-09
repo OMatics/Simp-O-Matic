@@ -312,14 +312,3 @@ SimpOMatic.start();
 
 // Back-up the resultant CONFIG to an external file.
 write_file(`${process.cwd()}/export.json`, export_config(CONFIG, {}));
-
-// When deploying to now, we need an HTTP server, since
-//  now expects mainly website.
-import { createServer } from 'http';
-// createServer((_req, res) => {
-//     res.writeHead(200, { 'Content-Type': 'text/html' });
-//     res.end(
-//         read_file(`${process.cwd()}/public/index.html`).toString(),
-//         'utf-8');
-// }).listen(3000);
-createServer().listen(3000);
