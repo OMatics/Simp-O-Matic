@@ -13,11 +13,11 @@ export const type: (obj: any) => string = (global => obj =>
 export const pp = o => inspect(o, {
     colors: true,
     showHidden: false,
-    depth: 50
+    depth: 23
 });
 
 export const deep_merge_pair = (target, source) => {
-    Object.keys(source).forEach(key => {
+    Object.keys(source).each(key => {
         const target_value = target[key];
         const source_value = source[key];
 

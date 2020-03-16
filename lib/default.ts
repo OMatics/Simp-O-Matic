@@ -10,6 +10,7 @@ export default {
 
     commands: {
         prefix: '!',
+        max_history: 100,
         not_understood: "Command not understood",
         aliases: {
             'img': 'image',
@@ -17,6 +18,7 @@ export default {
             'h': 'help',
             's': 'search',
             'yt': 'youtube',
+            'y': 'youtube',
             'd': 'define',
             'oed': 'define',
             'oxford': 'define',
@@ -26,7 +28,19 @@ export default {
             'whitelist': 'ignore whitelist',
             'w': 'weather',
             'reply': 'respond',
-            'reject': 'delete'
+            'reject': 'delete',
+            'wa': 'wolfram',
+            'wolf': 'wolfram',
+            'toilet': 'figlet',
+            'wiki': 'wikipedia',
+            'aliases': 'alias',
+            'boomerfy': 'boomer',
+            'mocking': 'mock',
+            'pull': 'fork',
+            'git': 'github',
+            'bug': 'issue',
+            'source': 'github',
+            'save': 'export'
         },
     },
 

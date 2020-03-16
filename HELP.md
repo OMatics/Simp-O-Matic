@@ -1,16 +1,35 @@
 **KEY:**
+How to read this help page (the notation it uses):
+
 `  !  ` — is the standard command prefix.
 `[...]` — specifies an option/argument to the command (required).
 `<...>` — specifies an optional option/argument to the command (not-required).
+`{a,b}` — represents a choice between a either writing `a` or `b` in its place.
+`  _  ` — represents the absence of a value at that particular place.
 
 ▬▬▬
 
-- `!help` — Shows this page.
+- `!help` — Shows help messages.
+  - `!help all` — shows page of help for all commands.
+  - `!help <help>` — shows help on how to use the help command.
+  - `!help key` — shows how to read the help messages.
+  - `!help source` — shows information about the source code for this bot.
+  - `!help [!command]` — shows help on a certain command.
+- `!!` — Expands into the previously issued command:
+  - `!!@ [@user-name]` — Expands into the previously issued command by that user.
+  - `!!^` — Expands into the previous message sent (this counts commands as being messages too, since they are).
+  - `!!^@` — Expands into the previously sent message by that user.
+  - `!!{^,@,^@,_}<ordinal-number>` — Works like all the `!!`-commands, but with an index number to get the nth-to-last message.
+  - **Example:** `!mock !!^@3 @Danny` — Repeats what `@Danny`'s 3rd-from-last message was back to him, but in a mocking way.
+  - **Example:** `!! hello` — Executes the command that had just been executed, but with an extra argument (namely: `hello`).
 - `!export` — Exports current configuration, and saves it.
 - `!prefix [new]` — Changes the prefix for sending this bot commands (default is `!`). Can only be one (1) character/symbol/grapheme/rune long.
 - `!ping` — Test the response-time/latency of the bot, by observing the time elapsed between the sending of this command, and the subsequent (one-word) response from the bot.
 - `!id <who>` — Print ID of user, or self if no-one is specified.
+- `!uptime` — Display how long the bot has been running for.
+- `!clear #[number-of-messages] <@user-name>` — Clear a number of messages, from latest sent in the current channel.  Will delete any recent messages, unless a specific username is provided, in which case it will only clear messages sent from that user.
 - `!alias` — Manage aliases to commands:
+  - **Have a look at the aliases list, for alternative to long commands!**
   - `!alias ![the-alias] ![the-command]` — to add a new alias.
   - `!alias <ls>` — lists all aliases numerically.
   - `!alias rm ![the-alias]` — removes the alias by name.
@@ -39,12 +58,33 @@
   - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.
   - `!cron <ls>` — lists all active cron-jobs numerically.
   - `!cron rm #[job-index]` — removes a cron-job by index.
+- `!choose [comma-separated-values]` — Choose randomly from a list of items, separated by commas.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
 - `!urban [slang]` — Looks up a piece of slang in the _Urban Dictionary_.
 - `!search [web-search-terms]` — Performs a web-search and returns the most appropriate URL found.
 - `!image [image-search-terms]` — Searches for images specified by the terms given, and send a link to the most relevant one.
-- `!news [news-search-term]` — Sends you the most relevant new on the specified topic area.
+- `!gif [gif-search-terms]` — Searches for and returns a GIF matching your search.
+- `!cat` — Pussycat pictures...
+- `!news [news-search-term]` — Sends you the most relevant news on the specified topic area.
 - `!youtube [youtube-search-terms]` — Searches for and returns a relevant _YouTube_ video.
+- `!wikipedia` — Search through Wikipedia, returning the most relevant wiki-link.
+- `!translate <language> [phrase]` — Translate a phrase from a language (if none specified, it will auto-detect).
+- `!wolfram` — Query Wolfram|Alpha.
 - `!say [phrase]` — Repeats what you told it to say.
 - `!milkies` — In case you're feeling thirsty...
-- `!cowsay [phrase]` — Make a cow say something.
+- `!cowsay <options> [phrase]` — Make a cow say something, using Unix-like command line arguments.
+- `!figlet <options> [phrase]` — Print text in ASCII format, using Unix-like command line arguments.
+- `!roll <upper-bound>` — Roll a dice, default upper bound is 6.
+- `!summon [@user-name]` — Summon someone to the server by making the bot poke them in their DMs about it.
+- `!mock [phrase]` — Say something, _bUt iN a MocKiNg WaY BaCk_...
+- `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
+
+▬▬▬
+
+**Source Code & Bugs:**
+
+- `!github` — Get GitHub link. (https://github.com/Demonstrandum/Simp-O-Matic)
+- `!fork` — Fork the repository and send me a pull-request for your patches. (https://github.com/Demonstrandum/Simp-O-Matic/fork)
+- `!issue` — Spot a bug, have an issue or want to request a new feature? There's a page for that. (https://github.com/Demonstrandum/Simp-O-Matic/issues)
+
+**Licenced under GNU GPLv3!  _Free_ as in Freedom!**

@@ -15,10 +15,12 @@
     "main": "./build/main.js",
     "types": "./build/main.d.ts",
     "scripts": {
-        "build": "node -v && ./build.sh",
+        "build": "node -v && . ./build.sh",
         "reset": "rm -rf ./build ./node_modules ./yarn.lock ./packages-lock.json",
         "start": "node .",
-        "quick": "yarn run build && yarn run start"
+        "quick": ". ./build.sh && yarn run start",
+        "deploy-scale": "heroku ps:scale service=1 -a simp-o-matic",
+        "deploy-restart": "heroku restart - simp-o-matic"
     },
     "homepage": "https://github.com/Demonstrandum/simpomatic",
     "repository": {
