@@ -1,5 +1,5 @@
 **KEY:**
-How to read this help page (the notation it uses):
+How to read the help pages (the notation it uses):
 
 `  !  ` — is the standard command prefix.
 `[...]` — specifies an option/argument to the command (required).
@@ -26,6 +26,8 @@ How to read this help page (the notation it uses):
 - `!prefix [new]` — Changes the prefix for sending this bot commands (default is `!`). Can only be one (1) character/symbol/grapheme/rune long.
 - `!ping` — Test the response-time/latency of the bot, by observing the time elapsed between the sending of this command, and the subsequent (one-word) response from the bot.
 - `!id <who>` — Print ID of user, or self if no-one is specified.
+- `!get [accessor]` — Get a runtime configuration variable, using JavaScript object dot-notation.
+- `!set [accessor] [json-value]` — Set a value in the runtime JavaScript configuration object.
 - `!uptime` — Display how long the bot has been running for.
 - `!clear #[number-of-messages] <@user-name>` — Clear a number of messages, from latest sent in the current channel.  Will delete any recent messages, unless a specific username is provided, in which case it will only clear messages sent from that user.
 - `!alias` — Manage aliases to commands:
@@ -76,7 +78,7 @@ How to read this help page (the notation it uses):
 - `!figlet <options> [phrase]` — Print text in ASCII format, using Unix-like command line arguments.
 - `!roll <upper-bound>` — Roll a dice, default upper bound is 6.
 - `!summon [@user-name]` — Summon someone to the server by making the bot poke them in their DMs about it.
-- `!mock [phrase]` — Say something, _bUt iN a MocKiNg WaY BaCk_...
+- `!mock [phrase]` — Say something, _bUt iN a MocKiNg WaY_...
 - `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
 
 ▬▬▬

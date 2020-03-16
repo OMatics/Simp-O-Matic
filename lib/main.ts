@@ -14,7 +14,8 @@ import { execSync as shell } from 'child_process';
 
 // Local misc/utility functions.
 import './extensions';
-import { deep_merge, pp, compile_match, export_config } from './utils';
+import { deep_merge, pp, compile_match,
+         export_config, access } from './utils';
 import format_oed from './format_oed';  // O.E.D. JSON entry to markdown.
 
 // Default bot configuration JSON.
@@ -46,18 +47,21 @@ const SECRETS = JSON.parse(shell('sh ./generate_secrets.sh').toString());
 
 // Load HELP.md file, and split text smart-ly
 //  (to fit within 2000 characters).
-const HELP = read_file('./HELP.md');
-const help_sections = HELP.toString()
+const [HELP_KEY, HELP, HELP_SOURCE] = read_file('./HELP.md')
+    .toString().split('▬▬▬');
+
+const HELP_SECTIONS = HELP.toString()
     .replace(/\n  -/g, '\n      \u25b8')
     .replace(/\n- /g, '@@@\n\u2b25 ')
-    .split('@@@');
+    .split('@@@')
+    .filter(e => !!e && !!e.trim());
 
 let acc = "";
-let new_messages = [];
+let new_messages : string[] = [];
 
 // This assumes no two help-entries would ever
 //  be greater than 2000 characters long
-for (const msg of help_sections)
+for (const msg of HELP_SECTIONS)
     if (acc.length + msg.length >= 2000) {
         new_messages.push(acc);
         acc = msg;
@@ -65,6 +69,15 @@ for (const msg of help_sections)
 new_messages.push(acc);
 
 const HELP_MESSAGES = new_messages;
+
+const ALL_HELP = [
+    HELP_KEY,
+    '\n▬▬▬\n', ...HELP_MESSAGES,
+    '\n▬▬▬\n', HELP_SOURCE
+];
+
+const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
+    e.slice(5).replace(/(\s.*)|(`.*)/g, ''));
 
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
@@ -80,6 +93,7 @@ export class SimpOMatic {
     constructor() {
         console.log('Secrets:', pp(SECRETS));
         console.log('Configured Variables:', pp(CONFIG));
+        console.log('Known commands:', pp(KNOWN_COMMANDS));
     }
 
     static start() {
@@ -119,9 +133,40 @@ export class SimpOMatic {
                 message.answer("PONGGERS!");
                 break;
             } case 'help': {
-                message.answer('**HELP:**');
-                for (const msg of HELP_MESSAGES)
-                    message.channel.send(msg);
+                if (args.length === 0 || args[0] == 'help') {
+                    message.channel.send(HELP_SECTIONS[0]);
+                    break;
+                }
+
+                if (args[0] === 'key') {
+                    message.channel.send(HELP_KEY);
+                    break;
+                } else if (args[0] === 'source') {
+                    message.channel.send(HELP_SOURCE);
+                    break;
+                } else if (args[0] === 'all') {
+                    for (const msg of ALL_HELP)
+                        message.channel.send(msg);
+                    break;
+                }
+
+                // Assume the user is now asking for help with a command:
+                //   Sanitise:
+                let command = args[0].trim();
+                if (command.head() === CONFIG.commands.prefix)
+                    command = command.tail();
+                if (CONFIG.commands.aliases.hasOwnProperty(command))
+                    command = CONFIG.commands.aliases[command].trim().squeeze();
+                command = command.split(' ').head().trim().squeeze();
+
+                const help_index = KNOWN_COMMANDS.indexOf(command);
+
+                if (help_index === -1)
+                    message.answer(`No such command/help-page (\`${command}\`).`);
+                else
+                    message.answer(`**Help (\`${command}\`):**\n`
+                        + HELP_SECTIONS[help_index]);
+
                 break;
             } case 'id': {
                 const reply = `User ID: ${message.author.id}
@@ -129,6 +174,39 @@ export class SimpOMatic {
                     Message ID: ${message.id}`.squeeze();
                 console.log(`Replied: ${reply}`);
                 message.answer(reply);
+                break;
+            } case 'get': {
+                if (args.length === 0) {
+                    message.answer('To view the entire object, use the `!export` command.');
+                    break;
+                }
+                // Accessing invalid fields will be caught.
+                try {
+                    const accessors = args[0].trim().split('.').squeeze();
+                    const resolution = access(CONFIG, accessors);
+                    message.channel.send(` ⇒ \`${resolution}\``);
+                } catch (e) {
+                    message.channel.send(`Invalid object access-path\n`
+                        + `Problem: \`\`\`\n${e}\n\`\`\``);
+                }
+                break;
+            } case 'set': {
+                if (args.length < 2) {
+                    message.answer('Please provide two arguments.\nSee `!help set`.');
+                    break;
+                }
+                try {
+                    const accessors = args[0].trim().split('.').squeeze();
+                    const parent = accessors.pop();
+                    const obj = access(CONFIG, accessors);
+                    obj[parent] = JSON.parse(args[1]);
+
+                    message.channel.send(`Assignment successful.
+                        \`${args[0].trim()} = ${obj[parent]}\``.squeeze());
+                } catch (e) {
+                    message.channel.send(`Invalid object access-path,`
+                        + `nothing set.\nProblem: \`\`\`\n${e}\n\`\`\``);
+                }
                 break;
             } case 'alias': {
                 const p = CONFIG.commands.prefix;
@@ -317,8 +395,10 @@ export class SimpOMatic {
                 message.answer(`A copy of this export (\`export-${today}.json\`) \
                     has been saved to the local file system.`.squeeze());
                 break;
-            }
-            default: {
+            } case '': {
+                message.answer("That's an empty command...");
+                break;
+            } default: {
                 message.answer(`
                     :warning: ${CONFIG.commands.not_understood}.
                     > \`${CONFIG.commands.prefix}${command}\``.squeeze());

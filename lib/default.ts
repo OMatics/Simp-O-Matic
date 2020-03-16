@@ -10,7 +10,7 @@ export default {
 
     commands: {
         prefix: '!',
-        max_history: 100,
+        max_history: 40,
         not_understood: "Command not understood",
         aliases: {
             'img': 'image',

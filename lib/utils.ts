@@ -2,6 +2,11 @@ import { inspect } from 'util';
 import deep_clone from 'deepcopy';
 import './extensions';
 
+export const access = (obj: any, shiftable: string[]) =>
+    (shiftable.length === 0)
+        ? obj
+        : access(obj[shiftable.shift()], shiftable);
+
 export const type: (obj: any) => string = (global => obj =>
     (obj === global)
         ? 'global'
