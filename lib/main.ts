@@ -24,6 +24,10 @@ import DEFAULT_CONFIG from './default';
 import web_search from './api/contextual';
 import oed_lookup from './api/oxford';
 import urban_search from './api/urban';
+import { Channel } from 'discord.js';
+import { resolve } from 'dns';
+import { TextChannel } from 'discord.js';
+import { Collection } from 'discord.js';
 
 
 // Anything that hasn't been defined in `bot.json`
@@ -88,6 +92,9 @@ export class SimpOMatic {
 
     process_command(message : Message) {
         this._COMMAND_HISTORY.push(message);
+        if (this._COMMAND_HISTORY.length > CONFIG.commands.max_history) {
+            this._COMMAND_HISTORY.shift();
+        }
 
         const content = message.content.trim().squeeze();
         const words = content.tail().split(' ');
@@ -327,31 +334,43 @@ export class SimpOMatic {
         // TODO: Process _rules_ appropriately.
     }
 
-    last_message(opts) : string {
+    async last_message(opts) : Promise<string> {
+        const channel = opts.channel as TextChannel;
+
         if (!opts.offset) opts.offset = 1;
         if (opts.mention) opts.mentioning = opts.mentioning.trim();
 
         if (opts.command) {
             let commands = this._COMMAND_HISTORY
-                .filter(m => m.channel.id === opts.channel.id)
+                .filter(m => m.channel.id === channel.id)
 
             if (opts.mention) commands = commands.filter(m =>
                 m.author.toString() === opts.mentioning);
 
             const command = commands.last(opts.offset - 1);
             if (!command) {
-                opts.channel.send('Cannot expand, no such'
+                channel.send('Cannot expand, no such'
                     + ' command exists in history.');
-                return 'EXPANSION_ERROR';
+                return Promise.reject('COMMAND_NOT_IN_HISTORY');
             }
-            return command.content;
+            return Promise.resolve(command.content);
         }
 
-        // TODO: Deal with non command expansions, i.e. !!^
-        return 'last-message';
+        let filter = _ => true;
+        if (opts.mention)
+            filter = m => m.author.toString() === opts.mentioning;
+
+        const messages = await channel.fetchMessages({
+            limit: CONFIG.commands.max_history
+        });
+        // Remember that the _latest_ message, is the one that
+        //  the user has _just_ sent. This means we ignore the first message.
+        return messages.array()
+            .filter(filter)
+            .get(opts.offset).content;
     }
 
-    expand(message : Message) : string {
+    async expand(message : Message) : Promise<string> {
         // History expansion with !!, !!@, !!^@, !!<ordinal>, etc.
         const expansions = message.content
             .replace(/(!!@?\^?\d*)/g, '@EXP$1@EXP')
@@ -361,7 +380,7 @@ export class SimpOMatic {
         for (let i = 0; i < expansions.length; ++i) {
             if (expansions[i].startsWith('!!')) {
                 if (expansions[i].length === 2) {  // !! expansion
-                    expansions[i] = this.last_message({
+                    expansions[i] = await this.last_message({
                         command: true,
                         channel: message.channel
                     });
@@ -376,7 +395,7 @@ export class SimpOMatic {
                 const mentioning = expansions[i + 2];
                 if (mention) expansions[i + 2] = '';
 
-                expansions[i] = this.last_message({
+                expansions[i] = await this.last_message({
                     command: !opts.includes('^'),
                     mention: mention,
                     mentioning: mentioning,
@@ -401,17 +420,19 @@ export class SimpOMatic {
 
         const trimmed = message.content.trim();
         message.content = trimmed;
-        message.content = this.expand(message);
+        // When finished expanding...
+        this.expand(message).then(content => {
+            message.content = content;
+            console.log('Expanded message:', message.content);
 
-        console.log('Expanded message:', message.content);
-
-        if (message.content[0] === CONFIG.commands.prefix) {
-            console.log('Message type: command.')
-            this.process_command(message);
-        } else {
-            console.log('Message type: generic.')
-            this.process_generic(message);
-        }
+            if (message.content[0] === CONFIG.commands.prefix) {
+                console.log('Message type: command.')
+                this.process_command(message);
+            } else {
+                console.log('Message type: generic.')
+                this.process_generic(message);
+            }
+        });
     }
 }
 
