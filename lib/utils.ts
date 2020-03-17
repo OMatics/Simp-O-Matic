@@ -2,6 +2,20 @@ import { inspect } from 'util';
 import deep_clone from 'deepcopy';
 import './extensions';
 
+// This assumes no two string-array entries
+//  would ever be greater than 2000 characters long.
+export const glue_strings = arr => {
+    let acc = "";
+    const new_strings = [];
+    for (const msg of arr)
+        if (acc.length + msg.length >= 2000) {
+            new_strings.push(acc);
+            acc = msg;
+        } else { acc += msg; }
+    new_strings.push(acc);
+    return new_strings;
+};
+
 export const access = (obj: any, shiftable: string[]) =>
     (shiftable.length === 0)
         ? obj

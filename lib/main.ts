@@ -15,14 +15,14 @@ import { execSync as shell } from 'child_process';
 // Local misc/utility functions.
 import './extensions';
 import { deep_merge, pp, compile_match,
-         export_config, access } from './utils';
+         export_config, access, glue_strings } from './utils';
 import format_oed from './format_oed';  // O.E.D. JSON entry to markdown.
 
 // Default bot configuration JSON.
 import DEFAULT_CONFIG from './default';
 
 // API specific modules.
-import web_search from './api/contextual';
+import web_search from './api/google';
 import oed_lookup from './api/oxford';
 import urban_search from './api/urban';
 import { Channel } from 'discord.js';
@@ -56,28 +56,20 @@ const HELP_SECTIONS = HELP.toString()
     .split('@@@')
     .filter(e => !!e && !!e.trim());
 
-let acc = "";
-let new_messages : string[] = [];
 
 // This assumes no two help-entries would ever
 //  be greater than 2000 characters long
-for (const msg of HELP_SECTIONS)
-    if (acc.length + msg.length >= 2000) {
-        new_messages.push(acc);
-        acc = msg;
-    } else { acc += msg; }
-new_messages.push(acc);
-
-const HELP_MESSAGES = new_messages;
-
-const ALL_HELP = [
+const HELP_MESSAGES = glue_strings(HELP_SECTIONS);
+const ALL_HELP = glue_strings([
     HELP_KEY,
     '\n▬▬▬\n', ...HELP_MESSAGES,
     '\n▬▬▬\n', HELP_SOURCE
-];
+]);
 
 const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
     e.slice(5).replace(/(\s.*)|(`.*)/g, ''));
+
+const GIT_URL = 'https://github.com/Demonstrandum/Simp-O-Matic';
 
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
@@ -114,7 +106,7 @@ export class SimpOMatic {
         const words = content.tail().split(' ');
         const args = words.tail();
 
-        let command = words[0];
+        let command = words[0].toLowerCase();
         if (CONFIG.commands.aliases.hasOwnProperty(command))
             command = CONFIG.commands.aliases[command].trim().squeeze();
 
@@ -165,13 +157,24 @@ export class SimpOMatic {
                     message.answer(`No such command/help-page (\`${command}\`).`);
                 else
                     message.answer(`**Help (\`${command}\`):**\n`
-                        + HELP_SECTIONS[help_index]);
+                        + HELP_SECTIONS[help_index].trim());
 
                 break;
             } case 'id': {
-                const reply = `User ID: ${message.author.id}
+                if (args[0]) {
+                    const matches = args[0].match(/<@(\d+)>/)
+                    if (!matches) {
+                        message.answer(`Please tag a user, or \
+                            provide no argument(s) at all.  See \`!help id\``
+                            .squeeze());
+                    } else {
+                        message.answer(`User ID: \`${matches[1]}\``);
+                    }
+                    break;
+                }
+                const reply = `User ID: \`${message.author.id}\`
                     Author: ${message.author}
-                    Message ID: ${message.id}`.squeeze();
+                    Message ID: \`${message.id}\``.squeeze();
                 console.log(`Replied: ${reply}`);
                 message.answer(reply);
                 break;
@@ -217,6 +220,41 @@ export class SimpOMatic {
                     message.answer('List of **Aliases**:\n')
                     message.channel.send('**KEY:  `Alias` ↦ `Command it maps to`**\n\n'
                      + lines.join('\n'));
+                    break;
+                }
+
+                // Parse `!alias rm` command.
+                if (args[0] === 'rm' && args.length > 1) {
+                    const aliases = CONFIG.commands.aliases;
+                    const keys = Object.keys(aliases);
+                    let match, index, alias;
+                    if (match = args[1].match(/^#?(\d+)/)) {
+                        index = Number(match[1]) - 1;
+                        if (index >= keys.length) {
+                            message.answer('No alias exists at such an index'
+                             + ` (there are only ${keys.length} indices).`);
+                            break;
+                        }
+                        alias = keys[index];
+                        keys.each((_, i) => i === index
+                            ? delete aliases[alias]
+                            : null);
+                    } else {
+                        alias = args[1];
+                        if (alias[0] === '!') alias = alias.tail();
+                        index = keys.indexOf(alias);
+                        if (index === -1) {
+                            message.answer(`There does not exist any alias \
+                                with the name \`${p}${alias}\`.`.squeeze());
+                            break;
+                        }
+                        keys.each((a, _) => a === alias
+                            ? delete alias[alias]
+                            : null);
+                    }
+                    message.answer(`Alias \`${p}${alias}\` at index \
+                        number ${index + 1}, has been deleted.`.squeeze());
+                    break;
                 }
 
                 // Check last:
@@ -234,6 +272,20 @@ export class SimpOMatic {
                     message.channel.send(
                         '**Alias added:**\n >>> ' +
                         `\`${p}${args[0]}\` now maps to \`${p}${args.tail().join(' ')}\``);
+                } else {
+                    if (args.length === 1) {
+                        if (args[0] in CONFIG.commands.aliases) {
+                            const aliases = Object.keys(CONFIG.commands.aliases);
+                            const n = aliases.indexOf(args[0]) + 1;
+                            message.answer(`${n}.  \`${p}${args[0]}\` ↦ \`${p}${CONFIG.commands.aliases[args[0]]}\``);
+                            break;
+                        } else {
+                            message.answer('No such alias found.');
+                            break;
+                        }
+                    }
+                    message.answer('Invalid number of arguments to alias,\n'
+                        + 'Please see `!help alias`.');
                 }
                 break;
             } case 'prefix': {
@@ -250,38 +302,33 @@ export class SimpOMatic {
                 }
                 message.answer(`Current command prefix is: \`${CONFIG.commands.prefix}\`.`);
                 break;
+            } case 'ignore': {
+                // Man alive, someone else do this please.
+                break;
+            } case 'response': {
+
+                break
             } case 'search': {
-                const query = args.join(' ');
+                const query = args.join(' ').toLowerCase();
 
                 web_search({
-                    type: 'web',
+                    kind: 'web',
                     query,
-                    key: SECRETS.rapid.key
-                }).then((res: object) => {
-                    if (res['value'].length === 0) {
-                        message.answer('No such results found.');
-                        return;
-                    }
-                    message.answer(`Web search for ‘${query}’, \
-                        found: ${res['value'][0].url}`.squeeze());
-                }).catch(e => message.answer(`Error fetching results:\n${e}`));
+                    key: SECRETS.google.api_key,
+                    id: SECRETS.google.search_id
+                }).then((res) => message.answer(res))
+                  .catch(e => message.answer(e));
                 break;
             } case 'image': {
-                const query = args.join(' ');
+                const query = args.join(' ').toLowerCase();
 
                 web_search({
-                    type: 'image',
+                    kind: 'image',
                     query,
-                    key: SECRETS.rapid.key
-                }).then(res => {
-                    if (res['value'].length === 0) {
-                        message.answer('No such images found.');
-                        return;
-                    }
-                    message.answer(`Image found for ‘${query}’: \
-                        ${res['value'][0].url}`.squeeze());
-                }).catch(e =>
-                    message.answer(`Error fetching image:\n${e}`));
+                    key: SECRETS.google.api_key,
+                    id: SECRETS.google.search_id
+                }).then((res) => message.answer(res))
+                  .catch(e => message.answer(e));
                 break;
             } case 'define': {
                 message.answer('Looking in the Oxford English Dictionary...');
@@ -366,7 +413,7 @@ export class SimpOMatic {
             } case 'ily': {
                 message.answer('Y-you too...');
                 break;
-            }case 'say': {2
+            } case 'say': {
                 message.answer(`Me-sa says: “${args.join(' ')}”`);
                 break;
             } case 'export': {
@@ -395,10 +442,27 @@ export class SimpOMatic {
                 message.answer(`A copy of this export (\`export-${today}.json\`) \
                     has been saved to the local file system.`.squeeze());
                 break;
+            } case 'github': {
+                message.answer(`${GIT_URL}/`);
+                break;
+            } case 'fork': {
+                message.answer(`${GIT_URL}/fork`)
+                break;
+            } case 'issue': {
+                message.answer(`${GIT_URL}/issues`)
+                break;
             } case '': {
                 message.answer("That's an empty command...");
                 break;
             } default: {
+                if (KNOWN_COMMANDS.includes(command)) {
+                    const p = CONFIG.commands.prefix;
+                    message.reply(`:scream: *gasp!* — The \`${p}${command}\` \
+                        command has not been implemented yet. \
+                        Quick send a pull request! Just type in \
+                        \`${p}fork\`, and get started...`.squeeze());
+                    break;
+                }
                 message.answer(`
                     :warning: ${CONFIG.commands.not_understood}.
                     > \`${CONFIG.commands.prefix}${command}\``.squeeze());

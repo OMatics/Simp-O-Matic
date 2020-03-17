@@ -20,6 +20,7 @@ export default {
             'yt': 'youtube',
             'y': 'youtube',
             'd': 'define',
+            'def': 'define',
             'oed': 'define',
             'oxford': 'define',
             'ud': 'urban',
@@ -80,8 +81,8 @@ export default {
                 // For real this time:
                 // -> `accelarion#0764`
                 //     a.k.a. instcel,
-                //     a.k.a. instgen
-                //     a.k.a. installgentoo
+                //     a.k.a. instgen,
+                //     a.k.a. installgentoo.
                 "409461942495871016": {
                     commands: true,
                     commands_elevated: false,
