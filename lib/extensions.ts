@@ -25,6 +25,7 @@ declare global {
 
     interface Number {
         round_to(dp: number): number
+        to_metric(figures): string
     }
 }
 
@@ -91,6 +92,28 @@ String.prototype.last = Array.prototype.last as any;
 Number.prototype.round_to = function (dp : number) {
     const exp = 10 ** dp;
     return Math.round(this.valueOf() * exp) / exp;
+};
+
+const SI_EXTENSIONS = [
+    { value: 1, symbol: "" },
+    { value: 1E3, symbol: "k" },
+    { value: 1E6, symbol: "M" },
+    { value: 1E9, symbol: "G" },
+    { value: 1E12, symbol: "T" },
+    { value: 1E15, symbol: "P" },
+    { value: 1E18, symbol: "E" }
+];
+
+Number.prototype.to_metric = function (figures) {
+    let i = SI_EXTENSIONS.length - 1;
+    for (; i > 0; --i)
+        if (this >= SI_EXTENSIONS[i].value)
+            break;
+
+    return (this.valueOf() / SI_EXTENSIONS[i].value)
+        .toFixed(figures)
+        .replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1")
+        + SI_EXTENSIONS[i].symbol;
 };
 
 // Discord Extensions:

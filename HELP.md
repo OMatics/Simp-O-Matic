@@ -15,6 +15,7 @@
   - `!help key` — shows how to read the help messages.
   - `!help source` — shows information about the source code for this bot.
   - `!help [!command]` — shows help on a certain command.
+- `!commands` — Lists out all commands, but with no description.  For descriptions, use `!help`.
 - `!!` — Expands into the previously issued command:
   - `!!@ [@user-name]` — Expands into the previously issued command by that user.
   - `!!^` — Expands into the previous message sent (this counts commands as being messages too, since they are).
@@ -25,6 +26,7 @@
 - `!export` — Exports current configuration, and saves it.
 - `!prefix [new]` — Changes the prefix for sending this bot commands (default is `!`). Can only be one (1) character/symbol/grapheme/rune long.
 - `!ping` — Test the response-time/latency of the bot, by observing the time elapsed between the sending of this command, and the subsequent (one-word) response from the bot.
+- `!invite` --- Get an invite link (needs admin (`8`) permissions).
 - `!id <who>` — Print ID of user, or self if no-one is specified.
 - `!get [accessor]` — Get a runtime configuration variable, using JavaScript object dot-notation.
 - `!set [accessor] [json-value]` — Set a value in the runtime JavaScript configuration object.

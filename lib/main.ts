@@ -29,6 +29,7 @@ import { Channel } from 'discord.js';
 import { resolve } from 'dns';
 import { TextChannel } from 'discord.js';
 import { Collection } from 'discord.js';
+import yt_search from './api/yt_scrape';
 
 
 // Anything that hasn't been defined in `bot.json`
@@ -159,6 +160,15 @@ export class SimpOMatic {
                     message.answer(`**Help (\`${command}\`):**\n`
                         + HELP_SECTIONS[help_index].trim());
 
+                break;
+            } case 'commands': {
+                const p = CONFIG.commands.prefix;
+                const joined_commands = KNOWN_COMMANDS.slice(0, -1)
+                    .map(c => `\`${p}${c}\``)
+                    .join(', ');
+                const last_command = `\`${p}${KNOWN_COMMANDS.last()}\``;
+                message.reply(`All known commands (excluding aliases): \
+                    ${joined_commands} and ${last_command}`.squeeze());
                 break;
             } case 'id': {
                 if (args[0]) {
@@ -306,7 +316,7 @@ export class SimpOMatic {
                 // Man alive, someone else do this please.
                 break;
             } case 'response': {
-
+                // TODO
                 break
             } case 'search': {
                 const query = args.join(' ').toLowerCase();
@@ -327,8 +337,14 @@ export class SimpOMatic {
                     query,
                     key: SECRETS.google.api_key,
                     id: SECRETS.google.search_id
-                }).then((res) => message.answer(res))
-                  .catch(e => message.answer(e));
+                }).then(res => message.answer(res))
+                  .catch(er => message.answer(er));
+                break;
+            } case 'youtube': {
+                const query = args.join(' ');
+                yt_search({ query })
+                    .then(message.reply.bind(message))
+                    .catch(message.answer.bind(message));
                 break;
             } case 'define': {
                 message.answer('Looking in the Oxford English Dictionary...');
@@ -415,6 +431,9 @@ export class SimpOMatic {
                 break;
             } case 'say': {
                 message.answer(`Me-sa says: “${args.join(' ')}”`);
+                break;
+            } case 'invite': {
+                message.answer('Invite link: https://discordapp.com/api/oauth2/authorize?client_id=684895962212204748&permissions=8&scope=bot');
                 break;
             } case 'export': {
                 let export_string = export_config(CONFIG, {});
