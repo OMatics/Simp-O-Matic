@@ -20,7 +20,7 @@
         "reset": "rm -rf ./build ./node_modules ./yarn.lock ./packages-lock.json",
         "start": "node .",
         "quick": ". ./build.sh && yarn run start",
-        "deploy-scale": "heroku ps:scale service=1 -a simp-o-matic",
+        "deploy-scale": "heroku scale web=0 worker=1 -a simp-o-matic",
         "deploy-restart": "heroku restart -a simp-o-matic"
     },
     "homepage": "https://github.com/Demonstrandum/simpomatic",
