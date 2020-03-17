@@ -30,6 +30,7 @@ import { resolve } from 'dns';
 import { TextChannel } from 'discord.js';
 import { Collection } from 'discord.js';
 import yt_search from './api/yt_scrape';
+import { connect } from 'http2';
 
 
 // Anything that hasn't been defined in `bot.json`
@@ -585,6 +586,11 @@ export class SimpOMatic {
         message.content = trimmed;
         // When finished expanding...
         this.expand(message).then(content => {
+            if (content.length >= 2000) {
+                message.answer("The expansion for that message was"
+                + " over 2000 characters, what the fuck is wrong with you?");
+                return;
+            }
             message.content = content;
             console.log('Expanded message:', message.content);
 

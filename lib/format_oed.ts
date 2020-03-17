@@ -45,7 +45,8 @@ export default (res, message) => {
         }
         if (!!lex_entry.pronunciations) {
             const prons = Object.values(lex_entry.pronunciations) as any;
-            if (!!prons && prons.length > 0) {
+            if (!!prons && prons.length > 0
+                && !!prons.dialects && prons.dialects.length > 0) {
                 msg += "\nPronunciations:\n"
                 for (const pron of prons) {
                     msg += `    Dialects of ${pron.dialects.join(', ')}:\n`;
