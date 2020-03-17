@@ -10,7 +10,8 @@
     "author": "Sammy et Frens",
     "version": "0.1.0",
     "engines": {
-        "node": "10.x"
+        "node": "10.x",
+        "yarn": "1.22.x"
     },
     "main": "./build/main.js",
     "types": "./build/main.d.ts",
@@ -20,7 +21,7 @@
         "start": "node .",
         "quick": ". ./build.sh && yarn run start",
         "deploy-scale": "heroku ps:scale service=1 -a simp-o-matic",
-        "deploy-restart": "heroku restart - simp-o-matic"
+        "deploy-restart": "heroku restart -a simp-o-matic"
     },
     "homepage": "https://github.com/Demonstrandum/simpomatic",
     "repository": {
@@ -42,8 +43,5 @@
         "tslib": "^1.11.1",
         "typescript": "^3.8.3",
         "unirest": "^0.6.0"
-    },
-    "devDependencies": {
-        "now": "^17.0.4"
     }
 }

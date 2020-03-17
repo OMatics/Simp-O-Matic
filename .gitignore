@@ -6,7 +6,7 @@ export_secrets.sh
 # Node / NPM / Yarn
 node_modules/
 package-lock.json
-yarn.lock
+#yarn.lock
 
 # Build files
 build/
