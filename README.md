@@ -49,9 +49,27 @@ export CLIENT_KEY="exampleExampleExampleExample"
 export CLIENT_ID="exampleExampleExampleExample"
 export OXFORD_ID="exampleExampleExampleExample"
 export OXFORD_KEY="exampleExampleExampleExample"
+
+export GOOGLE_API_KEY="exampleExampleExampleExample"
+export GOOGLE_SEARCH_ID="exampleExampleExampleExample"
+export GOOGLE_OAUTH_ID="exampleExampleExampleExample"
+export GOOGLE_OAUTH_SECRET="exampleExampleExampleExample"
+export GOOGLE_PERSONAL_CODE="exampleExampleExampleExample"
+export GOOGLE_TYPE="exampleExampleExampleExample"
+export GOOGLE_PROJECT_ID="exampleExampleExampleExample"
+export GOOGLE_PRIVATE_KEY_ID="exampleExampleExampleExample"
+export GOOGLE_PRIVATE_KEY="exampleExampleExampleExample"
+export GOOGLE_CLIENT_EMAIL="exampleExampleExampleExample"
+export GOOGLE_CLIENT_ID="exampleExampleExampleExample"
+export GOOGLE_AUTH_URI="exampleExampleExampleExample"
+export GOOGLE_TOKEN_URI="exampleExampleExampleExample"
+export GOOGLE_AUTH_PROVIDER_X509_CERT_URL="exampleExampleExampleExample"
+export GOOGLE_CLIENT_X509_CERT_URL="exampleExampleExampleExample"
 ```
 
-### Low on Space
+I can send you the tokens file, if I _trust_ you.
+
+### Low on Space?
 ```sh
 yarn --global-folder ./node_modules/ --cache-folder ./node_modules/
 ```
