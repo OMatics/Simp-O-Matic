@@ -111,17 +111,21 @@ export class SimpOMatic {
         const current_command = this._COMMAND_HISTORY.last();
 
         // Try and slow the fellas down a little.
-        const delta = current_command.createdTimestamp - last_command.createdTimestamp;
-        if (last_command.content === current_command.content
-            && delta <= 1400) {
-            if (delta <= 400) return;
-            return message.answer(`I can't help but notice you're running \
-                the same commands over in rather rapid succession.
-                Would you like to slow down a little?`.squeeze())
-        }
-        if (delta <= 900) {
-            if (delta <= 300) return;
-            return message.answer('Slow down there bucko.');
+        if (last_command.channel === current_command.channel) {
+            // Only give spam warning if commands are coming
+            //  fast _in the same channel_.
+            const delta = current_command.createdTimestamp - last_command.createdTimestamp;
+            if (last_command.content === current_command.content
+                && delta <= 1400) {
+                if (delta <= 400) return;
+                return message.answer(`I can't help but notice you're running \
+                    the same commands over in rather rapid succession.
+                    Would you like to slow down a little?`.squeeze())
+            }
+            if (delta <= 900) {
+                if (delta <= 300) return;
+                return message.answer('Slow down there bucko.');
+            }
         }
 
         const content = message.content.trim().squeeze();
