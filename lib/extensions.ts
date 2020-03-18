@@ -71,8 +71,8 @@ Array.prototype.mut_map = function (f) {
 // String Extensions:
 String.prototype.squeeze = function () {
     return this
-        .replace(/[ ]+/g, ' ')
-        .replace(/\n[ ]/g, '\n');
+        .replace(/[\t\s]+/g, ' ')
+        .replace(/\n[\t\s]/g, '\n');
 };
 
 String.prototype.leading_space = function () {
