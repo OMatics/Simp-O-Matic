@@ -111,9 +111,11 @@ export class SimpOMatic {
         const current_command = this._COMMAND_HISTORY.last();
 
         // Try and slow the fellas down a little.
-        if (last_command.channel === current_command.channel) {
+        if (!!last_command
+            && last_command.channel === current_command.channel
+            && last_command.author.id === current_command.author.id) {
             // Only give spam warning if commands are coming
-            //  fast _in the same channel_.
+            //  in fast _in the same channel_ and by the same user.
             const delta = current_command.createdTimestamp - last_command.createdTimestamp;
             if (last_command.content === current_command.content
                 && delta <= 1400) {

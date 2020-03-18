@@ -43,29 +43,29 @@ export default (res, message) => {
                 msg += '\n';
             }
         }
-        if (!!lex_entry.pronunciations) {
+        if (!!lex_entry.pronunciations && !has_sent_audio) {
             const prons = Object.values(lex_entry.pronunciations) as any;
-            if (!!prons && prons.length > 0
-                && !!prons.dialects && prons.dialects.length > 0) {
+            if (!!prons && prons.length > 0) {
                 msg += "\nPronunciations:\n"
                 for (const pron of prons) {
-                    msg += `    Dialects of ${pron.dialects.join(', ')}:\n`;
+                    if (!!pron.dialects) {
+                        const dialects = Object.values(pron.dialects);
+                        msg += `    Dialects of ${dialects.join(', ')}:\n`;
+                    }
                     msg += `        ${pron.phoneticNotation}: [${pron.phoneticSpelling}]\n`;
                     if (pron.audioFile) {
                         msg += `        Audio file: ${pron.audioFile}\n`;
-                        if (!has_sent_audio) {
-                            has_sent_audio = !has_sent_audio;
-                            const attach = new Attachment(
-                                pron.audioFile,
-                                pron.audioFile.split('/').slice(-1)[0]
-                            );
-                            message.channel.send('', attach);
-                        }
+                        has_sent_audio = !has_sent_audio;
+                        const attach = new Attachment(
+                            pron.audioFile,
+                            pron.audioFile.split('/').slice(-1)[0]
+                        );
+                        message.channel.send('', attach);
                     }
                 }
             }
         }
     }
-
+    console.log('Became:', msg);
     return msg;
 }
