@@ -20,8 +20,8 @@ export default home_scope => {
     let userAvatars = {
         first: message.mentions.users.size === 1
             ? message.author.displayAvatarURL
-            : message.mentions.users[0],
-        second: message.mentions.users[1].displayAvatarURL()
+            : message.mentions.users.first().displayAvatarURL,
+        second: message.mentions.users.last().displayAvatarURL
     };
 
     const responses = [
