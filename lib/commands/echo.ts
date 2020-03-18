@@ -1,4 +1,4 @@
 export default home_scope => {
-	const { message } = home_scope;
-	message.channel.send(message.content);
+	const { message, args } = home_scope;
+	message.channel.send(args.join(' '));
 }
