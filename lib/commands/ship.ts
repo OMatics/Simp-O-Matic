@@ -19,9 +19,9 @@ export default home_scope => {
 
     let userAvatars = {
         first: message.mentions.users.size === 1
-            ? message.author.displayAvatarURL
-            : message.mentions.users.first().displayAvatarURL,
-        second: message.mentions.users.last().displayAvatarURL
+            ? message.author.avatarURL
+            : message.mentions.users.first().avatarURL,
+        second: message.mentions.users.last().avatarURL
     };
 
     const responses = [
@@ -67,7 +67,7 @@ export default home_scope => {
 
     let response: string =
         `${getPercentage(die)} ${getResponse(die)} \n` +
-        `${userAvatars.first} :white_heart: ${userAvatars.second}`.format(FORMATS.block_quote);
+        `${userAvatars.first} :white_heart: ${userAvatars.second}`;
 
     message.answer(response);
 }
