@@ -5,10 +5,10 @@ const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 export default home_scope => {
 	const { message, args, SECRETS, CONFIG } = home_scope;
 
-	if (args[0] === 'set'){
+	if (args[0] === 'set' && args.length > 1){
 		CONFIG.weather_locations[message.author.id] = args.tail().join(' ');
 		message.answer(`Your weather location has \
-			been set to ${args.slice(1).join(' ')}`.squeeze());
+			been set to ${args.tail().join(' ')}`.squeeze());
 	} else {
 		const location = args[0]
 			? args.join(' ')
@@ -21,7 +21,9 @@ export default home_scope => {
 			.then(res => res.json())
 			.then(d => {
 				const date = new Date();
-				const hour = (24 + date.getUTCHours() + d.timezone) % 24;
+				const tz = d.timezone / 3600; // TODO: What if `tz` has a fractional part...
+				const hour = (24 + date.getUTCHours() + tz) % 24;
+				console.log('UTC:', date.getUTCHours(), 'tz:', d.timezone);
 				const country = !d.sys ? 'somewhere' : d.sys.country;
 				if (d.main) {
 				message.answer(`${hour}:${date.getMinutes()} ${d.name}, \
@@ -32,7 +34,7 @@ export default home_scope => {
 					${d.main.temp_min}°C min`.squeeze());
 				} else {
 					message.answer(`Cannot get weather information`
-						+ ` from ${location}`);
+						+ ` from ${location}.`);
 				}
 			})
 			.catch(error);

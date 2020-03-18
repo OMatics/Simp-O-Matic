@@ -56,11 +56,11 @@ export default {
 		// Below are the different kinds of _rules_.
 		respond: [
 			{
-				match: "/^\\s*thanks.*\\s*$/i",
+				match: "/^\\s*thanks\p{P}*\\s*$/i",
 				response: 'Obama.'
 			},
 			{
-				match: "/[^\p{L}\p{N}]bot[^\p{L}\p{N}]/i",
+				match: "/(^|[^\\p{L}\\p{N}])+bot([^\\p{L}\\p{N}]|$)+/ui",
 				respond: "The hell you sayn' about bots?"
 			}
 		],
