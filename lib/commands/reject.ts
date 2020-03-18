@@ -37,6 +37,10 @@ export default home_scope => {
 			do {
 				if (phrase.slice(i, i + 2) === '\\/') i += 2; // escaped /.
 				else if (phrase[i] === '/') break; // end of regex.
+				if (i >= phrase.length) {
+					message.answer('Having real trouble parsing that m8...');
+					return;
+				}
 				else i += 1; // nothing interesting.
 			} while (true);
 			i += 1;

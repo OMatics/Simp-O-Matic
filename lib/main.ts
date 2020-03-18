@@ -116,7 +116,7 @@ export class SimpOMatic {
 			if (expanded_command_words.length > 1) {
 				// This means the alias has expanded to more than just one word.
 				expanded = expanded_command_words.shift();
-				expanded_command_words.each(e => args.unshift(e));
+				expanded_command_words.each(e => args.push(e));
 			}
 			return expanded
 		};
