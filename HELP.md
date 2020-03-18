@@ -74,6 +74,9 @@
 - `!wikipedia` **〈not impl.〉** — Search through Wikipedia, returning the most relevant wiki-link.
 - `!translate <language> [phrase]` **〈not impl.〉** — Translate a phrase from a language (if none specified, it will auto-detect).
 - `!wolfram` **〈not impl.〉** — Query Wolfram|Alpha.
+- `!weather` — Check the weather:
+  - `!weather set [location]` — sets your weather location.
+  - `!weather <location>` — gives you the weather in a certain location, if location is left blank, it will either give you the weather in the default location, or in the area you `set` previously.
 - `!say [phrase]` — Repeats what you told it to say.
 - `!milkies` — In case you're feeling thirsty...
 - `!cowsay <options> [phrase]` **〈not impl.〉** — Make a cow say something, using Unix-like command line arguments.

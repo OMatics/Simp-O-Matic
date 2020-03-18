@@ -314,12 +314,6 @@ export class SimpOMatic {
 				}
 				message.answer(`Current command prefix is: \`${CONFIG.commands.prefix}\`.`);
 				break;
-			} case 'ignore': {
-				// Man alive, someone else do this please.
-				break;
-			} case 'response': {
-				// TODO
-				break
 			} case 'search': {
 				const query = args.join(' ').toLowerCase();
 
@@ -503,9 +497,22 @@ export class SimpOMatic {
 
 	process_generic(message : Message) {
 		const { content } = message;
-		if (content.includes('bot'))
+		if (content.includes(' bot '))
 			message.answer("The hell you sayn' about bots?");
-		// TODO: Process _rules_ appropriately.
+
+		for (const responder of CONFIG.rules.respond) {
+			const match = content.match(responder.match);
+			const { response } = responder;
+			if (match && response) message.answer(response);
+		}
+		for (const rejecter of CONFIG.rules.reject) {
+			const match = content.match(rejecter.match);
+			const { response } = rejecter;
+			if (match) {
+				if (response) message.answer(response);
+				if (message.deletable) message.delete();
+			}
+		}
 	}
 
 	async last_message(opts) : Promise<string> {
