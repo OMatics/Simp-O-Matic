@@ -1,6 +1,31 @@
 import { FORMATS } from '../extensions';
 import { Message } from 'discord.js';
 
+const fs = require('fs');
+const cp = require('child_process');
+const fetch = require('node-fetch');
+
+function ps(stream) {
+	return new Promise((resolve, reject) => {
+		stream.once('error', reject);
+		stream.once('finish', resolve);
+	});
+}
+
+function makeimg(u1, u2){
+	var ps1, ps2
+	fetch(u1).then(res => {
+		ps1 = ps(res.body.pipe(fs.createWriteStream('./u1.png')))
+	})
+	fetch(u2).then(res => {
+		ps2 = ps(res.body.pipe(fs.createWriteStream('./u2.png')))
+	})
+	Promise.all([ps1, ps2]).then(() => {
+		cp.execSync('montage u1.png ../../❤️.png u2.png out.png', {cwd: __dirname})
+	})
+	return './out.png'
+}
+
 export default home_scope => {
     const { message, args,
             HELP_SECTIONS,
@@ -66,8 +91,7 @@ export default home_scope => {
     let die: number = Math.floor(Math.random() * 100);
 
     let response: string =
-        `${getPercentage(die)} ${getResponse(die)} \n` +
-        `${userAvatars.first} :white_heart: ${userAvatars.second}`;
+        `${getPercentage(die)} ${getResponse(die)}`;
 
-    message.answer(response);
+    message.channel.send(response, {files: [makeimg(userAvatars.first, userAvatars.second)]});
 }
