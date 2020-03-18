@@ -145,8 +145,9 @@ export class SimpOMatic {
 		console.log('Received command:', [command, args]);
 
 		var functions = readdirSync('funcs').map(n => n.slice(0, -3))
-		require('./funcs/' + functions[command] + '.js')(message, args, SECRETS, CONFIG)
-
+		if(functions[command])
+			require('./funcs/' + functions[command] + '.js')(message, args, SECRETS, CONFIG)
+		
 		switch (command) {
 			case 'commands': {
 				const p = CONFIG.commands.prefix;
