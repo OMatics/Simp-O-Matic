@@ -7,7 +7,9 @@ export default {
 	tag: "#1634",
 	permissions: 8,
 	lang: 'en',
-
+	pp_sizes: {
+		'541761315887120399': 16	
+	},
 	weather_locations: {
 		'541761315887120399': 'Moscow'
 	},
