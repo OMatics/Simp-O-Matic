@@ -122,7 +122,7 @@ export const FORMATS: TextFormat = {
 };
 
 String.prototype.format = function (fmt: string) {
-    return `${fmt}${this}{fmt}`;
+    return `${fmt}${this}${fmt}`;
 }
 
 // Number Extensions:
