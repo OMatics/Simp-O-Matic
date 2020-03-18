@@ -497,9 +497,6 @@ export class SimpOMatic {
 
 	process_generic(message : Message) {
 		const { content } = message;
-		if (content.includes(' bot '))
-			message.answer("The hell you sayn' about bots?");
-
 		for (const responder of CONFIG.rules.respond) {
 			const match = content.match(responder.match);
 			const { response } = responder;
