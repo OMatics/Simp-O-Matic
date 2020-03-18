@@ -3,7 +3,7 @@ process.stdin.resume();
 
 // Discord Bot API.
 import { Discord, On, Client } from '@typeit/discord';
-import { Message, Attachment } from 'discord.js';
+import { Message, Attachment, TextChannel } from 'discord.js';
 
 // System interaction modules.
 import {
@@ -11,6 +11,7 @@ import {
     writeFileSync as write_file,
 } from 'fs';
 import { execSync as shell } from 'child_process';
+import request from 'request';
 
 // Local misc/utility functions.
 import './extensions';
@@ -25,19 +26,20 @@ import DEFAULT_CONFIG from './default';
 import web_search from './api/google';
 import oed_lookup from './api/oxford';
 import urban_search from './api/urban';
-import { Channel } from 'discord.js';
-import { resolve } from 'dns';
-import { TextChannel } from 'discord.js';
-import { Collection } from 'discord.js';
 import yt_search from './api/yt_scrape';
-import { connect } from 'http2';
-
+import { pastebin_latest,
+         pastebin_update,
+         pastebin_url } from './api/pastebin';
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
 const CONFIG = deep_merge(
     DEFAULT_CONFIG,
     JSON.parse(read_file('./bot.json', 'utf-8')));
+
+// CONFIG will eventually update to the online version.
+pastebin_latest().then(res =>
+    deep_merge(CONFIG, res)).catch(console.log);
 
 // Precompile all regular-expressions in known places.
 ['respond', 'reject', 'replace']
@@ -72,6 +74,8 @@ const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
     e.slice(5).replace(/(\s.*)|(`.*)/g, ''));
 
 const GIT_URL = 'https://github.com/Demonstrandum/Simp-O-Matic';
+
+const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
@@ -173,7 +177,7 @@ export class SimpOMatic {
                 break;
             } case 'id': {
                 if (args[0]) {
-                    const matches = args[0].match(/<@(\d+)>/)
+                    const matches = args[0].match(/<@!?(\d+)>/)
                     if (!matches) {
                         message.answer(`Please tag a user, or \
                             provide no argument(s) at all.  See \`!help id\``
@@ -452,6 +456,7 @@ export class SimpOMatic {
                 const file_name = `export-${today}.json`
                 const file_dest = `${process.cwd()}/${file_name}`;
                 write_file(file_dest, export_config(CONFIG, {}));
+                pastebin_update(export_config(CONFIG, {}));
 
                 if (export_string.length < 1980) {
                     message.channel.send("```json\n" + export_string + "\n```");
@@ -460,7 +465,48 @@ export class SimpOMatic {
                 message.channel.send("**Export:**", attach);
 
                 message.answer(`A copy of this export (\`export-${today}.json\`) \
-                    has been saved to the local file system.`.squeeze());
+                    has been saved to the local file system.
+                    Pastebin file: ${pastebin_url}`.squeeze());
+                break;
+            } case 'weather': {
+                // Thanks to Daniel (Danny) for the weather API code!
+                //  -> https://github.com/danyisill
+                const locations = CONFIG.weather_locations;
+                if (args[0] === 'set') {
+                    locations[message.author.id] = args[1];
+                    message.answer(`Your weather location has \
+                        been set to ${args[1]}`.squeeze());
+                } else {
+                    const location = args[0]
+                        || locations[message.author.id]
+                        || 'Cuckfield';
+
+                    const key = SECRETS.openweather.key;
+                    request(`${WEATHER_URL}?q=${location}&appid=${key}`,
+                        (_a, _b, c : string) => {
+                            let d = JSON.parse(c);
+                            const date = new Date();
+                            const hour = Math.abs(date.getUTCHours() + d.timezone) % 24;
+                            const min = date.getMinutes();
+                            const temp = Math.round(d.main.temp - 273.15);
+                            const feels = Math.round(d.main.feels_like - 273.15);
+                            const max_temp = Math.round(d.main.temp_max - 273.15);
+                            const min_temp = Math.round(d.main.temp_min - 273.15);
+                            message.answer(`${hour}:${min} ${d.name}, \
+                                ${d.sys.country}: ${temp}°C \
+                                (feels like ${feels}°C) \
+                                ${d.weather[0].description}, \
+                                ${max_temp}°C max, \
+                                ${min_temp}°C min`.squeeze());
+                        });
+                }
+                break;
+            } case 'ls': {
+               const dirs = {
+                    '__dirname': __dirname,
+                    'process.cwd()': process.cwd()
+                };
+                message.channel.send(`Directories:\n\`\`\`json\n${dirs}\n\`\`\``);
                 break;
             } case 'github': {
                 message.answer(`${GIT_URL}/`);
@@ -607,9 +653,15 @@ export class SimpOMatic {
 
 const on_termination = () => {
     // Back-up the resultant CONFIG to an external file.
+    console.log('Cleaning up...');
     write_file(`${process.cwd()}/export-exit.json`, export_config(CONFIG, {}));
-    console.log('Last config before exit saved! (`export-exit.json`)');
-    process.exit(0);
+    pastebin_update(export_config(CONFIG, {}));
+    // Make sure we saved ok.
+    new Promise(res => setTimeout(() => {
+        res(null)
+        console.log('Clean finished.');
+        process.exit(0)
+    }, 6000));
 };
 
 // Start The Simp'O'Matic.

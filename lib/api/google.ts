@@ -13,7 +13,9 @@ const CACHE_SIZE = 40;
 const CACHE = {
     'aaron obese': "https://assets3.thrillist.com/v1/image/2765017/size/tmg-article_tall;jpeg_quality=20.jpg\n>>> Aaron obese xD, shut up instgen...",
     'druggie': "https://vignette.wikia.nocookie.net/sausage-party-recipe-book/images/e/e7/Druggie.png/revision/latest/top-crop/width/360/height/450?cb=20170212165040\n>>> Hurr durr, arron's a shroomer lmao.",
-    'aaron fish': "https://i.pinimg.com/280x280_RS/fa/b5/96/fab5962b97d464781f65952b6b63e4a0.jpg\n>>> arron fish? arron fish. Blub blub."
+    'aaron fish': "https://i.pinimg.com/280x280_RS/fa/b5/96/fab5962b97d464781f65952b6b63e4a0.jpg\n>>> arron fish? arron fish. Blub blub.",
+    'sammy obese': "https://s3fs.bestfriends.org/s3fs-public/news/15/09/04/SIJenPettingSammy6919.jpg\n>>> sammy is a cute skinny twink, stfu.",
+    'james obese': "https://i.dailymail.co.uk/i/pix/2014/02/18/article-2562421-1B9E557700000578-9_634x468.jpg\n>>> james very obese, yes, very original..."
 };
 
 // TODO: Reject results if they're from:

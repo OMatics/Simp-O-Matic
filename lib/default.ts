@@ -8,6 +8,9 @@ export default {
     permissions: 8,
     lang: 'en',
 
+    weather_locations: {
+        '541761315887120399': 'Moscow'
+    },
     commands: {
         prefix: '!',
         max_history: 40,

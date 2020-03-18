@@ -34,6 +34,12 @@ cat <<- JSON
         "token_uri": "$GOOGLE_TOKEN_URI",
         "auth_provider_x509_cert_url": "$GOOGLE_AUTH_PROVIDER_X509_CERT_URL",
         "client_x509_cert_url": "$GOOGLE_CLIENT_X509_CERT_URL"
+    },
+    "openweather": {
+        "key": "$OPENWEATHER_KEY"
+    },
+    "pastebin": {
+        "key": "$PASTEBIN_KEY"
     }
 }
 JSON
