@@ -15,7 +15,7 @@ export default home_scope => {
         first: message.mentions.users.length === 1
             ? message.author.displayAvatarURL()
             : message.mentions.users[0],
-        second: message.mentions.users[1]
+        second: message.mentions.users[1].displayAvatarURL()
     };
 
     const responses = [
@@ -60,7 +60,7 @@ export default home_scope => {
     let die: number = Math.floor(Math.random() * 100);
 
     let response: string =
-        `${getPercentage(die)} ${getResponse(die)} \\n` +
+        `${getPercentage(die)} ${getResponse(die)} \n` +
         `${userAvatars.first} :white_heart: ${userAvatars.second}`.format(FORMATS.block_quote);
 
     message.answer(response);
