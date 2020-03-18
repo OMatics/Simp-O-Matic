@@ -13,6 +13,22 @@ declare global {
 		mut_map(f: (T) => any): Array<any>
 	}
 
+    interface TextFormat {
+        italics: string,
+        bold: string,
+        bold_italics: string,
+        underline: string,
+        underline_italics: string,
+        underline_bold: string,
+        underline_bold_italics: string,
+        strikethrough: string,
+        block: string,
+        code_block: string,
+        block_quote: string,
+        multiline_block_quote: string,
+        hidden: string,
+    }
+
 	interface String {
 		squeeze(): string
 		capitalize(): string
@@ -21,6 +37,7 @@ declare global {
 		tail(): string
 		first(): string
 		last(off? : number): string
+        format(fmt: string): string
 	}
 
 	interface Number {
@@ -87,6 +104,26 @@ String.prototype.head = Array.prototype.head as any;
 String.prototype.tail = Array.prototype.tail as any;
 String.prototype.first = Array.prototype.first as any;
 String.prototype.last = Array.prototype.last as any;
+
+export const FORMATS: TextFormat = {
+    italics: '*',
+    bold: '**',
+    bold_italics: '***',
+    underline: '__',
+    underline_italics: '--*',
+    underline_bold: '__**',
+    underline_bold_italics: '__***',
+    strikethrough: '~~',
+    block: '`',
+    code_block: '```',
+    block_quote: '>',
+    multiline_block_quote: '>>>',
+    hidden: '||',
+};
+
+String.prototype.format = function (fmt: string) {
+    return `${fmt}${this}{fmt}`;
+}
 
 // Number Extensions:
 Number.prototype.round_to = function (dp : number) {
