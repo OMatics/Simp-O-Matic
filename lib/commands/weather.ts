@@ -23,19 +23,17 @@ export default home_scope => {
 				const date = new Date();
 				const tz = d.timezone / 3600; // TODO: What if `tz` has a fractional part...
 				const hour = (24 + date.getUTCHours() + tz) % 24;
-				console.log('UTC:', date.getUTCHours(), 'tz:', d.timezone);
 				const country = !d.sys ? 'somewhere' : d.sys.country;
-				if (d.main) {
-				message.answer(`${hour}:${date.getMinutes()} ${d.name}, \
-					${country}: ${d.main.temp}°C \
-					(feels like ${d.main.feels_like}°C) \
-					${d.weather[0].description}, \
-					${d.main.temp_max}°C max, \
-					${d.main.temp_min}°C min`.squeeze());
-				} else {
-					message.answer(`Cannot get weather information`
-						+ ` from ${location}.`);
-				}
+
+				if (d.main)
+					message.answer(`${hour}:${date.getMinutes()} ${d.name}, \
+						${country}: ${d.main.temp}°C \
+						(feels like ${d.main.feels_like}°C) \
+						${d.weather[0].description}, \
+						${d.main.temp_max}°C max, \
+						${d.main.temp_min}°C min`.squeeze());
+				else message.answer(`Cannot get weather information`
+					+ ` from ${location}.`);
 			})
 			.catch(error);
 	}

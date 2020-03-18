@@ -56,18 +56,18 @@ export default {
 		// Below are the different kinds of _rules_.
 		respond: [
 			{
-				match: "/^\\s*thanks\p{P}*\\s*$/i",
+				match: "/^\\s*thanks\\p{P}*\\s*$/iu",
 				response: 'Obama.'
 			},
 			{
-				match: "/(^|[^\\p{L}\\p{N}])+bot([^\\p{L}\\p{N}]|$)+/ui",
-				respond: "The hell you sayn' about bots?"
+				match: "/(^|[^\\p{L}\\p{N}])+bot([^\\p{L}\\p{N}]|$)+/iu",
+				response: "The hell you sayn' about bots?"
 			}
 		],
 		reject: [
 			{
-				match: "/\\.{4,}/",
-				response: null
+				match: "/\\.{8,}/",
+				response: "Too many dots..."
 			},
 		],
 		replace: [  // Message editing functionality not a thing yet...

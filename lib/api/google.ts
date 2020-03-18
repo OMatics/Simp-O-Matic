@@ -50,7 +50,7 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 			return reject('No such results found.')
 
 		const item = res.data.items[0];
-		const answer = `${item.link}\n>>> ${item.title}`;
+		const answer = `Search for ‘${param.query}’: ${item.link}\n>>> ${item.title}`;
 		// Cache this query
 		CACHE[param.query] = answer;
 		return resolve(answer);

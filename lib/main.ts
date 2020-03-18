@@ -106,7 +106,31 @@ export class SimpOMatic {
 		);
 	}
 
+	expand_alias(operator, args) {
+		const expander = unexpanded => {
+			let expanded = unexpanded;
+			if (CONFIG.operators.aliases.hasOwnProperty(unexpanded))
+				expanded = CONFIG.commands.aliases[unexpanded].trim().squeeze();
+
+			const expanded_command_words = expanded.split(' ');
+			if (expanded_command_words.length > 1) {
+				// This means the alias has expanded to more than just one word.
+				expanded = expanded_command_words.shift();
+				expanded_command_words.each(e => args.unshift(e));
+			}
+			return expanded
+		};
+
+		// Continue expanding until we have no more change.
+		const expanded = expander(operator);
+		if (expanded === operator)
+			return operator;
+		return this.expand_alias(operator, args)
+	}
+
 	process_command(message : Message) {
+		if (message.content.startsWith('..')) return;
+
 		const last_command = this._COMMAND_HISTORY.last();
 		this._COMMAND_HISTORY.push(message);
 		if (this._COMMAND_HISTORY.length > CONFIG.commands.max_history) {
@@ -138,31 +162,23 @@ export class SimpOMatic {
 		const words = content.tail().split(' ');
 		const args = words.tail();
 
-		let command = words[0].toLowerCase();
-		if (CONFIG.commands.aliases.hasOwnProperty(command))
-			command = CONFIG.commands.aliases[command].trim().squeeze();
+		let operator = words[0].toLowerCase();
+		operator = this.expand_alias(operator, args);
 
-		const expanded_command_words = command.split(' ');
-		if (expanded_command_words.length > 1) {
-			// This means the alias has expanded to more than just one word.
-			command = expanded_command_words.shift();
-			expanded_command_words.each(e => args.unshift(e));
-		}
-
-		command = command.toLowerCase();
-		console.log('Received command:', [command, args]);
+		operator = operator.toLowerCase();
+		console.log('Received command:', [operator, args]);
 
 		// This should have most immediate access.
-		if (command === 'ping') return message.answer('PONGGERS!');
+		if (operator === 'ping') return message.answer('PONGGERS!');
 
 		const commands = read_dir(`${__dirname}/commands`)
 			.map(n => n.slice(0, -3));
-		if (commands.includes(command))
-			return require(`./commands/${command}`)
+		if (commands.includes(operator))
+			return require(`./commands/${operator}`)
 				.default({  // Basic 'home-scope' is passed in.
 					message, args, ...HOMESCOPE});
 
-		switch (command) {
+		switch (operator) {
 			case 'commands': {
 				const p = CONFIG.commands.prefix;
 				const joined_commands = KNOWN_COMMANDS.slice(0, -1)
@@ -479,9 +495,9 @@ export class SimpOMatic {
 				message.answer("That's an empty command...");
 				break;
 			} default: {
-				if (KNOWN_COMMANDS.includes(command)) {
+				if (KNOWN_COMMANDS.includes(operator)) {
 					const p = CONFIG.commands.prefix;
-					message.reply(`:scream: *gasp!* — The \`${p}${command}\` \
+					message.reply(`:scream: *gasp!* — The \`${p}${operator}\` \
 						command has not been implemented yet. \
 						Quick send a pull request! Just type in \
 						\`${p}fork\`, and get started...`.squeeze());
@@ -489,7 +505,7 @@ export class SimpOMatic {
 				}
 				message.answer(`
 					:warning: ${CONFIG.commands.not_understood}.
-					> \`${CONFIG.commands.prefix}${command}\``.squeeze());
+					> \`${CONFIG.commands.prefix}${operator}\``.squeeze());
 				break;
 			}
 		}
