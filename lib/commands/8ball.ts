@@ -34,5 +34,5 @@ export default home_scope => {
         "You may rely on it.",
     ];
 
-    message.answer(":8ball:\s" + responses[Math.floor(Math.random() * responses.length)]);
+    message.answer(":8ball: " + responses[Math.floor(Math.random() * responses.length)]);
 };
