@@ -86,6 +86,7 @@
 - `!summon [@user-name]` **〈not impl.〉** — Summon someone to the server by making the bot poke them in their DMs about it.
 - `!mock [phrase]` **〈not impl.〉** — Say something, _bUt iN a MocKiNg WaY_...
 - `!boomer [phrase]` **〈not impl.〉** — Say something, but in the way your demented boomer uncle would write it on Facebook.
+- `!ship [@user-name] [@user-name]` — Shows the love grade between two people.
 
 ▬▬▬
 
