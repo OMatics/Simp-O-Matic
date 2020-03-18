@@ -8,6 +8,10 @@ export default {
 	permissions: 8,
 	lang: 'en',
 
+	pp_sizes: {
+		'541761315887120399': 16
+	},
+
 	weather_locations: {
 		'541761315887120399': 'Moscow'
 	},
@@ -60,7 +64,7 @@ export default {
 				response: 'Obama.'
 			},
 			{
-				match: "/(^|[^\\p{L}\\p{N}])+bot([^\\p{L}\\p{N}]|$)+/iu",
+				match: "/(^|[^\\p{L}\\p{N}])+bots?([^\\p{L}\\p{N}]|$)+/iu",
 				response: "The hell you sayn' about bots?"
 			}
 		],

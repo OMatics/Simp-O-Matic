@@ -109,7 +109,7 @@ export class SimpOMatic {
 	expand_alias(operator, args) {
 		const expander = unexpanded => {
 			let expanded = unexpanded;
-			if (CONFIG.operators.aliases.hasOwnProperty(unexpanded))
+			if (CONFIG.commands.aliases.hasOwnProperty(unexpanded))
 				expanded = CONFIG.commands.aliases[unexpanded].trim().squeeze();
 
 			const expanded_command_words = expanded.split(' ');
@@ -121,11 +121,14 @@ export class SimpOMatic {
 			return expanded
 		};
 
+
 		// Continue expanding until we have no more change.
-		const expanded = expander(operator);
-		if (expanded === operator)
-			return operator;
-		return this.expand_alias(operator, args)
+		let expanded = expander(operator);
+		while (expanded !== operator) {
+			operator = expanded;
+			expanded = expander(operator);
+		}
+		return expanded;
 	}
 
 	process_command(message : Message) {
@@ -163,6 +166,8 @@ export class SimpOMatic {
 		const args = words.tail();
 
 		let operator = words[0].toLowerCase();
+		// Expansion of aliases will expand aliases used within
+		//   the alias definition too. Yay.
 		operator = this.expand_alias(operator, args);
 
 		operator = operator.toLowerCase();

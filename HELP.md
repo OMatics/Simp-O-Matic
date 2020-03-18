@@ -82,7 +82,7 @@
 - `!cowsay <options> [phrase]` **〈not impl.〉** — Make a cow say something, using Unix-like command line arguments.
 - `!figlet <options> [phrase]` **〈not impl.〉** — Print text in ASCII format, using Unix-like command line arguments.
 - `!roll <upper-bound>` **〈not impl.〉** — Roll a dice, default upper bound is 6.
-- `!8ball` **〈not impl.〉** — Ask a question, receive a response.
+- `!8ball` — Ask a question, receive a response.
 - `!summon [@user-name]` **〈not impl.〉** — Summon someone to the server by making the bot poke them in their DMs about it.
 - `!mock [phrase]` **〈not impl.〉** — Say something, _bUt iN a MocKiNg WaY_...
 - `!boomer [phrase]` **〈not impl.〉** — Say something, but in the way your demented boomer uncle would write it on Facebook.

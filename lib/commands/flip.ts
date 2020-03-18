@@ -1,4 +1,4 @@
 export default home_scope => {
 	const { message } = home_scope;
-	message.channel.send(message.content);
-}
+	message.answer(Math.random() < 0.5 ? 'Heads!' : 'Tails!');
+};
