@@ -13,6 +13,7 @@ export default home_scope => {
 				str += `\n    Responds with: ‘${rule.response}’`;
 			str += '\n';
 		});
+		message.channel.send(str);
 	} else if (args[0] === 'rm') {
 		// Remove a rule.
 		const match = args[1].match(/#?(\d+)/);
