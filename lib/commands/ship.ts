@@ -1,19 +1,25 @@
-import { FORMATS } from '.././extensions';
+import { FORMATS } from '../extensions';
+import { Message } from 'discord.js';
 
 export default home_scope => {
-    const { message, args, HELP_SECTIONS, KNOWN_COMMANDS } = home_scope;
+    const { message, args,
+            HELP_SECTIONS,
+            KNOWN_COMMANDS }
+        : { message: Message, args: string[],
+            HELP_SECTIONS: string[],
+            KNOWN_COMMANDS: string[] } = home_scope;
 
     if (args.length === 0 || args[0] == 'help' ||
-        message.mentions.users.length === 0 ||
-        message.mentions.users.length > 2)
+        message.mentions.users.size === 0 ||
+        message.mentions.users.size > 2)
     {
         message.channel.send(HELP_SECTIONS[KNOWN_COMMANDS.indexOf('ship')].trim());
         return;
     }
 
     let userAvatars = {
-        first: message.mentions.users.length === 1
-            ? message.author.displayAvatarURL()
+        first: message.mentions.users.size === 1
+            ? message.author.displayAvatarURL
             : message.mentions.users[0],
         second: message.mentions.users[1].displayAvatarURL()
     };
