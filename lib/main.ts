@@ -269,22 +269,19 @@ export class SimpOMatic {
 							break;
 						}
 						alias = keys[index];
-						keys.each((_, i) => i === index
-							? delete aliases[alias]
-							: null);
 					} else {
 						alias = args[1];
-						if (alias[0] === '!') alias = alias.tail();
+						if (alias[0] === p) alias = alias.tail();
 						index = keys.indexOf(alias);
 						if (index === -1) {
 							message.answer(`There does not exist any alias \
 								with the name \`${p}${alias}\`.`.squeeze());
 							break;
 						}
-						keys.each((a, _) => a === alias
-							? delete alias[alias]
-							: null);
 					}
+					keys.each((_, i) => i === index
+						? delete aliases[alias]
+						: null);
 					message.answer(`Alias \`${p}${alias}\` at index \
 						number ${index + 1}, has been deleted.`.squeeze());
 					break;

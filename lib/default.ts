@@ -40,7 +40,7 @@ export default {
 			'whitelist': 'ignore whitelist',
 			'w': 'weather',
 			'reply': 'respond',
-			'reject': 'delete',
+			'delete': 'reject',
 			'wa': 'wolfram',
 			'wolf': 'wolfram',
 			'toilet': 'figlet',

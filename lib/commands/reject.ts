@@ -1,0 +1,74 @@
+export default home_scope => {
+	const { message, args,
+			CONFIG, KNOWN_COMMANDS,
+			HELP_SECTIONS } = home_scope;
+	const { reject } = CONFIG.rules;
+
+	if (args.length === 0 || args[0] === 'ls') {
+		// Make a pretty list.
+		let str = "**Rejection Rules:**\n";
+		reject.each((rule, i) => {
+			str += `${i + 1}.  Matches: ${rule.match}`;
+			if (rule.response)
+				str += `\n    Responds with: ‘${rule.response}’`;
+			str += '\n';
+		});
+	} else if (args[0] === 'rm') {
+		// Remove a rule.
+		const match = args[1].match(/#?(\d+)/);
+		if (!match || !match[1])
+			return message.answer('Please provide a numerical index'
+				+ ' as to which rule to remove.')
+
+		const index = Number(match[1]) - 1;
+		delete CONFIG.rules.reject[index];
+
+		message.answer(`Rule matching ${reject[index].match}`
+			+ ` at index location no. ${index + 1} has been deleted.`);
+	} else if (args.length >= 2) {
+		// Add a rule.
+		let regex, options, response;
+		// Eat up the regex/word...
+		if (args[0][0] === '/') { // Slash means we're looking at regex.
+			// We look for a non escaped end slash.
+			const phrase : string = args.join(' ').tail(); // Exclude the slash.
+
+			let i = 0;
+			do {
+				if (phrase.slice(i, i + 2) === '\\/') i += 2; // escaped /.
+				else if (phrase[i] === '/') break; // end of regex.
+				else i += 1; // nothing interesting.
+			} while (true);
+			i += 1;
+
+			regex = phrase.slice(0, i - 1); // Exclude the slash.
+			const after = phrase.slice(i).trim();
+			[options, response] = after
+				.replace(/^([a-z]+)(.*)/, '$1-@@@-$2')
+				.split('-@@@-').map(String.prototype.trim);
+		} else { // Were looking at a single word.
+			// If no regex is given to match, we'll instead match a word
+			//  such that it will have to be matched on its own, not
+			//  surrounded by other letters or numbers, OR, it may exits
+			//  at the begging or end of the line.
+			regex = new RegExp(
+				`(^|[^\\p{L}\\p{N}])+${args[0]}?([^\\p{L}\\p{N}]|$)+`,
+				'ui');
+			response = args.tail().join(' ').trim();
+		}
+		// Add the rule to the CONFIG.rules.
+		CONFIG.rules.reject.push({
+			match: options.length
+				? new RegExp(regex, options)
+				: new RegExp(regex),
+			response: response.length ? response : null
+		});
+		message.channel.send(`Rule with regular expression matching:`
+			+ `/${regex}/${options}`.format('\n```\n')
+			+ `has been added to list of rejection rules.`);
+	} else {
+		message.answer('Insufficient or nonsensical arguments provided.');
+		message.reply(`Here's how you use the command:\n`
+			+ HELP_SECTIONS[KNOWN_COMMANDS.indexOf('reject')]);
+	}
+}
