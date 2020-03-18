@@ -4,7 +4,8 @@ type CSE = {
 	kind: 'image' | 'web',
 	key: string,
 	id: string,
-	query: string
+	query: string,
+	nsfw: boolean
 };
 
 // Cache grows from the bottom, and deletes from the top.
@@ -44,15 +45,17 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 		q: param.query,
 		searchType: (param.kind === 'web') ? undefined : param.kind,
 		start: 0,
-		num: 1
+		num: 1,
+		safe: param.nsfw ? 'off' : 'active'
 	}).then(res => {
 		if (!res.data || !res.data.items || res.data.items.length === 0)
 			return reject('No such results found.')
 
 		const item = res.data.items[0];
 		const answer = `Search for ‘${param.query}’: ${item.link}\n>>> ${item.title}`;
-		// Cache this query
-		CACHE[param.query] = answer;
+		// Cache this query (DO NOT CACHE NSFW)
+		if (!param.nsfw)
+			CACHE[param.query] = answer;
 		return resolve(answer);
 	}).catch(e =>
 		reject(`No results, or API capped...\n\`\`\`\n${e}\n\`\`\``));

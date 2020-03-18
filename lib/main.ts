@@ -337,23 +337,27 @@ export class SimpOMatic {
 				break;
 			} case 'search': {
 				const query = args.join(' ').toLowerCase();
+				const channel = message.channel as TextChannel;
 
 				web_search({
 					kind: 'web',
 					query,
 					key: SECRETS.google.api_key,
-					id: SECRETS.google.search_id
+					id: SECRETS.google.search_id,
+					nsfw: channel.nsfw
 				}).then((res) => message.answer(res))
 				  .catch(e => message.answer(e));
 				break;
 			} case 'image': {
 				const query = args.join(' ').toLowerCase();
+				const channel = message.channel as TextChannel;
 
 				web_search({
 					kind: 'image',
 					query,
 					key: SECRETS.google.api_key,
-					id: SECRETS.google.search_id
+					id: SECRETS.google.search_id,
+					nsfw: channel.nsfw
 				}).then(res => message.answer(res))
 				  .catch(er => message.answer(er));
 				break;
