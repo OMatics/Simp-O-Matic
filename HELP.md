@@ -87,6 +87,7 @@
 - `!mock [phrase]` **〈not impl.〉** — Say something, _bUt iN a MocKiNg WaY_...
 - `!boomer [phrase]` **〈not impl.〉** — Say something, but in the way your demented boomer uncle would write it on Facebook.
 - `!ship [@user-name] [@user-name]` — Shows the love grade between two people.
+- `!kiss [@user-name]` — Blow a kiss to someone you like!
 
 ▬▬▬
 
