@@ -7,10 +7,10 @@ export const rule = (rule_kind: string) => home_scope => {
 	if (args.length === 0 || args[0] === 'ls') {
 		// Make a pretty list.
 		let str = `**${rule_kind.capitalize()} Rules:**\n`;
-		rules_array.each((rule, i) => {
-			str += `${i + 1}.  Matches: ${rule.match}`;
-			if (rule.response)
-				str += `\n    Responds with: ‘${rule.response}’`;
+		rules_array.each((entry, i) => {
+			str += `${i + 1}.  Matches: \`${entry.match}\``;
+			if (entry.response)
+				str += `\n    Responds with: ‘${entry.response}’`;
 			str += '\n';
 		});
 		message.channel.send(str);
