@@ -141,5 +141,5 @@ export default home_scope => {
         .split(' ')
         .map(uwuify);
 
-    message.channel.send(result.join(' '));
+    message.channel.send(result.join(''));
 };
