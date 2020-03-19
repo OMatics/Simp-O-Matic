@@ -7,5 +7,5 @@ export default home_scope => {
 			return l
 		else
 			return (b = !b)?l.toUpperCase():l
-	}).join() || 'sAy SoMeThInG wIlL yA?')
+	}).join('') || 'sAy SoMeThInG wIlL yA?')
 }
