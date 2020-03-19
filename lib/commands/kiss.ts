@@ -15,7 +15,7 @@ export default home_scope => {
     const embed = new MessageEmbed()
         .setColor('#ba3d8a')
         .setTitle('Some title')
-        .setDescription(`{to.format(FORMATS.bold)}, you got a kissu from ${author.format(FORMATS.bold)}! :flushed:`)
+        .setDescription(`${to.format(FORMATS.bold)}, you got a kissu from ${author.format(FORMATS.bold)}! :flushed:`)
         .setImage('https://i.imgur.com/lz1BY2x.gif')
 
     message.channel.send(embed);
