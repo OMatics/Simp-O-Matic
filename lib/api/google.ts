@@ -37,6 +37,8 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 		delete CACHE[cache_keys[2]];
 	}
 
+	const num_match = param.query.trim().match(/[ ]+(\d+)$/);
+	const result_index = Math.abs(num_match ? Number(num_match[1]) - 1 : 0);
 	const cs = google.customsearch('v1');
 
 	cs.cse.list({
@@ -45,13 +47,13 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 		q: param.query,
 		searchType: (param.kind === 'web') ? undefined : param.kind,
 		start: 0,
-		num: 1,
+		num: result_index + 1,
 		safe: param.nsfw ? 'off' : 'active'
 	}).then(res => {
 		if (!res.data || !res.data.items || res.data.items.length === 0)
 			return reject('No such results found.');
 
-		const item = res.data.items[0];
+		const item = res.data.items[result_index];
 		const answer = `Search for ‘${param.query}’: ${item.link}\n>>> ${item.title}`;
 		// Cache this query (DO NOT CACHE NSFW)
 		if (!param.nsfw)

@@ -49,11 +49,11 @@
   - `!ignore whitelist [type] [@name]` — Will exempt certain users or groups from any of the ignore-rules, ever. (`[type]` is either `user` or `group`)
   - `!ignore <ls>` — lists all ignore rules by type.
   - `!ignore rm [type] [@name]` — clears all ignore rules for a certain type (types are: `user`, `channel` or `group`).
-- `!respond` **〈not impl.〉** — How the bot should respond to certain messages:
+- `!respond` — How the bot should respond to certain messages:
   - `!respond [match] [reply]` — matches an expression said (using regular-expressions, i.e. `/regex/flags`), and replies with a message.
   - `!respond <ls>` — list all response rules numerically.
   - `!respond rm #[rule-index]` — removes the response-rule by index.
-- `!reject` **〈not impl.〉** — Deletes messages meeting certain patterns:
+- `!reject` — Deletes messages meeting certain patterns:
   - `!reject [match] <reply>` — rejects certain messages, matching a regular-expression (specifying a reply is optional).
   - `!reject <ls>` — numerically lists all rejection rules.
   - `!reject rm #[rule-index]` — removes the rejection-rule specified by a numerical index.
@@ -70,7 +70,7 @@
 - `!gif [gif-search-terms]` **〈not impl.〉** — Searches for and returns a GIF matching your search.
 - `!cat` **〈not impl.〉** — Pussycat pictures...
 - `!news [news-search-term]` **〈not impl.〉** — Sends you the most relevant news on the specified topic area.
-- `!youtube [youtube-search-terms]` **〈not impl.〉** — Searches for and returns a relevant _YouTube_ video.
+- `!youtube [youtube-search-terms]` — Searches for and returns a relevant _YouTube_ video.
 - `!wikipedia` **〈not impl.〉** — Search through Wikipedia, returning the most relevant wiki-link.
 - `!translate <language> [phrase]` **〈not impl.〉** — Translate a phrase from a language (if none specified, it will auto-detect).
 - `!wolfram` **〈not impl.〉** — Query Wolfram|Alpha.

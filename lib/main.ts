@@ -36,17 +36,6 @@ let CONFIG = deep_merge(
 	DEFAULT_CONFIG,
 	JSON.parse(read_file('./bot.json', 'utf-8')));
 
-// CONFIG will eventually update to the online version.
-pastebin_latest().then(res => {
-	CONFIG = deep_merge(CONFIG, res);
-	// Remove any duplicates.
-	CONFIG = export_config(CONFIG, { ugly: true });
-	CONFIG = JSON.parse(CONFIG);
-	// Precompile all regular-expressions in known places.
-	['respond', 'reject', 'replace']
-		.each(name => CONFIG.rules[name].mut_map(compile_match));
-}).catch(console.warn);
-
 // Store secrets in an object, retrieved from shell's
 //  environment variables.
 const SECRETS = JSON.parse(shell('sh ./generate_secrets.sh').toString());
@@ -77,12 +66,6 @@ const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
 
 const GIT_URL = 'https://github.com/Demonstrandum/Simp-O-Matic';
 
-const HOMESCOPE = {
-	HELP_SOURCE, HELP_KEY, GIT_URL,
-	HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
-	CONFIG, SECRETS, KNOWN_COMMANDS
-};
-
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
 	'__dirname': __dirname,
@@ -94,18 +77,15 @@ export class SimpOMatic {
 	private static _CLIENT : Client;
 	private _COMMAND_HISTORY : Message[] = [];
 
-	constructor() {
-		console.log('Secrets:', pp(SECRETS));
-		console.log('Configured Variables:', pp(CONFIG));
-		console.log('Known commands:', pp(KNOWN_COMMANDS));
-	}
-
 	static start() {
 		this._CLIENT = new Client();
 		this._CLIENT.login(
 			SECRETS.api.token,
 			`${__dirname}/*Discord.ts`
 		);
+		console.log('Secrets:', pp(SECRETS));
+		console.log('Configured Variables:', pp(CONFIG));
+		console.log('Known commands:', pp(KNOWN_COMMANDS));
 	}
 
 	expand_alias(operator, args) {
@@ -185,7 +165,10 @@ export class SimpOMatic {
 		if (commands.includes(operator))
 			return import(`./commands/${operator}`).then(mod =>
 				mod.default({  // Basic 'home-scope' is passed in.
-					message, args, ...HOMESCOPE}));
+					message, args,
+					HELP_SOURCE, HELP_KEY, GIT_URL,
+					HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
+					CONFIG, SECRETS, KNOWN_COMMANDS }));
 
 		switch (operator) {
 			case 'commands': {
@@ -447,6 +430,7 @@ export class SimpOMatic {
 		const { content } = message;
 		if (!content) return; // Message with no content (deleted)...
 		for (const responder of CONFIG.rules.respond) {
+			console.log('CHECKING RESPOND:', responder);
 			if (!responder) continue; // Sparse arrays!
 			const match = content.match(responder.match);
 			const { response } = responder;
@@ -594,8 +578,19 @@ const on_termination = () => {
 	}, 6000));
 };
 
-// Start The Simp'O'Matic.
-SimpOMatic.start();
+// CONFIG will eventually update to the online version.
+pastebin_latest().then(res => {
+	CONFIG = deep_merge(CONFIG, res);
+	// Remove any duplicates.
+	CONFIG = export_config(CONFIG, { ugly: true });
+	CONFIG = JSON.parse(CONFIG);
+	// Precompile all regular-expressions in known places.
+	['respond', 'reject', 'replace']
+		.each(name => CONFIG.rules[name].mut_map(compile_match));
+	// Start The Simp'O'Matic.
+	SimpOMatic.start();
+}).catch(console.warn);
+
 
 // Handle exits.
 process.on('exit',    on_termination);

@@ -60,7 +60,7 @@ export const rule = (rule_kind: string) => home_scope => {
 			//  such that it will have to be matched on its own, not
 			//  surrounded by other letters or numbers, OR, it may exits
 			//  at the begging or end of the line.
-			regex = `(^|[^\\p{L}\\p{N}])+${args[0]}?([^\\p{L}\\p{N}]|$)+`,
+			regex = `(^|[^\\p{L}\\p{N}])+${args[0]}s?([^\\p{L}\\p{N}]|$)+`,
 				options = 'ui';
 			response = args.tail().join(' ').trim();
 		}
