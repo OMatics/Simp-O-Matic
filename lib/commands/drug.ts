@@ -1,3 +1,4 @@
+// This is Danny's, I don't endorse it.
 const drugs = {
 	'alcohol': [10000, 100000],
 	'amphetamine': [10, 20, 40, 60],

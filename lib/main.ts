@@ -98,7 +98,7 @@ export class SimpOMatic {
 			if (expanded_command_words.length > 1) {
 				// This means the alias has expanded to more than just one word.
 				expansion = expanded_command_words.shift();
-				expanded_command_words.reverse().each(e => args.shift(e));
+				expanded_command_words.reverse().each(e => args.unshift(e));
 			}
 			return expansion;
 		};
@@ -222,7 +222,7 @@ export class SimpOMatic {
 
 				if (args.length === 0 || args[0] === 'ls') {
 					const lines = Object.keys(CONFIG.commands.aliases)
-						.map((e, i) => `${i + 1}.  \`${p}${e}\` ↦ \`${p}${CONFIG.commands.aliases[e]}\``);
+						.map((e, i) => `${i + 1}.  \`${p}${e}\` ↦ \`${p}${CONFIG.commands.aliases[e]}\`\n`);
 					message.answer('List of **Aliases**:\n');
 					lines.unshift('**KEY:  `Alias` ↦ `Command it maps to`**\n\n');
 
