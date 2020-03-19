@@ -1,4 +1,4 @@
-import * as search from 'scrape-youtube';
+const search = require('scrape-youtube'); // How the hell do I write this as an import statement?
 import '../extensions';
 
 type YTSearch = {
