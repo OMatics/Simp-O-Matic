@@ -2,7 +2,7 @@ export default home_scope => {
 	const { message } = home_scope;
 	const rep = [];
 	['channel', 'user', 'role'].forEach(n =>
-		message[n + 's'].each(o => rep.push(n + ' id: `' + o.id + '`')));
+		message.mentions[n + 's'].each(o => rep.push(n + ' id: `' + o.id + '`')));
 	// Joining an empty array yields an empty string which is false
 	const reply = rep.join(', ') || `User ID: \`${message.author.id}\`
 		Author: ${message.author}
