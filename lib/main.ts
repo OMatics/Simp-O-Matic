@@ -16,7 +16,8 @@ import { execSync as shell } from 'child_process';
 // Local misc/utility functions.
 import './extensions';
 import { deep_merge, pp, compile_match,
-		 export_config, access, glue_strings } from './utils';
+		 export_config, access, glue_strings,
+		 deep_copy, recursive_regex_to_string } from './utils';
 import format_oed from './format_oed';  // O.E.D. JSON entry to markdown.
 
 // Default bot configuration JSON.
@@ -201,7 +202,10 @@ export class SimpOMatic {
 				// Accessing invalid fields will be caught.
 				try {
 					const accessors = args[0].trim().split('.').squeeze();
-					const resolution = access(CONFIG, accessors);
+					const resolution = JSON.stringify(
+						recursive_regex_to_string(
+							deep_copy(access(CONFIG, accessors))));
+
 					message.channel.send(` ⇒ \`${resolution}\``);
 				} catch (e) {
 					message.channel.send(`Invalid object access-path\n`
@@ -218,9 +222,10 @@ export class SimpOMatic {
 					const parent = accessors.pop();
 					const obj = access(CONFIG, accessors);
 					obj[parent] = JSON.parse(args[1]);
+					const normal = JSON.stringify(obj[parent]);
 
 					message.channel.send(`Assignment successful.
-						\`${args[0].trim()} = ${obj[parent]}\``.squeeze());
+						\`${args[0].trim()} = ${normal}\``.squeeze());
 				} catch (e) {
 					message.channel.send(`Invalid object access-path,`
 						+ `nothing set.\nProblem: \`\`\`\n${e}\n\`\`\``);

@@ -2,6 +2,8 @@ import { inspect } from 'util';
 import deep_clone from 'deepcopy';
 import './extensions';
 
+export const deep_copy = deep_clone;
+
 // This assumes no two string-array entries
 //  would ever be greater than 2000 characters long.
 export const glue_strings = arr => {
@@ -78,7 +80,7 @@ export const compile_match = obj => {
 	return o;
 };
 
-const recursive_regex_to_string = o => {
+export const recursive_regex_to_string = o => {
 	if (type(o) === 'regexp') {
 		return o.toString();
 	}
