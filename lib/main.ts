@@ -574,6 +574,7 @@ export class SimpOMatic {
 				}
 			});
 		} catch (e) {
+			console.warn(e);
 			message.answer(`Something went very wrong (\`${e.message}\`):\n`
 				+ `${e.stack}`.format('```'));
 		}
