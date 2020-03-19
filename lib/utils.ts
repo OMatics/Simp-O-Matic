@@ -42,7 +42,7 @@ export const deep_merge_pair = (target, source) => {
 
 		if (Array.isArray(target_value)
 		 && Array.isArray(source_value)) {
-			target[key] = target_value.concat(...source_value);
+			target[key] = target_value.concat(...source_value).unique();
 		}
 		else if (type(target_value) === 'object'
 			  && type(source_value) === 'object') {

@@ -120,13 +120,14 @@ export class SimpOMatic {
 			}
 			return expanded
 		};
-
-
 		// Continue expanding until we have no more change.
+		let i = 0;
 		let expanded = expander(operator);
 		while (expanded !== operator) {
 			operator = expanded;
 			expanded = expander(operator);
+			if (i > 300) return 'CYCLIC_ALIAS';
+			++i;
 		}
 		return expanded;
 	}
@@ -169,7 +170,11 @@ export class SimpOMatic {
 		// Expansion of aliases will expand aliases used within
 		//   the alias definition too. Yay.
 		operator = this.expand_alias(operator, args);
-
+		if (operator === 'CYCLIC_ALIAS') {
+			message.reply('The command you just used has aliases that go'
+				+ ' 300 levels deep, or the alias is cyclically dependant.'
+				+ '\n**Fix this immediately.**')
+		}
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
 
@@ -368,12 +373,13 @@ export class SimpOMatic {
 				message.answer('Looking in the Oxford English Dictionary...');
 				const query = args.join(' ');
 
+				const p = CONFIG.commands.prefix;
 				const nasty_reply = `Your word (‘${query}’) is nonsense, either \
 					that or they've forgotten to index it.
 					I'll let you decide.
 
 					P.S. Try the _Urban Dictionary_ \
-					(\`!urban ${query}\`)`.squeeze();
+					(\`${p}urban ${query}\`)`.squeeze();
 
 				oed_lookup({
 					word: query,

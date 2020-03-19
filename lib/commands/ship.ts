@@ -1,9 +1,10 @@
 import { FORMATS } from '../extensions';
 import { Message } from 'discord.js';
 
-const fs = require('fs');
+import fs from 'fs';
+//const fs = require('fs');
 const cp = require('child_process');
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 function ps(stream) {
 	return new Promise((resolve, reject) => {
@@ -12,18 +13,16 @@ function ps(stream) {
 	});
 }
 
-function makeimg(u1, u2){
-	var ps1, ps2
-	fetch(u1).then(res => {
-		ps1 = ps(res.body.pipe(fs.createWriteStream('./u1.png')))
-	})
-	fetch(u2).then(res => {
-		ps2 = ps(res.body.pipe(fs.createWriteStream('./u2.png')))
-	})
-	Promise.all([ps1, ps2]).then(() => {
-		cp.execSync('montage u1.png ../../❤️.png u2.png out.png', {cwd: __dirname})
-	})
-	return './out.png'
+async function make_img(u1, u2) {
+    let res1 = await fetch(u1);
+    let res2 = await fetch(u2);
+    let ps1 = await ps(res1.body.pipe(fs.createWriteStream('./u1.png')));
+	let ps2 = await ps(res2.body.pipe(fs.createWriteStream('./u2.png')));
+
+    cp.execSync(
+        'montage ./u1.png ./❤️.png ./u2.png ./out.png',
+        { cwd: process.cwd() });
+	return './out.png';
 }
 
 export default home_scope => {
@@ -93,5 +92,6 @@ export default home_scope => {
     let response: string =
         `${getPercentage(die)} ${getResponse(die)}`;
 
-    message.channel.send(response, {files: [makeimg(userAvatars.first, userAvatars.second)]});
+    make_img(userAvatars.first, userAvatars.second).then(str =>
+        message.channel.send(response, {files: [str]}))
 }

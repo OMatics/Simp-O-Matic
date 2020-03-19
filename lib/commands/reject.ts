@@ -2,9 +2,10 @@ export default home_scope => {
 	const { message, args,
 			CONFIG, KNOWN_COMMANDS,
 			HELP_SECTIONS } = home_scope;
-	const { reject } = CONFIG.rules;
-
+	const { reject }: { reject: any[] } = CONFIG.rules;
+	console.log('reject command entered.');
 	if (args.length === 0 || args[0] === 'ls') {
+		console.log('listing commands...');
 		// Make a pretty list.
 		let str = "**Rejection Rules:**\n";
 		reject.each((rule, i) => {
