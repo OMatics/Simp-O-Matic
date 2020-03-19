@@ -4,7 +4,7 @@ type Options = {
 	query : string,
 	type : 'image' | 'web' | 'news',
 	key : string
-}
+};
 
 export const web_search = (options : Options) => new Promise((resolve, reject) => {
 	console.log('Searching the web, with options: ', options);

@@ -40,11 +40,10 @@ const CONFIG = deep_merge(
 // CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
 	deep_merge(CONFIG, res);
-
 	// Precompile all regular-expressions in known places.
 	['respond', 'reject', 'replace']
-		.each(name => CONFIG.rules[name].mut_map(compile_match))
-}).catch(console.log);
+		.each(name => CONFIG.rules[name].mut_map(compile_match));
+}).catch(console.warn);
 
 // Store secrets in an object, retrieved from shell's
 //  environment variables.
@@ -90,7 +89,7 @@ console.log('File/Execution locations:', {
 
 @Discord
 export class SimpOMatic {
-	private static _client : Client;
+	private static _CLIENT : Client;
 	private _COMMAND_HISTORY : Message[] = [];
 
 	constructor() {
@@ -100,8 +99,8 @@ export class SimpOMatic {
 	}
 
 	static start() {
-		this._client = new Client();
-		this._client.login(
+		this._CLIENT = new Client();
+		this._CLIENT.login(
 			SECRETS.api.token,
 			`${__dirname}/*Discord.ts`
 		);
@@ -109,17 +108,17 @@ export class SimpOMatic {
 
 	expand_alias(operator, args) {
 		const expander = unexpanded => {
-			let expanded = unexpanded;
+			let expansion = unexpanded;
 			if (CONFIG.commands.aliases.hasOwnProperty(unexpanded))
-				expanded = CONFIG.commands.aliases[unexpanded].trim().squeeze();
+				expansion = CONFIG.commands.aliases[unexpanded].trim().squeeze();
 
-			const expanded_command_words = expanded.split(' ');
+			const expanded_command_words = expansion.split(' ');
 			if (expanded_command_words.length > 1) {
 				// This means the alias has expanded to more than just one word.
-				expanded = expanded_command_words.shift();
+				expansion = expanded_command_words.shift();
 				expanded_command_words.each(e => args.push(e));
 			}
-			return expanded
+			return expansion;
 		};
 		// Continue expanding until we have no more change.
 		let i = 0;
@@ -155,7 +154,7 @@ export class SimpOMatic {
 				if (delta <= 400) return;
 				return message.answer(`I can't help but notice you're running \
 					the same commands over in rather rapid succession.
-					Would you like to slow down a little?`.squeeze())
+					Would you like to slow down a little?`.squeeze());
 			}
 			if (delta <= 900) {
 				if (delta <= 300) return;
@@ -174,7 +173,7 @@ export class SimpOMatic {
 		if (operator === 'CYCLIC_ALIAS') {
 			message.reply('The command you just used has aliases that go'
 				+ ' 300 levels deep, or the alias is cyclically dependant.'
-				+ '\n**Fix this immediately.**')
+				+ '\n**Fix this immediately.**');
 		}
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
@@ -195,13 +194,13 @@ export class SimpOMatic {
 				const joined_commands = KNOWN_COMMANDS.slice(0, -1)
 					.map(c => `\`${p}${c}\``)
 					.join(', ');
-				const last_command = `\`${p}${KNOWN_COMMANDS.last()}\``;
+				const final_command = `\`${p}${KNOWN_COMMANDS.last()}\``;
 				message.reply(`All known commands (excluding aliases): \
-					${joined_commands} and ${last_command}`.squeeze());
+					${joined_commands} and ${final_command}`.squeeze());
 				break;
 			} case 'id': {
 				if (args[0]) {
-					const matches = args[0].match(/<@!?(\d+)>/)
+					const matches = args[0].match(/<@!?(\d+)>/);
 					if (!matches) {
 						message.answer(`Please tag a user, or \
 							provide no argument(s) at all.  See \`!help id\``
@@ -256,7 +255,7 @@ export class SimpOMatic {
 				if (args.length === 0 || args[0] === 'ls') {
 					const lines = Object.keys(CONFIG.commands.aliases)
 						.map((e, i) => `${i + 1}.  \`${p}${e}\` ↦ \`${p}${CONFIG.commands.aliases[e]}\``);
-					message.answer('List of **Aliases**:\n')
+					message.answer('List of **Aliases**:\n');
 					message.channel.send('**KEY:  `Alias` ↦ `Command it maps to`**\n\n'
 					 + lines.join('\n'));
 					break;
@@ -325,7 +324,7 @@ export class SimpOMatic {
 				}
 				break;
 			} case 'prefix': {
-				if (args.length == 1) {
+				if (args.length === 1) {
 					if (args[0].length !== 1) {
 						message.answer(`You may only use a prefix that is
 							exactly one character/symbol/grapheme/rune long.`
@@ -390,11 +389,11 @@ export class SimpOMatic {
 				}).then(res => {
 					console.log('Dictionary response:', pp(res));
 					if (!res['results']
-						|| res['results'].length == 0
+						|| res['results'].length === 0
 						|| !res['results'][0].lexicalEntries
-						|| res['results'][0].lexicalEntries.length == 0
-						|| res['results'][0].lexicalEntries[0].entries.length == 0
-						|| res['results'][0].lexicalEntries[0].entries[0].senses.length == 0) {
+						|| res['results'][0].lexicalEntries.length === 0
+						|| res['results'][0].lexicalEntries[0].entries.length === 0
+						|| res['results'][0].lexicalEntries[0].entries[0].senses.length === 0) {
 						message.answer(nasty_reply);
 						return;
 					}
@@ -409,7 +408,7 @@ export class SimpOMatic {
 							if (part_msg.length + line.length >= 2000) {
 								message.channel.send(part_msg);
 								part_msg = line + '\n';
-							} else { part_msg += line + '\n' }
+							} else { part_msg += line + '\n'; }
 						// Send what's left over, and not >2000 characters.
 						message.channel.send(part_msg);
 
@@ -417,7 +416,7 @@ export class SimpOMatic {
 					}
 					message.channel.send(msg);
 				}).catch(e => {
-					if (e.status == 404) {
+					if (e.status === 404) {
 						message.channel.send(`That 404'd.  ${nasty_reply}`);
 					} else {
 						message.channel.send(`Error getting definition:\n${e}`);
@@ -473,7 +472,7 @@ export class SimpOMatic {
 					.reverse()
 					.join('_');
 
-				const file_name = `export-${today}.json`
+				const file_name = `export-${today}.json`;
 				const file_dest = `${process.cwd()}/${file_name}`;
 				write_file(file_dest, export_config(CONFIG, {}));
 				pastebin_update(export_config(CONFIG, {}));
@@ -499,10 +498,10 @@ export class SimpOMatic {
 				message.answer(`${GIT_URL}/`);
 				break;
 			} case 'fork': {
-				message.answer(`${GIT_URL}/fork`)
+				message.answer(`${GIT_URL}/fork`);
 				break;
 			} case 'issue': {
-				message.answer(`${GIT_URL}/issues`)
+				message.answer(`${GIT_URL}/issues`);
 				break;
 			} case '': {
 				message.answer("That's an empty command...");
@@ -555,7 +554,7 @@ export class SimpOMatic {
 
 		if (opts.command) {
 			let commands = this._COMMAND_HISTORY
-				.filter(m => m.channel.id === channel.id)
+				.filter(m => m.channel.id === channel.id);
 
 			if (opts.mention) commands = commands.filter(m =>
 				m.author.toString() === opts.mentioning);
@@ -610,8 +609,7 @@ export class SimpOMatic {
 
 				expansions[i] = await this.last_message({
 					command: !opts.includes('^'),
-					mention: mention,
-					mentioning: mentioning,
+					mention, mentioning,
 					offset: offset || 1,
 					channel: message.channel
 				});
@@ -629,7 +627,7 @@ export class SimpOMatic {
 		if (!message.content) return;
 
 		console.log('Message acknowledged.');
-		if (SimpOMatic._client.user.id === message.author.id) {
+		if (SimpOMatic._CLIENT.user.id === message.author.id) {
 			return;
 		}
 		console.log('Message received:', message.content);
@@ -647,10 +645,10 @@ export class SimpOMatic {
 			console.log('Expanded message:', message.content);
 
 			if (message.content[0] === CONFIG.commands.prefix) {
-				console.log('Message type: command.')
+				console.log('Message type: command.');
 				this.process_command(message);
 			} else {
-				console.log('Message type: generic.')
+				console.log('Message type: generic.');
 				this.process_generic(message);
 			}
 		});
@@ -663,10 +661,10 @@ const on_termination = () => {
 	write_file(`${process.cwd()}/export-exit.json`, export_config(CONFIG, {}));
 	pastebin_update(export_config(CONFIG, {}));
 	// Make sure we saved ok.
-	new Promise(res => setTimeout(() => {
-		res(null)
+	return new Promise(res => setTimeout(() => {
+		res(null);
 		console.log('Clean finished.');
-		process.exit(0)
+		process.exit(0);
 	}, 6000));
 };
 

@@ -12,4 +12,4 @@ export default home_scope => {
 
 		message.answer(`8${shaft}>`);
 	}
-}
+};

@@ -1,0 +1,18 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+        "semicolon": [true, "always"],
+        "variable-name": {
+            "options": "allow-snake-case"
+        },
+        "no-console": false,
+        "no-string-literal": false,
+        "no-conditional-assignment": false,
+        "one-variable-per-declaration": false
+    },
+    "rulesDirectory": []
+}

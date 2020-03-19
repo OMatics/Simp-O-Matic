@@ -3,7 +3,7 @@ import unirest from 'unirest';
 type Options = {
 	query : string,
 	key : string
-}
+};
 
 export const urban_search = (options : Options) => new Promise((resolve, reject) => {
 	console.log('Searching Urban Dictionary, with options: ', options);

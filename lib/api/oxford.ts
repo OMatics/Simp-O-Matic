@@ -5,7 +5,7 @@ type Options = {
 	lang : string,
 	id : string,
 	key : string
-}
+};
 
 export const oed_lookup = (options : Options) => new Promise((resolve, reject) => {
 	console.log('Searching Oxford English Dictionary, with options: ', options);

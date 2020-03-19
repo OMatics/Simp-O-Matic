@@ -32,11 +32,11 @@ const web_search = (param: YTSearch) => new Promise((resolve, reject) => {
 		yt.search.list({
 			q: param.query,
 			maxResults: 1,
-			auth: auth,
-			part: 'snippet'
+			part: 'snippet',
+			auth
 		}).then(res => {
 			if (!res.data || !res.data.items || res.data.items.length === 0)
-				return reject('No such results found.')
+				return reject('No such results found.');
 
 			const video = res.data.items[0];
 			const id = video.id.videoId;

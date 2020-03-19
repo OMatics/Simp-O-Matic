@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 

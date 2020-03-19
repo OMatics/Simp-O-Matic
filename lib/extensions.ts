@@ -1,49 +1,49 @@
 // Global Extensions:
 declare global {
 	interface Array<T> {
-		head(): T
-		tail(): Array<T>
-		first(): T
-		last(off? : number | undefined): T
-		get(i : number): T
-		unique(): Array<T>
-		squeeze(): Array<T>
-		each(callbackfn : (value : T, index : number, array : T[]) => void, thisArg? : T): void
-		mut_unique(): Array<T>
-		mut_map(f: (T) => any): Array<any>
+		head(): T;
+		tail(): T[];
+		first(): T;
+		last(off? : number | undefined): T;
+		get(i : number): T;
+		unique(): T[];
+		squeeze(): T[];
+		each(callbackfn : (value : T, index : number, array : T[]) => void, thisArg? : T): void;
+		mut_unique(): T[];
+		mut_map(f: (T) => any): any[];
 	}
 
-    interface TextFormat {
-        italics: string,
-        bold: string,
-        bold_italics: string,
-        underline: string,
-        underline_italics: string,
-        underline_bold: string,
-        underline_bold_italics: string,
-        strikethrough: string,
-        block: string,
-        code_block: string,
-        block_quote: string,
-        multiline_block_quote: string,
-        hidden: string,
-    }
+	interface TextFormat {
+		italics: string;
+		bold: string;
+		bold_italics: string;
+		underline: string;
+		underline_italics: string;
+		underline_bold: string;
+		underline_bold_italics: string;
+		strikethrough: string;
+		block: string;
+		code_block: string;
+		block_quote: string;
+		multiline_block_quote: string;
+		hidden: string;
+	}
 
 	interface String {
-		squeeze(): string
-		capitalize(): string
-		leading_space(): string
-		head(): string
-		tail(): string
-		first(): string
-		last(off? : number): string
-        	format(fmt: string): string
-		emojify(): string
+		squeeze(): string;
+		capitalize(): string;
+		leading_space(): string;
+		head(): string;
+		tail(): string;
+		first(): string;
+		last(off? : number): string;
+        	format(fmt: string): string;
+		emojify(): string;
 	}
 
 	interface Number {
-		round_to(dp: number): number
-		to_metric(figures): string
+		round_to(dp: number): number;
+		to_metric(figures): string;
 	}
 }
 
@@ -62,10 +62,10 @@ Array.prototype.last = function (off=0) {
 	return this[this.length - 1 - off];
 };
 
-Array.prototype.get = function (i) { return this[i] };
+Array.prototype.get = function (i) { return this[i]; };
 
 Array.prototype.unique = function () {
-	return this.filter((e, i) => this.indexOf(e) === i)
+	return this.filter((e, i) => this.indexOf(e) === i);
 };
 
 Array.prototype.squeeze = function () { return this.filter(e => !!e); };
@@ -80,9 +80,9 @@ Array.prototype.mut_unique = function () {
 };
 
 Array.prototype.mut_map = function (f) {
-	for (const i in this) {
-		this[i] = f(this[i]);
-	}
+	for (const i in this)
+		if (this.hasOwnProperty(i) && i !== 'length')
+			this[i] = f(this[i]);
 	return this;
 };
 
@@ -101,7 +101,7 @@ String.prototype.capitalize = function () {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
-String.prototype.emojify = function () { return `:${this}:` };
+String.prototype.emojify = function () { return `:${this}:`; };
 
 String.prototype.head = Array.prototype.head as any;
 String.prototype.tail = Array.prototype.tail as any;
@@ -126,7 +126,7 @@ export const FORMATS: TextFormat = {
 
 String.prototype.format = function (fmt: string) {
     return `${fmt}${this}${fmt}`;
-}
+};
 
 // Number Extensions:
 Number.prototype.round_to = function (dp : number) {
@@ -160,7 +160,7 @@ Number.prototype.to_metric = function (figures) {
 
 declare module 'discord.js' {
 	interface Message {
-		answer(...args: any): void
+		answer(...args: any): void;
 	}
 }
 import { Message } from 'discord.js';

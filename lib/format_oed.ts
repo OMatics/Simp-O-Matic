@@ -10,10 +10,10 @@ export default (res, message) => {
 	let entry_n = 1;
 	for (const lex_entry of lex_entries) {
 		if (lex_entries.length > 1) {
-			msg += `\nLexical Entry №${entry_n}:\n`
+			msg += `\nLexical Entry №${entry_n}:\n`;
 			entry_n += 1;
 		}
-		console.log('Lex entry:', pp(lex_entries))
+		console.log('Lex entry:', pp(lex_entries));
 		for (const entry of Object.values(lex_entry.entries)) {
 			const senses = entry['senses'];
 
@@ -32,7 +32,7 @@ export default (res, message) => {
 					sense_msg += `    Synonyms include: ${synonyms}\n`;
 				}
 				if (sense_msg.trim().length > 0) {
-					msg += "\nIn the sense:\n"
+					msg += "\nIn the sense:\n";
 					msg += sense_msg;
 				}
 			}
@@ -46,7 +46,7 @@ export default (res, message) => {
 		if (!!lex_entry.pronunciations && !has_sent_audio) {
 			const prons = Object.values(lex_entry.pronunciations) as any;
 			if (!!prons && prons.length > 0) {
-				msg += "\nPronunciations:\n"
+				msg += "\nPronunciations:\n";
 				for (const pron of prons) {
 					if (!!pron.dialects) {
 						const dialects = Object.values(pron.dialects);
@@ -68,4 +68,4 @@ export default (res, message) => {
 	}
 	console.log('Became:', msg);
 	return msg;
-}
+};

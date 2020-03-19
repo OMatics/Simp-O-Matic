@@ -3,18 +3,16 @@ export default home_scope => {
 			KNOWN_COMMANDS, CONFIG, ALL_HELP,
 			HELP_KEY, HELP_SOURCE } = home_scope;
 
-	if (args.length === 0 || args[0] == 'help') {
+	if (args.length === 0 || args[0] === 'help') {
 		message.channel.send(HELP_SECTIONS[0]);
 		return;
 	}
 
-	if (args[0] === 'key') {
-		message.channel.send(HELP_KEY);
-		return;
-	} else if (args[0] === 'source') {
-		message.channel.send(HELP_SOURCE);
-		return;
-	} else if (args[0] === 'all') {
+	if (args[0] === 'key')
+		return message.channel.send(HELP_KEY);
+	if (args[0] === 'source')
+		return message.channel.send(HELP_SOURCE);
+	if (args[0] === 'all') {
 		for (const msg of ALL_HELP)
 			message.channel.send(msg);
 		return;
@@ -32,8 +30,8 @@ export default home_scope => {
 	const help_index = KNOWN_COMMANDS.indexOf(command);
 
 	if (help_index === -1)
-		message.answer(`No such command/help-page (\`${command}\`).`);
-	else
-		message.answer(`**Help (\`${command}\`):**\n`
-			+ HELP_SECTIONS[help_index].trim());
-}
+		return message.answer(`No such command/help-page (\`${command}\`).`);
+
+	message.answer(`**Help (\`${command}\`):**\n`
+		+ HELP_SECTIONS[help_index].trim());
+};

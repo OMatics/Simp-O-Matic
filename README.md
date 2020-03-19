@@ -43,31 +43,45 @@ When starting the bot, you'll need your secrets set up (API keys etc.).
 Make sure locally, you have the following secrets exported
 as environment variables:
 ```sh
-export BOT_API_TOKEN="exampleExampleExampleExample"
-export RAPID_API_KEY="exampleExampleExampleExample"
-export CLIENT_KEY="exampleExampleExampleExample"
-export CLIENT_ID="exampleExampleExampleExample"
-export OXFORD_ID="exampleExampleExampleExample"
-export OXFORD_KEY="exampleExampleExampleExample"
+# Discord
+export BOT_API_TOKEN="exampleExampleExample"
+export CLIENT_KEY="exampleExampleExample"
+export CLIENT_ID="exampleExampleExample"
 
-export GOOGLE_API_KEY="exampleExampleExampleExample"
-export GOOGLE_SEARCH_ID="exampleExampleExampleExample"
-export GOOGLE_OAUTH_ID="exampleExampleExampleExample"
-export GOOGLE_OAUTH_SECRET="exampleExampleExampleExample"
-export GOOGLE_PERSONAL_CODE="exampleExampleExampleExample"
-export GOOGLE_TYPE="exampleExampleExampleExample"
-export GOOGLE_PROJECT_ID="exampleExampleExampleExample"
-export GOOGLE_PRIVATE_KEY_ID="exampleExampleExampleExample"
-export GOOGLE_PRIVATE_KEY="exampleExampleExampleExample"
-export GOOGLE_CLIENT_EMAIL="exampleExampleExampleExample"
-export GOOGLE_CLIENT_ID="exampleExampleExampleExample"
-export GOOGLE_AUTH_URI="exampleExampleExampleExample"
-export GOOGLE_TOKEN_URI="exampleExampleExampleExample"
-export GOOGLE_AUTH_PROVIDER_X509_CERT_URL="exampleExampleExampleExample"
-export GOOGLE_CLIENT_X509_CERT_URL="exampleExampleExampleExample"
+# RapidAPI for Urban Dictionary and ContextualWeb
+export RAPID_API_KEY="exampleExampleExample"
+
+# Oxford English Dictionary
+export OXFORD_ID="exampleExampleExample"
+export OXFORD_KEY="exampleExampleExample"
+
+# Google APIs
+export GOOGLE_API_KEY="exampleExampleExample"
+export GOOGLE_SEARCH_ID="exampleExampleExample"
+export GOOGLE_OAUTH_ID="exampleExampleExample"
+export GOOGLE_OAUTH_SECRET="exampleExampleExample"
+export GOOGLE_PERSONAL_CODE="exampleExampleExample"
+export GOOGLE_TYPE="exampleExampleExample"
+export GOOGLE_PROJECT_ID="exampleExampleExample"
+export GOOGLE_PRIVATE_KEY_ID="exampleExampleExample"
+export GOOGLE_PRIVATE_KEY="exampleExampleExample"
+export GOOGLE_CLIENT_EMAIL="exampleExampleExample"
+export GOOGLE_CLIENT_ID="exampleExampleExample"
+export GOOGLE_AUTH_URI="exampleExampleExample"
+export GOOGLE_TOKEN_URI="exampleExampleExample"
+export GOOGLE_AUTH_PROVIDER_X509_CERT_URL="exampleExampleExample"
+export GOOGLE_CLIENT_X509_CERT_URL="exampleExampleExample"
+
+# OpenWeather
+export OPENWEATHER_KEY="exampleExampleExample"
+
+# Pastebin
+export PASTEBIN_KEY="exampleExampleExample"
+export PASTEBIN_PASSWORD="exampleExampleExample"
+
 ```
 
-I can send you the tokens file, if I _trust_ you.
+I can send you the secrets file, if I _really_ trust you.
 
 ### Low on Space?
 ```sh

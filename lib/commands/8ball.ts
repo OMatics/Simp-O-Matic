@@ -1,8 +1,9 @@
 export default home_scope => {
 	const { message, args, HELP_SECTIONS, KNOWN_COMMANDS } = home_scope;
 
-	if (args.length === 0 || args[0] == 'help') {
-		message.channel.send(HELP_SECTIONS[KNOWN_COMMANDS.indexOf('8ball')].trim());
+	if (args.length === 0 || args[0] === 'help') {
+		message.channel.send(
+			HELP_SECTIONS[KNOWN_COMMANDS.indexOf('8ball')].trim());
 		return;
 	}
 
@@ -34,5 +35,6 @@ export default home_scope => {
 		"You may rely on it.",
 	];
 
-	message.answer(":8ball: " + responses[Math.floor(Math.random() * responses.length)]);
+	message.answer(":8ball: "
+		+ responses[Math.floor(Math.random() * responses.length)]);
 };

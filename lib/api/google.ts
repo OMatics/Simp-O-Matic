@@ -29,7 +29,7 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 	const cache_keys = Object.keys(CACHE);
 	// Retrieve cached query.
 	if (param.query in CACHE) {
-		return resolve(`${CACHE[param.query]}  (cached response)`)
+		return resolve(`${CACHE[param.query]}  (cached response)`);
 	} else if (cache_keys.length > CACHE_SIZE) {
 		// Delete a few, so we can delete less frequently.
 		delete CACHE[cache_keys[0]];
@@ -49,7 +49,7 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 		safe: param.nsfw ? 'off' : 'active'
 	}).then(res => {
 		if (!res.data || !res.data.items || res.data.items.length === 0)
-			return reject('No such results found.')
+			return reject('No such results found.');
 
 		const item = res.data.items[0];
 		const answer = `Search for ‘${param.query}’: ${item.link}\n>>> ${item.title}`;

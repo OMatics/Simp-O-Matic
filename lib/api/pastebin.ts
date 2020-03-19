@@ -15,15 +15,15 @@ export const pastebin_latest = () => new Promise((resolve, reject) => {
 	});
 });
 
-export const pastebin_update = async function (stringified : string) {
-	await paste.login(PASTE_USER, PASTE_PASS, async function (succ, res) {
+export const pastebin_update = async (stringified : string) => {
+	await paste.login(PASTE_USER, PASTE_PASS, async (succ, res) => {
 		if (!succ)
 			return Promise.reject(console.log('Could not log in.'));
 
 		return await paste.edit(PASTE_ID, {
 			contents: stringified
-		}, async function (succ, _res) {
-			if (!succ)
+		}, async (worked, _) => {
+			if (!worked)
 				return console.log('Error updating paste...');
 		});
 	});

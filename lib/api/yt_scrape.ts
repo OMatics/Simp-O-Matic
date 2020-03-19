@@ -1,4 +1,4 @@
-const search = require('scrape-youtube');
+import * as search from 'scrape-youtube';
 import '../extensions';
 
 type YTSearch = {

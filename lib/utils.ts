@@ -54,7 +54,7 @@ export const deep_merge_pair = (target, source) => {
 	});
 
 	return target;
-}
+};
 
 export const deep_merge = (...objects) =>
 	(objects.length === 2)
@@ -63,7 +63,7 @@ export const deep_merge = (...objects) =>
 
 
 export const parse_regex = (s : string) => {
-	let temp = s.split('/');
+	const temp = s.split('/');
 	const options = temp.pop();
 	temp.shift();
 	const contents = temp.join('/');
@@ -83,13 +83,13 @@ const recursive_regex_to_string = o => {
 		return o.toString();
 	}
 	if (type(o) === 'object' || type(o) === 'array') {
-		for (const key in o) {
-			o[key] = recursive_regex_to_string(o[key]);
-		}
+		for (const key in o)
+			if (o.hasOwnProperty(key))
+				o[key] = recursive_regex_to_string(o[key]);
 		return o;
 	}
 	return o;
-}
+};
 
 export const export_config = (obj, { ugly = false }) => {
 	const o = recursive_regex_to_string(deep_clone(obj));

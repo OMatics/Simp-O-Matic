@@ -20,7 +20,7 @@ export default home_scope => {
 		const match = args[1].match(/#?(\d+)/);
 		if (!match || !match[1])
 			return message.answer('Please provide a numerical index'
-				+ ' as to which rule to remove.')
+				+ ' as to which rule to remove.');
 
 		const index = Number(match[1]) - 1;
 		if (index >= reject.length)
@@ -80,4 +80,4 @@ export default home_scope => {
 		message.reply(`Here's how you use the command:\n`
 			+ HELP_SECTIONS[KNOWN_COMMANDS.indexOf('reject')]);
 	}
-}
+};
