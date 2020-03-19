@@ -7,7 +7,7 @@ export default home_scope => {
     if (args.length === 0)
         input = "nibba";
     else
-        input = args.join(' ');
+        input = args.join(' ').toLowerCase();
 
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const numerics = [
