@@ -32,13 +32,16 @@ import { pastebin_latest,
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
-const CONFIG = deep_merge(
+let CONFIG = deep_merge(
 	DEFAULT_CONFIG,
 	JSON.parse(read_file('./bot.json', 'utf-8')));
 
 // CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
 	deep_merge(CONFIG, res);
+	// Remove any duplicates.
+	CONFIG = export_config(CONFIG, {});
+	CONFIG = JSON.parse(CONFIG);
 	// Precompile all regular-expressions in known places.
 	['respond', 'reject', 'replace']
 		.each(name => CONFIG.rules[name].mut_map(compile_match));
