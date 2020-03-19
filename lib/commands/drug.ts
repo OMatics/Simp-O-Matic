@@ -24,9 +24,11 @@ const drugs = {
 	'dextromethorphan': [100, 200, 400, 800, 1000],
 	'kratom': [1000, 5000, 10000],
 	'memantine': [30, 60, 120, 180]
-}
+};
+
 export default home_scope => {
 	const { message } = home_scope;
 	const drug = Object.keys(drugs)[Math.floor(25 * Math.random())];
-	message.answer(drugs[drug][Math.floor(Math.random() * drugs[drug].length)] + 'mg ' + drug);
-}
+	message.answer(`${drugs[drug][Math.floor(Math.random()
+		* drugs[drug].length)]}mg ${drug}`);
+};
