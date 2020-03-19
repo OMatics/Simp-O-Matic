@@ -179,9 +179,9 @@ export class SimpOMatic {
 		const commands = read_dir(`${__dirname}/commands`)
 			.map(n => n.slice(0, -3));
 		if (commands.includes(operator))
-			return require(`./commands/${operator}`)
-				.default({  // Basic 'home-scope' is passed in.
-					message, args, ...HOMESCOPE});
+			return import(`./commands/${operator}`).then(mod =>
+				mod.default({  // Basic 'home-scope' is passed in.
+					message, args, ...HOMESCOPE}));
 
 		switch (operator) {
 			case 'commands': {

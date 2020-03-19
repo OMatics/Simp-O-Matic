@@ -1,5 +1,9 @@
-import { execFileSync } from 'child_process'
+import { execFileSync as exec } from 'child_process'
 export default home_scope => {
-	const { message, args } = home_scope
-	message.answer('``` \n' + execFileSync('/bin/cowsay', args, {encoding: 'utf8'}) + '```') // this is safe because no shell is spawned
-}
+	const { message, args } = home_scope;
+	// This is safe because no shell is spawned:
+	message.answer(exec('./node_modules/.bin/cowsay', args, {
+		encoding: 'utf8',
+		cwd: process.cwd()
+	}).format('```'));
+};

@@ -13,14 +13,10 @@ export default home_scope => {
 
     const alphabet = 'pb';
 
-    let letters = [...input].map((chr: any) => {
-        if (isNaN(chr) && alphabet.includes(chr))
-            chr.bee() : `b`.bee();
-        else if (chr === ' ')
-            return chr;
-        else
-            return chr;
-    })
+    let letters = [...input].map((chr: any) =>
+        isNaN(chr) && alphabet.includes(chr)
+            ? `b`.emojify()
+            : chr)
 
     message.channel.send(letters.join(' '));
 };

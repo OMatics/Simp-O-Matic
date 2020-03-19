@@ -27,6 +27,10 @@ const web_search = (param: YTSearch) => new Promise((resolve, reject) => {
 	//     scope: SCOPES
 	// });
 	// console.log('Authorize this app by visiting this url: ', auth_url);
+
+	const general_error = e =>
+		reject(`No results, or API capped...\n\`\`\`\n${e}\n\`\`\``);
+
 	auth.getToken(process.env['GOOGLE_PERSONAL_CODE']).then(code => {
 		auth.setCredentials(code.tokens);
 		yt.search.list({
@@ -55,10 +59,8 @@ const web_search = (param: YTSearch) => new Promise((resolve, reject) => {
 
 				return resolve(`${url}\n> ${title} | ${views} views | \
 					:+1: ${likes} — :-1: ${dislikes} \nby: ${by}.`.squeeze());
-			}).catch(e =>
-				reject(`No results, or API capped...\n\`\`\`\n${e}\n\`\`\``));
-		}).catch(e =>
-			reject(`No results, or API capped...\n\`\`\`\n${e}\n\`\`\``));
+			}).catch(general_error);
+		}).catch(general_error);
 	}).catch(err => {
 		console.log('Error with code:', err);
 		reject('Token probably expired, i.e. logged out.\n'

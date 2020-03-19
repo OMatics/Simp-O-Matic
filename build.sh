@@ -14,6 +14,6 @@ echo "${bold}Compiling TypeScript...${reset}"
 ./node_modules/.bin/tsc -b ./tsconfig.json
 
 
-[ -f "./export_secrets.sh" ] && source ./export_secrets.sh
+[ -f "./.env" ] && source ./.env
 
 echo -e "\n${bold}Build done.${reset}"
