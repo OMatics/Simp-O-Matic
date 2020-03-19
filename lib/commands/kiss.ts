@@ -10,7 +10,7 @@ export default home_scope => {
     }
 
     let author = message.author.username; 
-    let to = message.mentions.first().username;
+    let to = message.mentions.users.first().username;
 
     const embed = new MessageEmbed()
         .setColor('#ba3d8a')
