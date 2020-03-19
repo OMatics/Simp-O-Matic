@@ -51,10 +51,15 @@ export const rule = (rule_kind: string) => home_scope => {
 			i += 1;
 
 			regex = phrase.slice(0, i - 1); // Exclude the slash.
-			const after = phrase.slice(i).trim();
-			[options, response] = after
-				.replace(/^([a-z]+)(.*)/, '$1-@@@-$2')
-				.split('-@@@-').map(s => s.trim());
+			const after = phrase.slice(i);
+			if (after[0] === ' ') {
+				options = '';
+				response = after.tail();
+			} else {
+				[options, response] = after
+					.replace(/^([a-z]+)(.*)/, '$1-@@@-$2')
+					.split('-@@@-').map(s => s.trim());
+			}
 		} else { // Were looking at a single word.
 			// If no regex is given to match, we'll instead match a word
 			//  such that it will have to be matched on its own, not

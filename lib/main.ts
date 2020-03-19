@@ -430,7 +430,6 @@ export class SimpOMatic {
 		const { content } = message;
 		if (!content) return; // Message with no content (deleted)...
 		for (const responder of CONFIG.rules.respond) {
-			console.log('CHECKING RESPOND:', responder);
 			if (!responder) continue; // Sparse arrays!
 			const match = content.match(responder.match);
 			const { response } = responder;
