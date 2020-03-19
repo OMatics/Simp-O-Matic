@@ -38,7 +38,9 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 	}
 
 	const num_match = param.query.trim().match(/[ ]+(\d+)$/);
-	const result_index = Math.abs(num_match ? Number(num_match[1]) - 1 : 0);
+	if (num_match)
+		param.query = param.query.slice(0, -num_match[1].length).trim();
+	const result_index = Math.abs(num_match ? Number(num_match[1]) - 1 : 0) % 10;
 	const cs = google.customsearch('v1');
 
 	cs.cse.list({
