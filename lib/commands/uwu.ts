@@ -14,7 +14,9 @@ const MAPPINGS = {
         [/shit/, 'poopoo'],
         [/asshole/, 'b-butthole'],
         [/ass/, 'boi pussy'],
-        [/dad|fater/, 'daddy']
+        [/dad|father/, 'daddy'],
+        [/tbh/, 'desu'],
+        [/cute/, 'kawaii']
     ],
     letters: {
         'l': [
