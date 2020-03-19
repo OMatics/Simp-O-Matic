@@ -11,7 +11,7 @@ export default home_scope => {
 
 	const author = message.author.username;
 	const to = message.mentions.users.first().username;
-	
+
 	const images = [
 		"https://i.imgur.com/a5rkTna.gif",
 		"https://i.imgur.com/AnYC2Xi.gif",

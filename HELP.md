@@ -79,7 +79,8 @@
   - `!weather <location>` — gives you the weather in a certain location, if location is left blank, it will either give you the weather in the default location, or in the area you `set` previously.
 - `!say [phrase]` — Repeats what you told it to say.
 - `!milkies` — In case you're feeling thirsty...
-- `!{cowsay,cowthink} <options> [phrase]` — Make a cow say something, using Unix-like command-line arguments.
+- `!cowsay   <options> [phrase]` — Make a cow say something, using Unix-like command-line arguments.
+- `!cowthink <options> [phrase]` — Make a cow say something, using Unix-like command-line arguments.
 - `!figlet <options> [phrase]` — Print text in ASCII format, using Unix-like command-line arguments.
 - `!roll <upper-bound>` — Roll a dice, default upper bound is 6.
 - `!8ball` — Ask a question, receive a response.

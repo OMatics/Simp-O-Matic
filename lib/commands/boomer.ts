@@ -1,3 +1,5 @@
+// From here: https://github.com/Demonstrandum/boomer/blob/master/boomerfy.js
+
 declare global {
 	interface Array<T> {
 		demented_join(sep: string, sep_alt: string, prob: number): string;
