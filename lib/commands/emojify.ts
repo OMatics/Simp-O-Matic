@@ -1,3 +1,5 @@
+import { Message } from 'discord.js';
+
 export default home_scope => {
     const { message, args }
         : { message: Message, args: string[] } = home_scope;
@@ -27,4 +29,4 @@ export default home_scope => {
     })
 
 	message.channel.send(letters.join(' '));
-}; 
+};
