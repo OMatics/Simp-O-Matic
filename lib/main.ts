@@ -38,12 +38,13 @@ const CONFIG = deep_merge(
 	JSON.parse(read_file('./bot.json', 'utf-8')));
 
 // CONFIG will eventually update to the online version.
-pastebin_latest().then(res =>
-	deep_merge(CONFIG, res)).catch(console.log);
+pastebin_latest().then(res => {
+	deep_merge(CONFIG, res);
 
-// Precompile all regular-expressions in known places.
-['respond', 'reject', 'replace']
-	.each(name => CONFIG.rules[name].mut_map(compile_match))
+	// Precompile all regular-expressions in known places.
+	['respond', 'reject', 'replace']
+		.each(name => CONFIG.rules[name].mut_map(compile_match))
+}).catch(console.log);
 
 // Store secrets in an object, retrieved from shell's
 //  environment variables.
@@ -525,6 +526,7 @@ export class SimpOMatic {
 
 	process_generic(message : Message) {
 		const { content } = message;
+		if (!content) return; // Message with no content (deleted)...
 		for (const responder of CONFIG.rules.respond) {
 			const match = content.match(responder.match);
 			const { response } = responder;
@@ -535,7 +537,10 @@ export class SimpOMatic {
 			const { response } = rejecter;
 			if (match) {
 				if (response) message.answer(response);
-				if (message.deletable) message.delete();
+				if (message.deletable) {
+					message.delete();
+					break;
+				}
 			}
 		}
 	}
@@ -562,9 +567,9 @@ export class SimpOMatic {
 			return Promise.resolve(command.content);
 		}
 
-		let filter = _ => true;
+		let filter = m => m.content;
 		if (opts.mention)
-			filter = m => m.author.toString() === opts.mentioning;
+			filter = m => m.content && m.author.toString() === opts.mentioning;
 
 		const messages = await channel.fetchMessages({
 			limit: CONFIG.commands.max_history
@@ -618,6 +623,9 @@ export class SimpOMatic {
 
 	@On("message")
 	async on_message(message : Message, client : Client) {
+		// Ignore empty messages...
+		if (!message.content) return;
+
 		console.log('Message acknowledged.');
 		if (SimpOMatic._client.user.id === message.author.id) {
 			return;

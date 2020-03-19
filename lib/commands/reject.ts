@@ -23,11 +23,15 @@ export default home_scope => {
 				+ ' as to which rule to remove.')
 
 		const index = Number(match[1]) - 1;
-		delete CONFIG.rules.reject[index];
+		if (index >= reject.length)
+			return message(`Cannot delete rule at index ${index + 1}...`
+				+ ` There are only ${reject.length} rejection rules.`);
 
-		message.answer(`Rule matching ${reject[index].match}`
-			+ ` at index location no. ${index + 1} has been deleted.`);
-	} else if (args.length >= 2) {
+		message.answer(`Rule matching \`${reject[index].match}\``
+			+ ` at index location #${index + 1} has been deleted.`);
+
+		delete CONFIG.rules.reject[index];
+	} else if (args.length >= 1) {
 		// Add a rule.
 		let regex, options, response;
 		// Eat up the regex/word...
@@ -51,15 +55,14 @@ export default home_scope => {
 			const after = phrase.slice(i).trim();
 			[options, response] = after
 				.replace(/^([a-z]+)(.*)/, '$1-@@@-$2')
-				.split('-@@@-').map(String.prototype.trim);
+				.split('-@@@-').map(s => s.trim());
 		} else { // Were looking at a single word.
 			// If no regex is given to match, we'll instead match a word
 			//  such that it will have to be matched on its own, not
 			//  surrounded by other letters or numbers, OR, it may exits
 			//  at the begging or end of the line.
-			regex = new RegExp(
-				`(^|[^\\p{L}\\p{N}])+${args[0]}?([^\\p{L}\\p{N}]|$)+`,
-				'ui');
+			regex = `(^|[^\\p{L}\\p{N}])+${args[0]}?([^\\p{L}\\p{N}]|$)+`,
+			options = 'ui';
 			response = args.tail().join(' ').trim();
 		}
 		// Add the rule to the CONFIG.rules.
@@ -69,9 +72,9 @@ export default home_scope => {
 				: new RegExp(regex),
 			response: response.length ? response : null
 		});
-		message.channel.send(`Rule with regular expression matching:`
-			+ `/${regex}/${options}`.format('\n```\n')
-			+ `has been added to list of rejection rules.`);
+		message.channel.send(`Rule with regular expression matching:\n`
+			+ `/${regex}/${options}`.format('```')
+			+ `\nhas been added to the list of rejection rules.`);
 	} else {
 		message.answer('Insufficient or nonsensical arguments provided.');
 		message.reply(`Here's how you use the command:\n`
