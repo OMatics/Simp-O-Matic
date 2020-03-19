@@ -30,7 +30,7 @@ const MAPPINGS = {
             [/r/g, 'w']
         ]
     }
-}
+};
 
 const MARKS = {
     '.': ['joyful', 3],
@@ -39,26 +39,26 @@ const MARKS = {
     ',': ['embarrassed', 3]
 };
 
-interface scope {
-    message: Message,
-    args: string[]
+interface Scope {
+    message: Message;
+    args: string[];
 }
 
 export default home_scope => {
-    const { message, args } : scope = home_scope;
+    const { message, args } : Scope = home_scope;
 
-    if (args.length === 0 || args[0] == 'help') {
+    if (args.length === 0 || args[0] === 'help') {
         message.channel.send("OwO *notices text* What's this?");
         return;
     }
 
     const uwuify = (word: string) => {
-        let tail = word[word.length - 1];
+        const tail = word[word.length - 1];
         let end = "";
 
         const randomize = ([emoji, chance], precise = false) => {
-            let probability = Math.floor(Math.random() * chance);
-            let emojitype = EMOJIS[emoji];
+            const probability = Math.floor(Math.random() * chance);
+            const emojitype = EMOJIS[emoji];
 
             if (probability === 0 || precise)
                 return emojitype[Math.floor(Math.random() * emojitype.length - 1) + 1];
@@ -72,30 +72,30 @@ export default home_scope => {
                 end = randomize(['sparkles', 4], true);
         }
 
-        const enclose = (word: string) => word + end + ' ';
+        const enclose = (w: string) => w + end + ' ';
 
-        const transform = (word: string) => {
+        const transform = (w: string) => {
             let stream = "";
 
-            const subsetOf = (w: string, side: any) =>
-                w.slice(side[0]) === side[1] || w.slice(side[0]) === side[2];
+            const subsetOf = (sw: string, side: any) =>
+                sw.slice(side[0]) === side[1] || sw.slice(side[0]) === side[2];
 
-            const replaceFrom = (w: string, side: any, replacements: any) =>
-                enclose(w.slice(0, side[0]).replace(replacements[0], replacements[1]) + w.slice(side[0]));
+            const replaceFrom = (sw: string, side: any, replacements: any) =>
+                enclose(sw.slice(0, side[0]).replace(replacements[0], replacements[1]) + sw.slice(side[0]));
 
-            const defaultReplace = (w: string, replacement: any) =>
-                enclose(w.replace(replacement[0], replacement[1]));
+            const defaultReplace = (sw: string, replacement: any) =>
+                enclose(sw.replace(replacement[0], replacement[1]));
 
-            for (let letter in MAPPINGS.letters) {
-                if (word.indexOf(letter) > -1) {
-                    let [left, right, replaces] = MAPPINGS.letters[letter];
+            for (const letter in MAPPINGS.letters) {
+                if (w.indexOf(letter) > -1) {
+                    const [left, right, replaces] = MAPPINGS.letters[letter];
 
-                    if (subsetOf(word, left))
-                        stream += replaceFrom(word, left, replaces);
-                    else if (subsetOf(word, right))
-                        stream += replaceFrom(word, right, replaces);
+                    if (subsetOf(w, left))
+                        stream += replaceFrom(w, left, replaces);
+                    else if (subsetOf(w, right))
+                        stream += replaceFrom(w, right, replaces);
                     else {
-                        stream += defaultReplace(word, replaces);
+                        stream += defaultReplace(w, replaces);
                         return stream;
                     }
                 }
@@ -104,16 +104,16 @@ export default home_scope => {
 
         const stutter = (stream: string) => {
             if (stream.length > 2 && stream[0].match(/[a-z]/i)) {
-                let probability = Math.floor(Math.random() * 5);
-                if (probability == 0)
+                const probability = Math.floor(Math.random() * 5);
+                if (probability === 0)
                     return stream[0] + '-' + stream;
             }
             return stream;
         };
 
         const replace_swearwords = (stream: any) => {
-            for (let word of MAPPINGS.words) {
-                let [regex, replacement] = word;
+            for (const w of MAPPINGS.words) {
+                let [regex, replacement] = w;
 
                 regex = new RegExp(regex);
 
@@ -123,18 +123,18 @@ export default home_scope => {
             return stream;
         };
 
-        let stream = transform(word);
+        let transformed = transform(word);
 
-        if (typeof stream === 'undefined')
-            stream = enclose(word);
+        if (typeof transformed === 'undefined')
+            transformed = enclose(word);
 
-        stream = replace_swearwords(stream);
-        stream = stutter(stream);
+        transformed = replace_swearwords(transformed);
+        transformed = stutter(transformed);
 
-        return stream
+        return transformed;
     };
 
-    let result = args
+    const result = args
         .join(' ')
         .toLowerCase()
         .split(' ')
