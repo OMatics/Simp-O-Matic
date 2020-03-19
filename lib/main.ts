@@ -38,9 +38,9 @@ let CONFIG = deep_merge(
 
 // CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
-	deep_merge(CONFIG, res);
+	CONFIG = deep_merge(CONFIG, res);
 	// Remove any duplicates.
-	CONFIG = export_config(CONFIG, {});
+	CONFIG = export_config(CONFIG, { ugly: true });
 	CONFIG = JSON.parse(CONFIG);
 	// Precompile all regular-expressions in known places.
 	['respond', 'reject', 'replace']
@@ -552,26 +552,31 @@ export class SimpOMatic {
 		}
 		console.log('Message received:', message.content);
 
-		const trimmed = message.content.trim();
-		message.content = trimmed;
-		// When finished expanding...
-		this.expand(message).then(content => {
-			if (content.length >= 2000) {
-				message.answer("The expansion for that message was"
-				+ " over 2000 characters, what the fuck is wrong with you?");
-				return;
-			}
-			message.content = content;
-			console.log('Expanded message:', message.content);
+		try {
+			const trimmed = message.content.trim();
+			message.content = trimmed;
+			// When finished expanding...
+			this.expand(message).then(content => {
+				if (content.length >= 2000) {
+					message.answer("The expansion for that message was"
+					+ " over 2000 characters, what the fuck is wrong with you?");
+					return;
+				}
+				message.content = content;
+				console.log('Expanded message:', message.content);
 
-			if (message.content[0] === CONFIG.commands.prefix) {
-				console.log('Message type: command.');
-				this.process_command(message);
-			} else {
-				console.log('Message type: generic.');
-				this.process_generic(message);
-			}
-		});
+				if (message.content[0] === CONFIG.commands.prefix) {
+					console.log('Message type: command.');
+					this.process_command(message);
+				} else {
+					console.log('Message type: generic.');
+					this.process_generic(message);
+				}
+			});
+		} catch (e) {
+			message.answer(`Something went very wrong (\`${e.message}\`):\n`
+				+ `${e.stack}`.format('```'));
+		}
 	}
 }
 
