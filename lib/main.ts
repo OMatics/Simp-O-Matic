@@ -26,7 +26,6 @@ import DEFAULT_CONFIG from './default';
 import web_search from './api/google';
 import oed_lookup from './api/oxford';
 import urban_search from './api/urban';
-import yt_search from './api/yt_scrape';
 import { pastebin_latest,
 		 pastebin_update,
 		 pastebin_url } from './api/pastebin';
@@ -178,9 +177,6 @@ export class SimpOMatic {
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
 
-		// This should have most immediate access.
-		if (operator === 'ping') return message.answer('PONGGERS!');
-
 		const commands = read_dir(`${__dirname}/commands`)
 			.map(n => n.slice(0, -3));
 		if (commands.includes(operator))
@@ -197,24 +193,6 @@ export class SimpOMatic {
 				const final_command = `\`${p}${KNOWN_COMMANDS.last()}\``;
 				message.reply(`All known commands (excluding aliases): \
 					${joined_commands} and ${final_command}`.squeeze());
-				break;
-			} case 'id': {
-				if (args[0]) {
-					const matches = args[0].match(/<@!?(\d+)>/);
-					if (!matches) {
-						message.answer(`Please tag a user, or \
-							provide no argument(s) at all.  See \`!help id\``
-							.squeeze());
-					} else {
-						message.answer(`User ID: \`${matches[1]}\``);
-					}
-					break;
-				}
-				const reply = `User ID: \`${message.author.id}\`
-					Author: ${message.author}
-					Message ID: \`${message.id}\``.squeeze();
-				console.log(`Replied: ${reply}`);
-				message.answer(reply);
 				break;
 			} case 'get': {
 				if (args.length === 0) {
@@ -323,20 +301,6 @@ export class SimpOMatic {
 						+ 'Please see `!help alias`.');
 				}
 				break;
-			} case 'prefix': {
-				if (args.length === 1) {
-					if (args[0].length !== 1) {
-						message.answer(`You may only use a prefix that is
-							exactly one character/symbol/grapheme/rune long.`
-							.squeeze());
-						break;
-					}
-					CONFIG.commands.prefix = args[0];
-					message.answer(`Command prefix changed to: \`${CONFIG.commands.prefix}\`.`);
-					break;
-				}
-				message.answer(`Current command prefix is: \`${CONFIG.commands.prefix}\`.`);
-				break;
 			} case 'search': {
 				const query = args.join(' ').toLowerCase();
 				const channel = message.channel as TextChannel;
@@ -362,12 +326,6 @@ export class SimpOMatic {
 					nsfw: channel.nsfw
 				}).then(res => message.answer(res))
 				  .catch(er => message.answer(er));
-				break;
-			} case 'youtube': {
-				const query = args.join(' ');
-				yt_search({ query })
-					.then(message.reply.bind(message))
-					.catch(message.answer.bind(message));
 				break;
 			} case 'define': {
 				message.answer('Looking in the Oxford English Dictionary...');
@@ -446,19 +404,6 @@ export class SimpOMatic {
 					message.channel.send(`Link: ${entry.permalink}`);
 				}).catch(e => message.answer(`Error fetching definition:\n${e}`));
 				break;
-			} case 'milkies': {
-				message.answer(`${(4 + Math.random() * 15).round_to(3)} gallons \
-					of milkies have been deposited in your mouth.`.squeeze());
-				break;
-			} case 'ily': {
-				message.answer('Y-you too...');
-				break;
-			} case 'say': {
-				message.answer(`Me-sa says: “${args.join(' ')}”`);
-				break;
-			} case 'invite': {
-				message.answer('Invite link: https://discordapp.com/api/oauth2/authorize?client_id=684895962212204748&permissions=8&scope=bot');
-				break;
 			} case 'export': {
 				let export_string = export_config(CONFIG, {});
 				if (export_string.length > 1980) {
@@ -493,15 +438,6 @@ export class SimpOMatic {
 					'process.cwd()': process.cwd()
 				};
 				message.channel.send(`Directories:\n\`\`\`json\n${dirs}\n\`\`\``);
-				break;
-			} case 'github': {
-				message.answer(`${GIT_URL}/`);
-				break;
-			} case 'fork': {
-				message.answer(`${GIT_URL}/fork`);
-				break;
-			} case 'issue': {
-				message.answer(`${GIT_URL}/issues`);
 				break;
 			} case '': {
 				message.answer("That's an empty command...");
