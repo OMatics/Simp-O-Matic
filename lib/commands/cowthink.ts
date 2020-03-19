@@ -1,4 +1,4 @@
-import { execFileSync as exec_file_sync } from 'child_process'
+import { execFileSync as exec_file_sync } from 'child_process';
 export default home_scope => {
 	const { message, args } = home_scope;
 	// This is safe because no shell is spawned:

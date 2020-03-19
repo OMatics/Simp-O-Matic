@@ -79,17 +79,17 @@
   - `!weather <location>` — gives you the weather in a certain location, if location is left blank, it will either give you the weather in the default location, or in the area you `set` previously.
 - `!say [phrase]` — Repeats what you told it to say.
 - `!milkies` — In case you're feeling thirsty...
-- `!cowsay <options> [phrase]` **〈not impl.〉** — Make a cow say something, using Unix-like command line arguments.
-- `!figlet <options> [phrase]` **〈not impl.〉** — Print text in ASCII format, using Unix-like command line arguments.
-- `!roll <upper-bound>` **〈not impl.〉** — Roll a dice, default upper bound is 6.
+- `!{cowsay,cowthink} <options> [phrase]` — Make a cow say something, using Unix-like command-line arguments.
+- `!figlet <options> [phrase]` — Print text in ASCII format, using Unix-like command-line arguments.
+- `!roll <upper-bound>` — Roll a dice, default upper bound is 6.
 - `!8ball` — Ask a question, receive a response.
 - `!summon [@user-name]` **〈not impl.〉** — Summon someone to the server by making the bot poke them in their DMs about it.
-- `!mock [phrase]` **〈not impl.〉** — Say something, _bUt iN a MocKiNg WaY_...
-- `!boomer [phrase]` **〈not impl.〉** — Say something, but in the way your demented boomer uncle would write it on Facebook.
+- `!mock [phrase]` — Say something, _bUt iN a MocKiNg WaY_...
+- `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
 - `!ship [@user-name] [@user-name]` — Shows the love grade between two people.
 - `!kiss [@user-name]` — Blow a kiss to someone you like!
 - `!emojify [phrase]` — Turn your text into discord-style emoji.
-
+- `!B [phrase]` — Replace some elements of your text with a certain U+1F171.
 ▬▬▬
 
 **Source Code & Bugs:**

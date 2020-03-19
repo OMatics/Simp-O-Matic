@@ -5,4 +5,4 @@ export default home_scope => {
 	yt_search({ query })
 		.then(message.reply.bind(message))
 		.catch(message.answer.bind(message));
-}
+};

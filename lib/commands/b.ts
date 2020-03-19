@@ -4,19 +4,16 @@ export default home_scope => {
     const { message, args }
         : { message: Message, args: string[] } = home_scope;
 
-    let input: string;
-
-    if (args.length === 0)
-        input = "b";
-    else
-        input = args.join(' ').toLowerCase();
+    const input = (args.length === 0)
+        ? "b"
+        : args.join(' ').toLowerCase();
 
     const alphabet = 'pb';
 
-    let letters = [...input].map((chr: any) =>
+    const letters = [...input].map((chr: any) =>
         isNaN(chr) && alphabet.includes(chr)
             ? `b`.emojify()
-            : chr)
+            : chr);
 
     message.channel.send(letters.join(' '));
 };

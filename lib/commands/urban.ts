@@ -23,4 +23,4 @@ export default home_scope => {
 		}
 		message.channel.send(`Link: ${entry.permalink}`);
 	}).catch(e => message.answer(`Error fetching definition:\n${e}`));
-}
+};

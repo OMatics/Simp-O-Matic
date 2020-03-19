@@ -21,7 +21,8 @@
         "start": "node .",
         "quick": ". ./build.sh && yarn run start",
         "deploy-scale": "heroku scale web=0 worker=1 -a simp-o-matic",
-        "deploy-restart": "heroku restart -a simp-o-matic"
+        "deploy-restart": "heroku restart -a simp-o-matic",
+        "lint": "tslint --project ."
     },
     "homepage": "https://github.com/Demonstrandum/simpomatic",
     "repository": {
@@ -49,5 +50,8 @@
         "tslib": "^1.11.1",
         "typescript": "^3.8.3",
         "unirest": "^0.6.0"
+    },
+    "devDependencies": {
+        "tslint": "^6.1.0"
     }
 }
