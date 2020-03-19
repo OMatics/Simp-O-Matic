@@ -91,7 +91,9 @@
 - `!kiss [@user-name]` — Blow a kiss to someone you like!
 - `!emojify [phrase]` — Turn your text into discord-style emoji.
 - `!B [phrase]` — Replace some elements of your text with a certain U+1F171.
-- `!uwu [phrase]` — "uwuify" your text.
+- `!uwu [phrase]` — “uwuify” your text.
+- `!fortune` — Brings you fortune.
+- `!motivation` — Get a motivational quote (for when you're feeling a lil down).
 
 ▬▬▬
 
