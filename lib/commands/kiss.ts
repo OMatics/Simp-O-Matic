@@ -11,13 +11,25 @@ export default home_scope => {
 
 	const author = message.author.username;
 	const to = message.mentions.users.first().username;
+	
+	const images = [
+		"https://i.imgur.com/a5rkTna.gif",
+		"https://i.imgur.com/AnYC2Xi.gif",
+		"https://i.imgur.com/9PbQ9Zl.gif",
+		"https://i.imgur.com/QZhWnaf.gif",
+		"https://i.imgur.com/1PEBQB6.gif",
+		"https://i.imgur.com/qW6BWEn.gif",
+		"https://i.imgur.com/79hpwpn.gif",
+		"https://i.imgur.com/RpxJYVD.gif",
+		"https://i.imgur.com/8fcnQFS.gif",
+	];
 
 	const embed = new RichEmbed()
 		.setColor('#ba3d8a')
 		.setTitle("Uh-oh... You're getting a kiss!")
 		.setDescription(`${to.format(FORMATS.bold)}, you got a kissu from \
 			${author.format(FORMATS.bold)}! :flushed:`.squeeze())
-		.setImage('https://i.imgur.com/lz1BY2x.gif');
+		.setImage(images[Math.floor(Math.random() * images.length)]);
 
 	message.channel.send(embed);
 };
