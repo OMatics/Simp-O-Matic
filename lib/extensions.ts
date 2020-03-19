@@ -37,7 +37,8 @@ declare global {
 		tail(): string
 		first(): string
 		last(off? : number): string
-        format(fmt: string): string
+        	format(fmt: string): string
+		emojify(): string
 	}
 
 	interface Number {
@@ -99,6 +100,8 @@ String.prototype.leading_space = function () {
 String.prototype.capitalize = function () {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 };
+
+String.prototype.emojify = function () { return `:${this}:` };
 
 String.prototype.head = Array.prototype.head as any;
 String.prototype.tail = Array.prototype.tail as any;
