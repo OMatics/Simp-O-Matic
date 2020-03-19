@@ -528,11 +528,13 @@ export class SimpOMatic {
 		const { content } = message;
 		if (!content) return; // Message with no content (deleted)...
 		for (const responder of CONFIG.rules.respond) {
+			if (!responder) continue; // Sparse arrays!
 			const match = content.match(responder.match);
 			const { response } = responder;
 			if (match && response) message.answer(response);
 		}
 		for (const rejecter of CONFIG.rules.reject) {
+			if (!rejecter) continue; // Sparse arrays!
 			const match = content.match(rejecter.match);
 			const { response } = rejecter;
 			if (match) {
