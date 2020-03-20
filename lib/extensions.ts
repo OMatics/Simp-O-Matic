@@ -37,8 +37,10 @@ declare global {
 		tail(): string;
 		first(): string;
 		last(off? : number): string;
-        	format(fmt: string): string;
+		format(fmt: string): string;
 		emojify(): string;
+		shorten(width?: number): string;
+		lines(): string[];
 	}
 
 	interface Number {
@@ -109,23 +111,34 @@ String.prototype.first = Array.prototype.first as any;
 String.prototype.last = Array.prototype.last as any;
 
 export const FORMATS: TextFormat = {
-    italics: '*',
-    bold: '**',
-    bold_italics: '***',
-    underline: '__',
-    underline_italics: '--*',
-    underline_bold: '__**',
-    underline_bold_italics: '__***',
-    strikethrough: '~~',
-    block: '`',
-    code_block: '```',
-    block_quote: '>',
-    multiline_block_quote: '>>>',
-    hidden: '||',
+	italics: '*',
+	bold: '**',
+	bold_italics: '***',
+	underline: '__',
+	underline_italics: '--*',
+	underline_bold: '__**',
+	underline_bold_italics: '__***',
+	strikethrough: '~~',
+	block: '`',
+	code_block: '```',
+	block_quote: '>',
+	multiline_block_quote: '>>>',
+	hidden: '||',
 };
 
 String.prototype.format = function (fmt: string) {
     return `${fmt}${this}${fmt}`;
+};
+
+String.prototype.shorten = function (width=40) {
+	if (this.length <= width) return String(this);
+	return this.slice(0, width - 3) + '...';
+};
+
+String.prototype.lines = function () {
+	return this
+		.replace(/\n/g, '\n<-|LINE|->')
+		.split('<-|LINE|->');
 };
 
 // Number Extensions:

@@ -70,7 +70,7 @@ export default {
 		],
 		reject: [
 			{
-				match: "/\\.{8,}/",
+				match: "/\\.{20,}/",
 				response: "Too many dots..."
 			},
 		],

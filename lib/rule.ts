@@ -1,3 +1,5 @@
+import { glue_strings } from './utils';
+
 export const rule = (rule_kind: string) => home_scope => {
 	const { message, args,
 		CONFIG, KNOWN_COMMANDS,
@@ -7,13 +9,17 @@ export const rule = (rule_kind: string) => home_scope => {
 	if (args.length === 0 || args[0] === 'ls') {
 		// Make a pretty list.
 		let str = `**${rule_kind.capitalize()} Rules:**\n`;
+		if (rules_array.squeeze().length === 0)
+			str += "There are none.";
+
 		rules_array.each((entry, i) => {
 			str += `${i + 1}.  Matches: \`${entry.match}\``;
 			if (entry.response)
-				str += `\n    Responds with: ‘${entry.response}’`;
+				str += `\n     Responds with: ‘${entry.response.shorten()}’`;
 			str += '\n';
 		});
-		message.channel.send(str);
+		for (const msg of glue_strings(str.lines()))
+			message.channel.send(msg);
 	} else if (args[0] === 'rm') {
 		// Remove a rule.
 		const match = args[1].match(/#?(\d+)/);
@@ -27,7 +33,7 @@ export const rule = (rule_kind: string) => home_scope => {
 				+ ` There are only ${rules_array.length} ${rule_kind} rules.`);
 
 		message.answer(`Rule matching \`${rules_array[index].match}\``
-			+ ` at index location #${index + 1} has been deleted.`);
+			+ ` at index location number ${index + 1} has been deleted.`);
 
 		delete CONFIG.rules[rule_kind][index];
 	} else if (args.length >= 1) {
@@ -70,12 +76,18 @@ export const rule = (rule_kind: string) => home_scope => {
 			response = args.tail().join(' ').trim();
 		}
 		// Add the rule to the CONFIG.rules.
-		CONFIG.rules[rule_kind].push({
-			match: options.length
-				? new RegExp(regex, options)
-				: new RegExp(regex),
-			response: response.length ? response : null
-		});
+		try {
+			CONFIG.rules[rule_kind].push({
+				match: options.length
+					? new RegExp(regex, options)
+					: new RegExp(regex),
+				response: response.length ? response : null
+			});
+		} catch (e) {
+			message.answer('**Error** creating regular expression!\n'
+				+ e.message.toString().format('`'));
+			return;
+		}
 		message.channel.send(`Rule with regular expression matching:\n`
 			+ `/${regex}/${options}`.format('```')
 			+ `\nhas been added to the list of ${rule_kind} rules.`);
