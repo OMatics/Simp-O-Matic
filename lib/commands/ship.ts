@@ -99,7 +99,7 @@ export default home_scope => {
                             attachment: image.bitmap.data,
                             name: filename
                         }])
-                        .setImage(`attachment://${filename}` + image);
+                        .setImage(`attachment://${filename}`);
 
                     message.channel.send(embed);
                 })
