@@ -91,7 +91,7 @@ export default home_scope => {
 				}).then(image => {
 					const embed = new RichEmbed()
 						.setColor('#b943e8')
-						.setTitle(`Love grade between` +
+						.setTitle(`Love grade between ` +
 								  `${message.mentions.users.first().username} & ` +
 								  `${message.mentions.users.last().username}`)
 						.setDescription(response)
