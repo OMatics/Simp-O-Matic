@@ -1,5 +1,5 @@
 import { FORMATS } from '../extensions';
-import { Message, RichEmbed } from 'discord.js';
+import { Message, Attachment, RichEmbed } from 'discord.js';
 
 import Jimp from 'jimp';
 
@@ -89,16 +89,15 @@ export default home_scope => {
 					return composed.blit(snd.resize(Jimp.AUTO, size),
 										 snd.bitmap.width * 2 + padding, 0);
 				}).then(image => {
+				 	let attachment = new Attachment(image.bitmap.data, filename);
+
 					const embed = new RichEmbed()
 						.setColor('#b943e8')
 						.setTitle(`Love grade between ` +
 								  `${message.mentions.users.first().username} & ` +
 								  `${message.mentions.users.last().username}`)
 						.setDescription(response)
-						.attachFiles([{
-							attachment: image.bitmap.data,
-							name: filename
-						}])
+						.attachFiles([attachment])
 						.setImage(`attachment://${filename}`);
 
 					message.channel.send(embed);
