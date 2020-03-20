@@ -104,8 +104,9 @@ export default home_scope => {
 					message.channel.send(embed);
 				});
 			});
-		}).catch(() => {
-			message.answer("Unable to calculate the love grade :(");
+		}).catch(e => {
+            message.answer("Unable to calculate the love grade :("
+                + `:\n${e.message}`.format('```'));
 		});
 	};
 
