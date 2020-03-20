@@ -62,7 +62,7 @@ const ALL_HELP = glue_strings([
 ]);
 
 const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
-	e.slice(5).replace(/(\s.*)|(`.*)/g, ''));
+	e.slice(5).replace(/(\s.*)|(`.*)/g, '').toLowerCase());
 
 const GIT_URL = 'https://github.com/Demonstrandum/Simp-O-Matic';
 
@@ -168,7 +168,8 @@ export class SimpOMatic {
 					message, args,
 					HELP_SOURCE, HELP_KEY, GIT_URL,
 					HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
-					CONFIG, SECRETS, KNOWN_COMMANDS }));
+					CONFIG, SECRETS, KNOWN_COMMANDS,
+					expand_alias: this.expand_alias }));
 
 		switch (operator) {
 			case 'commands': {
@@ -181,7 +182,7 @@ export class SimpOMatic {
 					${joined_commands} and ${final_command}`.squeeze());
 				break;
 			} case 'get': {
-				if (args.length === 0) {
+				if (args.length === 0) {  // Or use '.' as argument.
 					message.answer('To view the entire object, use the `!export` command.');
 					break;
 				}
@@ -193,8 +194,8 @@ export class SimpOMatic {
 						recursive_regex_to_string(
 							deep_copy(access(CONFIG, accessors))), null, 4);
 
-					const msgs = glue_strings(resolution
-							.replace(/(\n)/g, '$1@@@').split('@@@'))
+					const msgs = glue_strings(resolution.trim()
+							.replace(/\n/g, '\n@@@').split('@@@'), 1980)
 						.map(s => '```js\n' + s + '\n```');
 
 					for (const msg of msgs)
