@@ -1,5 +1,5 @@
 import { FORMATS } from '../extensions';
-import { Message, RichEmbed, Attachment } from 'discord.js';
+import { Message, Attachment, RichEmbed } from 'discord.js';
 
 import Jimp from 'jimp';
 
@@ -76,37 +76,43 @@ export default home_scope => {
 	const die = Math.floor(Math.random() * 100);
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
-	const compose_images = ({ first, second }) => {
+	const error_msg = e =>
+		message.answer("Unable to calculate the love grade :("
+			+ `:\n${e.message}`.format('```'));
+
+	const compose_images = async ({ first, second }) => {
 		const padding = 4;
 		const size = 128;
 		const filename = "ship-result.png";
 
-		Jimp.read(TEMPLATE).then(template => {
-			Jimp.read(first).then(fst => {
-				return template.blit(fst.resize(Jimp.AUTO, size), 0, 0);
-			}).then(composed => {
-				Jimp.read(second).then(snd => {
-					return composed.blit(snd.resize(Jimp.AUTO, size),
-										 snd.bitmap.width * 2 + padding, 0);
-				}).then(image => {
-                    const attachment = new Attachment(image.bitmap.data, filename);
-					const embed = new RichEmbed()
-						.setColor('#b943e8')
-						.setTitle(`Love grade between ` +
-								  `${message.mentions.users.first().username} & ` +
-								  `${message.mentions.users.last().username}`)
-						.setDescription(response)
-						.attachFile(attachment)
-						.setImage(`attachment://${filename}`);
+		const template = await Jimp.read(TEMPLATE);
+		const fst = await Jimp.read(first);
+		const composed = template.blit(fst.resize(Jimp.AUTO, size), 0, 0);
+		const snd = await Jimp.read(second);
 
-					message.channel.send(embed);
-				});
-			});
-		}).catch(e => {
-            message.answer("Unable to calculate the love grade :("
-                + `:\n${e.message}`.format('```'));
+		const image = await composed.blit(
+			snd.resize(Jimp.AUTO, size),
+			snd.bitmap.width * 2 + padding, 0);
+
+		image.getBuffer('image/png', (e : Error, buffer : Buffer) => {
+			if (e && e.message)
+				return error_msg(e);
+
+			const attachment = new Attachment(buffer, filename);
+			const embed = new RichEmbed()
+				.setColor('#b943e8')
+				.setTitle(`Love grade between ` +
+						  `${message.mentions.users.first().username} & ` +
+						  `${message.mentions.users.last().username}`)
+				.setDescription(response)
+				.attachFile(attachment)
+				.setImage(`attachment://${filename}`);
+
+			message.channel.send(embed);
 		});
 	};
 
-	compose_images(user_avatars);
+	try {
+		compose_images(user_avatars);
+	} catch (e) { error_msg(e); }
 };
