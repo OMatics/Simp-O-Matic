@@ -46,11 +46,13 @@
         "fortune-teller": "^0.1.2",
         "google-auth-library": "^5.10.1",
         "googleapis": "^48.0.0",
+        "jimp": "^0.9.6",
         "node-fetch": "^2.6.0",
         "scrape-youtube": "^0.0.5",
         "tslib": "^1.11.1",
         "typescript": "^3.8.3",
-        "unirest": "^0.6.0"
+        "unirest": "^0.6.0",
+        "jimp": "^0.9.6"
     },
     "devDependencies": {
         "tslint": "^6.1.0"
