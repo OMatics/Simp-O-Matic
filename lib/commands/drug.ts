@@ -2,6 +2,7 @@
 const drugs = {
 	'alcohol': [10000, 100000],
 	'amphetamine': [10, 20, 40, 60],
+	'caffeine': [100, 150, 200, 250],
 	'cocaine': [10, 20, 40, 60],
 	'datura': [10000],
 	'ketamine': [50, 100, 300, 500],
