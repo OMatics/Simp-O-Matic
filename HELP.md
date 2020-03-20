@@ -50,7 +50,7 @@
   - `!ignore <ls>` — lists all ignore rules by type.
   - `!ignore rm [type] [@name]` — clears all ignore rules for a certain type (types are: `user`, `channel` or `group`).
 - `!respond` — How the bot should respond to certain messages:
-  - `!respond [match] [reply]` — matches an expression said (using regular-expressions, i.e. `/regex/flags`), and replies with a message.
+  - `!respond [match] [reply]` — matches an expression (using regular-expressions, i.e. `/regex/flags`), and replies with a message.
   - `!respond <ls>` — list all response rules numerically.
   - `!respond rm #[rule-index]` — removes the response-rule by index.
 - `!reject` — Deletes messages meeting certain patterns:

@@ -102,12 +102,12 @@ export default home_scope => {
 						.setImage(`attachment://${filename}`);
 
 					message.channel.send(embed);
-				})
+				});
 			});
 		}).catch(() => {
 			message.answer("Unable to calculate the love grade :(");
-		})
-	}
+		});
+	};
 
 	compose_images(user_avatars);
 };

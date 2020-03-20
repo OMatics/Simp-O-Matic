@@ -38,7 +38,7 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 		delete CACHE[cache_keys[2]];
 	}
 
-	const num_match = param.query.trim().match(/[ ]+(\d+)$/);
+	const num_match = query.trim().match(/[ ]+(\d+)$/);
 	if (num_match)
 		query = query.slice(0, -num_match[1].length).trim();
 	const result_index = Math.abs(num_match ? Number(num_match[1]) - 1 : 0) % 10;
