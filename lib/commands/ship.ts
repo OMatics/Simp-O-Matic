@@ -1,5 +1,5 @@
 import { FORMATS } from '../extensions';
-import { Message } from 'discord.js';
+import { Message, RichEmbed } from 'discord.js';
 
 import { createWriteStream as write_stream,
 		 WriteStream } from 'fs';
@@ -7,6 +7,8 @@ import { execSync as shell } from 'child_process';
 import fetch from 'node-fetch';
 
 const RESPONSES = [
+	{ range: [0, 9],   message: "Fate has decided you two aren't made for each other. :fearful:" },
+	{ range: [9, 24],  message: "You should never cross paths, ever. :no_good:" },
 	{ range: [24, 49], message: "Not good. :confounded: :broken_heart:" },
 	{ range: [49, 59], message: "Nothing is impossible, but... :slight_frown:" },
 	{ range: [59, 64], message: "Friends, but maybe... :smirk:" },
@@ -33,7 +35,7 @@ const make_img = async (u1: string, u2: string) => {
 	await ps(res2.body.pipe(write_stream('./u2.png')));
 
 	shell('montage ./u1.png ./heart.png ./u2.png ./out.png',
-		{ cwd: process.cwd() });
+		  { cwd: process.cwd() });
 
 	return './out.png';
 };
@@ -42,13 +44,13 @@ export default home_scope => {
 	const { message, args,
 			HELP_SECTIONS,
 			KNOWN_COMMANDS }
-		: { message: Message, args: string[],
-			HELP_SECTIONS: string[],
-			KNOWN_COMMANDS: string[] } = home_scope;
+	: { message: Message, args: string[],
+		HELP_SECTIONS: string[],
+		KNOWN_COMMANDS: string[] } = home_scope;
 
 	if (args.length === 0 || args[0] === 'help'
-	|| message.mentions.users.size === 0
-	|| message.mentions.users.size > 2) {
+		|| message.mentions.users.size === 0
+		|| message.mentions.users.size > 2) {
 		message.channel.send(
 			HELP_SECTIONS[KNOWN_COMMANDS.indexOf('ship')].trim());
 		return;
@@ -64,9 +66,9 @@ export default home_scope => {
 	const in_range = ([min, max]: number[], num: number) =>
 		num >= min && num < max;
 
-	const get_response = (num: number) => RESPONSES.filter(res =>
-		in_range(res.range, num))[0]?.message
-				|| RESPONSES[0].message;
+	const get_response = (num: number) => RESPONSES
+		.filter(res => in_range(res.range, num))[0]?.message
+		|| RESPONSES[0].message;
 
 	const get_percentage = (n: number) => {
 		const bar = {
@@ -82,8 +84,10 @@ export default home_scope => {
 		}!;
 
 		const percentage = `${n.toString().format(FORMATS.bold)}%`;
-		const progress_bar = (`[${ bar.knob.repeat(bar.filling) }`
-			+ `${ bar.empty.repeat(bar.space) }]`).format(FORMATS.block);
+		const progress_bar =
+			(`[${ bar.knob.repeat(bar.filling) }` +
+			 `${ bar.empty.repeat(bar.space) }]`)
+			.format(FORMATS.block);
 
 		return `${percentage} ${progress_bar}`;
 	};
@@ -91,6 +95,15 @@ export default home_scope => {
 	const die = Math.floor(Math.random() * 100);
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
-	make_img(user_avatars.first, user_avatars.second).then(str =>
-		message.channel.send(response, {files: [str]}));
+	make_img(user_avatars.first, user_avatars.second).then(str => {
+		const embed = new RichEmbed()
+			.setColor('#b943e8')
+			.setTitle(`Love grade between ${message.mentions.users.first().username}` +
+					  `& ${message.mentions.users.last().username}`)
+			.setDescription(response)
+			.attachFiles([str])
+			.setImage('attachment://' + str);
+
+		message.channel.send(embed);
+	});
 };
