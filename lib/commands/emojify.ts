@@ -1,6 +1,5 @@
 import { Message } from 'discord.js';
 
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyz';
 const NUMBER_NAMES = [
 	'one', 'two', 'three', 'four', 'five',
 	'six', 'seven', 'eight', 'nine', 'keycap_ten'
@@ -17,7 +16,7 @@ export default home_scope => {
 
 	const letters = [...input].map((chr: any) => {
 		if (chr === ' ') return chr;
-		if (isNaN(chr) && ALPHABET.includes(chr))
+		if (isNaN(chr) && /[a-z]/i.test(chr))
 			return chr === 'b'
 				? chr.emojify()
 				: `regional_indicator_${chr}`.emojify();
