@@ -26,6 +26,7 @@ const CACHE = {
 //  These web-places already have commands given to them.
 
 const web_search = (param : CSE) => new Promise((resolve, reject) => {
+	let query = param.query;
 	const cache_keys = Object.keys(CACHE);
 	// Retrieve cached query.
 	if (param.query in CACHE) {
@@ -39,14 +40,14 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 
 	const num_match = param.query.trim().match(/[ ]+(\d+)$/);
 	if (num_match)
-		param.query = param.query.slice(0, -num_match[1].length).trim();
+		query = query.slice(0, -num_match[1].length).trim();
 	const result_index = Math.abs(num_match ? Number(num_match[1]) - 1 : 0) % 10;
 	const cs = google.customsearch('v1');
 
 	cs.cse.list({
 		auth: param.key,
 		cx: param.id,
-		q: param.query,
+		q: query,
 		searchType: (param.kind === 'web') ? undefined : param.kind,
 		start: 0,
 		num: result_index + 1,
