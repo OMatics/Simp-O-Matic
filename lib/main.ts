@@ -190,9 +190,11 @@ export class SimpOMatic {
 					const accessors = args[0].trim().split('.').squeeze();
 					const resolution = JSON.stringify(
 						recursive_regex_to_string(
-							deep_copy(access(CONFIG, accessors))));
-
-					message.channel.send(` ⇒ \`${resolution}\``);
+							deep_copy(access(CONFIG, accessors))), null, 4);
+					const msgs = glue_strings((' ⇒ \n```\n' + resolution + '\n```')
+							.split('\n'))
+					for (const msg of msgs)
+						message.channel.send(msg);
 				} catch (e) {
 					message.channel.send(`Invalid object access-path\n`
 						+ `Problem: \`\`\`\n${e}\n\`\`\``);
@@ -208,7 +210,7 @@ export class SimpOMatic {
 					const parent = accessors.pop();
 					const obj = access(CONFIG, accessors);
 					obj[parent] = JSON.parse(args[1]);
-					const normal = JSON.stringify(obj[parent]);
+					const normal = JSON.stringify(obj[parent], null, 4);
 
 					message.channel.send(`Assignment successful.
 						\`${args[0].trim()} = ${normal}\``.squeeze());
