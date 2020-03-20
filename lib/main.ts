@@ -188,11 +188,15 @@ export class SimpOMatic {
 				// Accessing invalid fields will be caught.
 				try {
 					const accessors = args[0].trim().split('.').squeeze();
+
 					const resolution = JSON.stringify(
 						recursive_regex_to_string(
 							deep_copy(access(CONFIG, accessors))), null, 4);
-					const msgs = glue_strings((' ⇒ \n```\n' + resolution + '\n```')
-							.split('\n'))
+
+					const msgs = glue_strings(resolution
+							.replace(/(\n)/g, '$1@@@').split('@@@'))
+						.map(s => '```js\n' + s + '\n```');
+
 					for (const msg of msgs)
 						message.channel.send(msg);
 				} catch (e) {
