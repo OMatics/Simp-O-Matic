@@ -1,5 +1,7 @@
 # The Simp'O'Matic
 
+![Simp'o'matic banner](resources/banner.png)
+
 ## WIP
 
 Currently most of the features in the `HELP.md` page, have not been
