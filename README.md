@@ -102,3 +102,8 @@ I can send you the secrets file, if I _really_ trust you.
 ```sh
 yarn --global-folder ./node_modules/ --cache-folder ./node_modules/
 ```
+
+## Dependencies / Project Structure
+
+This graph should sort that right out for you:
+![dep-graph-svg](https://gistcdn.githack.com/Demonstrandum/4bc45a5d3071b96216fdc732d39f8028/raw/4ef44cdfa43aca70135aee174e0553015e3ab51c/simp-deps.svg)

@@ -1,6 +1,6 @@
 {
-    "name": "simpomatic",
-    "description": "Simpomatic is a fren-ly Discord bot.",
+    "name": "simp-o-matic",
+    "description": "Simp'O'matic is a fren-ly Discord bot.",
     "keywords": [
         "discord",
         "bot",
@@ -8,7 +8,7 @@
     ],
     "license": "GPL-3.0",
     "author": "Sammy et Frens",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "engines": {
         "node": "10.x",
         "yarn": "1.22.x"
