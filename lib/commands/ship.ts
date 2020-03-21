@@ -1,3 +1,5 @@
+import crypto from 'crypto';
+
 import { FORMATS } from '../extensions';
 import { Message, Attachment, RichEmbed } from 'discord.js';
 
@@ -71,7 +73,12 @@ export default home_scope => {
 		return `${percentage} ${progress_bar}`;
 	};
 
-	const die = require('crypto').createHash('md5').update(users.reduce((a, c) => a + BigInt(c.id)).toString()).digest().readInt16LE() % 100;
+	const die = crypto
+		.createHash('md5')
+		.update(users.reduce((a, c) =>
+			a + BigInt(c.id), BigInt(0))
+		.toString()).digest().readUInt16LE() % 101;
+
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
 	const error_msg = e =>

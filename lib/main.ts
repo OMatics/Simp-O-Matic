@@ -156,6 +156,7 @@ export class SimpOMatic {
 			message.reply('The command you just used has aliases that go'
 				+ ' 300 levels deep, or the alias is cyclically dependant.'
 				+ '\n**Fix this immediately.**');
+			return;
 		}
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
