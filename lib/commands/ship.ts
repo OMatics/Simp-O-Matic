@@ -79,12 +79,12 @@ export default home_scope => {
 	const die = crypto
 		.createHash('md5')
 		.update(users.reduce((a, c) =>
-			a + BigInt(c.id), 0n)
+			a + BigInt(c.id), BigInt(0))
 		.toString()).digest().readUInt16LE() % 101;
 
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
-	const error_msg = e =>
+	const error_msg = (e: Error) =>
 		message.answer("Unable to calculate the love grade :("
 			+ `:\n${e.message}`.format('```'));
 
@@ -109,9 +109,9 @@ export default home_scope => {
 			const attachment = new Attachment(buffer, filename);
 			const embed = new RichEmbed()
 				.setColor('#b943e8')
-				.setTitle(`Love grade between ` +
-						  `${message.mentions.users.first().username} & ` +
-						  `${message.mentions.users.last().username}`)
+				.setTitle(`Love grade between \
+						   ${message.mentions.users.first().username} & \
+						   ${message.mentions.users.last().username}`.squeeze())
 				.setDescription(response)
 				.attachFile(attachment)
 				.setImage(`attachment://${filename}`);

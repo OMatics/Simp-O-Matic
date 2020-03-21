@@ -10,7 +10,7 @@
     "author": "Sammy, Danny, Bruno, et Frens",
     "version": "1.0.0",
     "engines": {
-        "node": "12.16.x",
+        "node": "13.x",
         "yarn": "1.22.x"
     },
     "main": "./build/main.js",
