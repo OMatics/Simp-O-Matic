@@ -110,8 +110,8 @@ export default home_scope => {
 			const embed = new RichEmbed()
 				.setColor('#b943e8')
 				.setTitle(`Love grade between \
-						  ${users[0]} & \
-						  ${users[1]}`.squeeze())
+						  ${users[0].username} & \
+						  ${users[1].username}`.squeeze())
 				.setDescription(response)
 				.attachFile(attachment)
 				.setImage(`attachment://${filename}`);
