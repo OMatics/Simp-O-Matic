@@ -36,12 +36,10 @@ export default home_scope => {
 			HELP_SECTIONS[KNOWN_COMMANDS.indexOf('ship')].trim());
 		return;
 	}
-
+	const users = [message.mentions.users.size == 1 ? message.author : message.mentions.users.first(), message.mentions.users.last()]
 	const user_avatars = {
-		first: message.mentions.users.size === 1
-			? message.author.avatarURL
-			: message.mentions.users.first().avatarURL,
-		second: message.mentions.users.last().avatarURL
+		first: users[0].avatarURL,
+		second: users[1].avatarURL
 	};
 
 	const in_range = ([min, max]: number[], num: number) =>
@@ -73,7 +71,7 @@ export default home_scope => {
 		return `${percentage} ${progress_bar}`;
 	};
 
-	const die = Math.floor(Math.random() * 100);
+	const die = require('crypto').createHash('md5').update(users.reduce((a, c) => a + BigInt(c.id)).toString()).digest().readInt16LE() % 100;
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
 	const error_msg = e =>
