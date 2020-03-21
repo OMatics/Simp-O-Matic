@@ -103,6 +103,6 @@ I can send you the secrets file, if I _really_ trust you.
 yarn --global-folder ./node_modules/ --cache-folder ./node_modules/
 ```
 
-## Dependencies / Project Structure
+## Dependencies / Project Structure?
 
-This graph should sort that right out for you:
+[This graph](http://npm.broofa.com/?q=simp-o-matic) should sort that right out for you.
