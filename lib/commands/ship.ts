@@ -3,7 +3,7 @@ import { Message, Attachment, RichEmbed } from 'discord.js';
 
 import Jimp from 'jimp';
 
-const TEMPLATE = "./resources/ship-template.png";
+const TEMPLATE = "./lib/resources/ship-template.png";
 
 const RESPONSES = [
 	{ range: [0, 9],   message: "Fate has decided you two aren't made for each other. :fearful:" },
