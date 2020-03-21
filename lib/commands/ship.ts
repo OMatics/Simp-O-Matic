@@ -38,7 +38,10 @@ export default home_scope => {
 			HELP_SECTIONS[KNOWN_COMMANDS.indexOf('ship')].trim());
 		return;
 	}
-	const users = [message.mentions.users.size == 1 ? message.author : message.mentions.users.first(), message.mentions.users.last()]
+	const users = [message.mentions.users.size === 1
+		? message.author
+		: message.mentions.users.first(), message.mentions.users.last()];
+
 	const user_avatars = {
 		first: users[0].avatarURL,
 		second: users[1].avatarURL
@@ -76,7 +79,7 @@ export default home_scope => {
 	const die = crypto
 		.createHash('md5')
 		.update(users.reduce((a, c) =>
-			a + BigInt(c.id), BigInt(0))
+			a + BigInt(c.id), 0n)
 		.toString()).digest().readUInt16LE() % 101;
 
 	const response = `${get_percentage(die)} ${get_response(die)}`;
