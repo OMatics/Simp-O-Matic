@@ -1,6 +1,8 @@
 # The Simp'O'Matic
 
-![Simp'o'matic banner](lib/resources/banner.png)
+<p align="center">
+  <img width="300" src="lib/resources/banner.png">
+</p>
 
 ## WIP
 
