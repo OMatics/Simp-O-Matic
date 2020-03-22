@@ -3,7 +3,7 @@ process.stdin.resume();
 
 // Discord Bot API.
 import { Discord, On, Client } from '@typeit/discord';
-import { Message, Attachment, TextChannel } from 'discord.js';
+import { Message, MessageAttachment, TextChannel } from 'discord.js';
 
 // System interaction modules.
 import {
@@ -20,8 +20,8 @@ import { deep_merge, pp, compile_match,
 		 deep_copy, recursive_regex_to_string } from './utils';
 import format_oed from './format_oed';  // O.E.D. JSON entry to markdown.
 
-// Default bot configuration JSON.
-import DEFAULT_CONFIG from './default';
+// Default bot configuration for a Guild, JSON.
+import DEFAULT_GUILD_CONFIG from './default';
 
 // API specific modules.
 import web_search from './api/google';
@@ -32,9 +32,16 @@ import { pastebin_latest,
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
-let CONFIG = deep_merge(
-	DEFAULT_CONFIG,
-	JSON.parse(read_file('./bot.json', 'utf-8')));
+let GLOBAL_CONFIG : GlobalConfigType = {
+	name: "Simp'O'Matic",
+	tag: "#1634",
+	permissions: 8,
+	lang: 'en',
+
+	guilds: {
+		"337815809097465856": deep_copy(DEFAULT_GUILD_CONFIG)
+	}
+};
 
 // Store secrets in an object, retrieved from shell's
 //  environment variables.
@@ -84,11 +91,12 @@ export class SimpOMatic {
 			`${__dirname}/*Discord.ts`
 		);
 		console.log('Secrets:', pp(SECRETS));
-		console.log('Configured Variables:', pp(CONFIG));
 		console.log('Known commands:', pp(KNOWN_COMMANDS));
 	}
 
-	expand_alias(operator: string, args: string[]) {
+	expand_alias(operator: string, args: string[], message: Message) {
+		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
+
 		const expander = (unexpanded: string) => {
 			let expansion = unexpanded;
 			if (CONFIG.commands.aliases.hasOwnProperty(unexpanded))
@@ -115,6 +123,8 @@ export class SimpOMatic {
 	}
 
 	process_command(message : Message) {
+		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
+
 		if (message.content.startsWith('..')) return;
 
 		const last_command = this._COMMAND_HISTORY.last();
@@ -151,7 +161,7 @@ export class SimpOMatic {
 		let operator = words[0].toLowerCase();
 		// Expansion of aliases will expand aliases used within
 		//   the alias definition too. Yay.
-		operator = this.expand_alias(operator, args);
+		operator = this.expand_alias(operator, args, message);
 		if (operator === 'CYCLIC_ALIAS') {
 			message.reply('The command you just used has aliases that go'
 				+ ' 300 levels deep, or the alias is cyclically dependant.'
@@ -344,7 +354,7 @@ export class SimpOMatic {
 
 				oed_lookup({
 					word: query,
-					lang: CONFIG.lang,
+					lang: GLOBAL_CONFIG.lang,
 					id: SECRETS.oxford.id,
 					key: SECRETS.oxford.key
 				}).then(res => {
@@ -405,7 +415,7 @@ export class SimpOMatic {
 				if (export_string.length < 1980) {
 					message.channel.send("```json\n" + export_string + "\n```");
 				}
-				const attach = new Attachment(file_dest, file_name);
+				const attach = new MessageAttachment(file_dest, file_name);
 				message.channel.send("**Export:**", attach);
 
 				message.answer(`A copy of this export (\`export-${today}.json\`) \
@@ -440,6 +450,8 @@ export class SimpOMatic {
 	}
 
 	process_generic(message : Message) {
+		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
+
 		const { content } = message;
 		if (!content) return; // Message with no content (deleted)...
 		for (const responder of CONFIG.rules.respond) {
@@ -463,6 +475,7 @@ export class SimpOMatic {
 	}
 
 	async last_message(opts) : Promise<string> {
+		const CONFIG = GLOBAL_CONFIG.guilds[opts.guild.id];
 		const channel = opts.channel as TextChannel;
 
 		if (!opts.offset) opts.offset = 1;
@@ -487,8 +500,7 @@ export class SimpOMatic {
 		let filter = m => m.content;
 		if (opts.mention)
 			filter = m => m.content && m.author.toString() === opts.mentioning;
-
-		const messages = await channel.fetchMessages({
+		const messages = await channel.messages.fetch({
 			limit: CONFIG.commands.max_history
 		});
 		// Remember that the _latest_ message, is the one that
@@ -510,7 +522,8 @@ export class SimpOMatic {
 				if (expansions[i].length === 2) {  // !! expansion
 					expansions[i] = await this.last_message({
 						command: true,
-						channel: message.channel
+						channel: message.channel,
+						guild: message.guild
 					});
 					continue;
 				}
@@ -539,10 +552,18 @@ export class SimpOMatic {
 
 	@On("message")
 	async on_message(message : Message, client : Client) {
+		const guild_id = message.guild.id;
+
+		// Initialise completely new Guilds.
+		if (!GLOBAL_CONFIG.guilds.hasOwnProperty(guild_id))
+			GLOBAL_CONFIG.guilds[guild_id] = deep_copy(DEFAULT_GUILD_CONFIG);
+
+		const CONFIG = GLOBAL_CONFIG.guilds[guild_id];
 		// Ignore empty messages...
 		if (!message.content) return;
 
 		console.log('Message acknowledged.');
+		console.log('Message from Guild ID:', guild_id);
 		if (SimpOMatic._CLIENT.user.id === message.author.id) {
 			return;
 		}
@@ -580,8 +601,8 @@ export class SimpOMatic {
 const on_termination = () => {
 	// Back-up the resultant CONFIG to an external file.
 	console.log('Cleaning up...');
-	write_file(`${process.cwd()}/export-exit.json`, export_config(CONFIG, {}));
-	pastebin_update(export_config(CONFIG, {}));
+	write_file(`${process.cwd()}/export-exit.json`, export_config(GLOBAL_CONFIG, {}));
+	pastebin_update(export_config(GLOBAL_CONFIG, {}));
 	// Make sure we saved ok.
 	return new Promise(res => setTimeout(() => {
 		res(null);
@@ -592,13 +613,18 @@ const on_termination = () => {
 
 // CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
-	CONFIG = deep_merge(CONFIG, res);
+	GLOBAL_CONFIG = deep_merge(GLOBAL_CONFIG, res);
 	// Remove any duplicates.
-	CONFIG = export_config(CONFIG, { ugly: true });
-	CONFIG = JSON.parse(CONFIG);
+	const gc_string = export_config(GLOBAL_CONFIG, { ugly: true });
+	GLOBAL_CONFIG = JSON.parse(gc_string);
 	// Precompile all regular-expressions in known places.
-	['respond', 'reject', 'replace']
-		.each(name => CONFIG.rules[name].mut_map(compile_match));
+	for(const guild in GLOBAL_CONFIG.guilds)
+		if (GLOBAL_CONFIG.guilds.hasOwnProperty(guild))
+			['respond', 'reject', 'replace']
+				.each(name =>
+					GLOBAL_CONFIG.guilds[guild].rules[name]
+						.mut_map(compile_match));
+
 	// Start The Simp'O'Matic.
 	SimpOMatic.start();
 }).catch(console.warn);
@@ -609,4 +635,3 @@ process.on('exit',    on_termination);
 process.on('SIGINT',  on_termination);
 process.on('SIGUSR1', on_termination);
 process.on('SIGUSR2', on_termination);
-process.on('uncaughtException', on_termination);

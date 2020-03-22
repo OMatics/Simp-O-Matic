@@ -97,11 +97,14 @@ export const export_config = (obj, { ugly = false }) => {
 	const o = recursive_regex_to_string(deep_clone(obj));
 	// Make sure all rules are unique,
 	//  i.e. eliminate duplicate rules.
-	['respond', 'reject', 'replace']
-		.forEach(name => o.rules[name] = o.rules[name]
-			.map(JSON.stringify)
-			.unique()
-			.map(JSON.parse));
+
+	for (const guild in obj.guilds)
+		if (obj.guilds.hasOwnProperty(guild))
+			['respond', 'reject', 'replace']
+				.each(name => o.guilds[guild].rules[name] = o.guilds[guild].rules[name]
+					.map(JSON.stringify)
+					.unique()
+					.map(JSON.parse));
 
 	return JSON.stringify(o, null, ugly ? null : 4);
 };

@@ -2,12 +2,7 @@
 ///  and to act as a reference to how the config shall be
 ///  laid out.  All fields are accounted for here.
 
-export default {
-	name: "Simp'O'Matic",
-	tag: "#1634",
-	permissions: 8,
-	lang: 'en',
-
+const DEFAULT_GUILD_CONFIG : ConfigType = {
 	pp_sizes: {
 		'541761315887120399': 16
 	},
@@ -15,6 +10,7 @@ export default {
 	weather_locations: {
 		'541761315887120399': 'Moscow'
 	},
+
 	commands: {
 		prefix: '!',
 		max_history: 40,
@@ -80,6 +76,7 @@ export default {
 				response: 'desu'
 			},
 		],
+		trigger: [],
 		// Blacklist (initially everyone can do everything,
 		//  except for those listed specifically on this list).
 		blacklist: {
@@ -131,5 +128,6 @@ export default {
 			]
 		}
 	}
-
 };
+
+export default DEFAULT_GUILD_CONFIG;

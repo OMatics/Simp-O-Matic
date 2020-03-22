@@ -23,7 +23,7 @@ export default (home_scope: HomeScope) => {
 	let command : string = args[0].trim();
 	if (command.head() === CONFIG.commands.prefix)
 		command = command.tail();
-	command = expand_alias(command, args).toLowerCase();
+	command = expand_alias(command, args, message).toLowerCase();
 
 	const help_index = KNOWN_COMMANDS.indexOf(command);
 

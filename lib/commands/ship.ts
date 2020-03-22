@@ -1,7 +1,7 @@
 import { createHash } from 'crypto';
 
 import { FORMATS } from '../extensions';
-import { Message, Attachment, RichEmbed } from 'discord.js';
+import { Message, MessageAttachment, MessageEmbed } from 'discord.js';
 
 import Jimp from 'jimp';
 
@@ -110,14 +110,14 @@ export default (home_scope : HomeScope) => {
 			if (e && e.message)
 				return error_msg(e);
 
-			const attachment = new Attachment(buffer, filename);
-			const embed = new RichEmbed()
+			const attachment = new MessageAttachment(buffer, filename);
+			const embed = new MessageEmbed()
 				.setColor('#b943e8')
 				.setTitle(`Love grade between \
 						  ${users[0].username} & \
 						  ${users[1].username}`.squeeze())
 				.setDescription(response)
-				.attachFile(attachment)
+				.attachFiles([attachment])
 				.setImage(`attachment://${filename}`);
 
 			message.channel.send(embed);

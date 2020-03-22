@@ -5,8 +5,57 @@ declare global {
 		HELP_SOURCE: string, HELP_KEY: string,
 		GIT_URL: string, HELP_MESSAGES: string[],
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
-		CONFIG: any, SECRETS: any, KNOWN_COMMANDS: string[],
-		expand_alias: (operator: string, args: string[]) => string
+		CONFIG: ConfigType, SECRETS: any, KNOWN_COMMANDS: string[],
+		expand_alias: (operator: string, args: string[], message: Message) => string
+	};
+
+	type MatchType = {
+		match: string | RegExp,
+		response: string
+	};
+
+	type IgnoreType = {
+		commands?: boolean,
+		commands_elevated?: boolean,
+		speech?: boolean
+	};
+
+	type ConfigType = {
+		pp_sizes: { [key: string]: number }
+		weather_locations: { [key: string]: string },
+		commands: {
+			prefix: string,
+			max_history: number,
+			not_understood: string,
+			aliases: { [key: string]: string },
+		}
+		rules: {
+			respond: MatchType[],
+			reject:  MatchType[],
+			replace: MatchType[],
+			trigger: MatchType[],
+			blacklist: {
+				channels: string[],
+				users: {
+					[key: string]: IgnoreType
+				},
+				groups: {
+					[key: string]: IgnoreType
+				}
+			},
+			whitelist: {
+				users: string[],
+				groups: string[]
+			}
+		}
+	};
+
+	type GlobalConfigType = {
+		name: string,
+		tag: string,
+		permissions: number,
+		lang: 'en' | 'en-us' | 'en-gb',
+		guilds: { [key: string]: ConfigType }
 	};
 
 	interface Array<T> {

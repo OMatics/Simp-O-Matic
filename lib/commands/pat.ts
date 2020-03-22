@@ -1,4 +1,4 @@
-import { Message, Attachment, RichEmbed } from 'discord.js';
+import { Message, MessageAttachment, MessageEmbed } from 'discord.js';
 import { FORMATS } from '../extensions';
 
 import Jimp from 'jimp';
@@ -43,17 +43,17 @@ export default (home_scope: HomeScope) => {
 				return;
 			}
 
-			const attachment = new Attachment(buffer, filename);
-			const embed = new RichEmbed()
+			const attachment = new MessageAttachment(buffer, filename);
+			const embed = new MessageEmbed()
 				.setColor('#b943e8')
 				.setTitle("Incoming pat")
 				.setDescription(description)
-				.attachFile(attachment)
+				.attachFiles([attachment])
 				.setImage(`attachment://${filename}`);
 
 			message.channel.send(embed);
 		});
 	};
 
-	pat(message.mentions.users.first().avatarURL);
+	pat(message.mentions.users.first().avatarURL());
 };

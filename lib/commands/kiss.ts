@@ -1,5 +1,5 @@
 import { FORMATS } from '.././extensions';
-import { RichEmbed, Message } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 
 export default (home_scope: HomeScope) => {
 	const { message, args }
@@ -24,7 +24,7 @@ export default (home_scope: HomeScope) => {
 		"https://i.imgur.com/8fcnQFS.gif",
 	];
 
-	const embed = new RichEmbed()
+	const embed = new MessageEmbed()
 		.setColor('#ba3d8a')
 		.setTitle("Uh-oh... You're getting a kiss!")
 		.setDescription(`${to.format(FORMATS.bold)}, you got a kissu from \

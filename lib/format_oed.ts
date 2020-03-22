@@ -1,4 +1,4 @@
-import { Attachment } from 'discord.js';
+import { MessageAttachment } from 'discord.js';
 import { pp } from './utils';
 
 // Mmm... spaghetti...
@@ -56,7 +56,7 @@ export default (res, message) => {
 					if (pron.audioFile) {
 						msg += `        Audio file: ${pron.audioFile}\n`;
 						has_sent_audio = !has_sent_audio;
-						const attach = new Attachment(
+						const attach = new MessageAttachment(
 							pron.audioFile,
 							pron.audioFile.split('/').slice(-1)[0]
 						);
