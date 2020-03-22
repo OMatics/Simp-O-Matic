@@ -88,7 +88,7 @@ export class SimpOMatic {
 		console.log('Known commands:', pp(KNOWN_COMMANDS));
 	}
 
-	expand_alias(operator, args) {
+	expand_alias(operator: string, args: string[]) {
 		const expander = unexpanded => {
 			let expansion = unexpanded;
 			if (CONFIG.commands.aliases.hasOwnProperty(unexpanded))

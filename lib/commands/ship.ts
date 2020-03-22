@@ -22,19 +22,20 @@ const RESPONSES = [
 	{ range: [93, 97], message: "They deeply love each other! :blush:" },
 	{ range: [97, 100], message: "Lovey-dovey couple!! :kissing_heart: :heart: :two_hearts:" },
 ];
-function read512bitsBigIntBigEndian(buffer){
-	let biiiiiiiigInt = BigInt(0);
-	for (var i = 512 + 64; i -= 64;)
-		biiiiiiiigInt += cryptoBuffer.readBigUInt64BE(i / 8 - 8) * BigInt(Math.pow(2, i));
-	return biiiiiiiigInt;
-}
-export default home_scope => {
+
+const BIG_ZERO = BigInt(0)
+
+const read512bitsBigIntBigEndian = (buffer : Buffer) : bigint => {
+	let val = BIG_ZERO;
+	for (let i = 512 + 64; i -= 64;)
+		val += buffer.readBigUInt64BE(i / 8 - 8) * BigInt(Math.pow(2, i));
+	return val;
+};
+
+export default (home_scope : HomeScope) => {
 	const { message, args,
 			HELP_SECTIONS,
-			KNOWN_COMMANDS }
-	: { message: Message, args: string[],
-		HELP_SECTIONS: string[],
-		KNOWN_COMMANDS: string[] } = home_scope;
+			KNOWN_COMMANDS } = home_scope;
 
 	if (args.length === 0 || args[0] === 'help'
 		|| message.mentions.users.size === 0

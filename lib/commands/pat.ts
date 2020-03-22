@@ -5,15 +5,10 @@ import Jimp from 'jimp';
 
 const TEMPLATE = "./lib/resources/templates/pat.png";
 
-interface Scope {
-	message: Message;
-	args: any;
-}
-
-export default (home_scope: Scope) => {
+export default (home_scope: HomeScope) => {
 	const { message, args } = home_scope;
 
-	if (args.length == 0 || message.mentions.users.size == 0) {
+	if (args.length === 0 || message.mentions.users.size === 0) {
 		message.channel.send(
 			"Pat someone!\n" + ".pat [@user-name]".format(FORMATS.block)
 		);
@@ -23,10 +18,10 @@ export default (home_scope: Scope) => {
 	const [x, y] = [200, 108];
 	const filename = "patted.png";
 
-	const description = 
+	const description =
 		`${message.mentions.users.first().username}`.format(FORMATS.bold)
 		+ ', you got a pat from '
-		+ `${message.author.username}`.format(FORMATS.bold) 
+		+ `${message.author.username}`.format(FORMATS.bold)
 		+ ' :blush:';
 
 	const pat = async (image: string) => {

@@ -8,7 +8,7 @@ export const deep_copy = deep_clone;
 //  would ever be greater than 2000 characters long.
 export const glue_strings = (arr: any[], limit: number = 2000) => {
 	let acc = "";
-	const new_strings = [];
+	const new_strings: string[] = [];
 	for (const msg of arr)
 		if (acc.length + msg.length >= limit) {
 			new_strings.push(acc);

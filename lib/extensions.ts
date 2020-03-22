@@ -1,5 +1,14 @@
 // Global Extensions:
 declare global {
+	type HomeScope = {
+		message: Message, args: string[],
+		HELP_SOURCE: string, HELP_KEY: string,
+		GIT_URL: string, HELP_MESSAGES: string[],
+		HELP_SECTIONS: string[] , ALL_HELP: string[],
+		CONFIG: any, SECRETS: any, KNOWN_COMMANDS: string[],
+		expand_alias: (operator: string, args: string[]) => string
+	};
+
 	interface Array<T> {
 		head(): T;
 		tail(): T[];
