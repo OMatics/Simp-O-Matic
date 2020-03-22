@@ -6,7 +6,7 @@ export default (home_scope : HomeScope) => {
 	const { uptime } = message.client;
 	let seconds = uptime / 1000;
 
-	const [days, hours] = [ 
+	const [days, hours] = [
 		Math.floor(seconds / 86400),
 		Math.floor(seconds / 3600)
 	];

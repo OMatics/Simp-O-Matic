@@ -599,18 +599,25 @@ export class SimpOMatic {
 	}
 }
 
-const on_termination = () => {
+function on_termination() {
 	// Back-up the resultant CONFIG to an external file.
 	console.log('Cleaning up...');
 	write_file(`${process.cwd()}/export-exit.json`, export_config(GLOBAL_CONFIG, {}));
 	pastebin_update(export_config(GLOBAL_CONFIG, {}));
 	// Make sure we saved ok.
-	return new Promise(res => setTimeout(() => {
-		res(null);
+	setTimeout(() => {
 		console.log('Clean finished.');
 		process.exit(0);
-	}, 6000));
-};
+	}, 6000).unref();
+}
+
+// Handle exits.
+process.on('exit',    on_termination);
+process.on('SIGINT',  on_termination);
+process.on('SIGTERM', on_termination);
+process.on('SIGUSR1', on_termination);
+process.on('SIGUSR2', on_termination);
+process.on('uncaughtException', on_termination);
 
 // CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
@@ -631,8 +638,4 @@ pastebin_latest().then(res => {
 }).catch(console.warn);
 
 
-// Handle exits.
-process.on('exit',    on_termination);
-process.on('SIGINT',  on_termination);
-process.on('SIGUSR1', on_termination);
-process.on('SIGUSR2', on_termination);
+
