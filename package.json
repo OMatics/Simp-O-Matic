@@ -7,10 +7,10 @@
         "simp"
     ],
     "license": "GPL-3.0",
-    "author": "Sammy et Frens",
+    "author": "Sammy, Danny, Bruno, et Frens",
     "version": "1.0.0",
     "engines": {
-        "node": "10.x",
+        "node": "13.x",
         "yarn": "1.22.x"
     },
     "main": "./build/main.js",

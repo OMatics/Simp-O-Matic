@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [13.11.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -25,6 +25,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
-    - run: npm build
+    - run: yarn build
       env:
         CI: true
