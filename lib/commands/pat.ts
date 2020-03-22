@@ -3,7 +3,7 @@ import { FORMATS } from '../extensions';
 
 import Jimp from 'jimp';
 
-const TEMPLATE = "./lib/resources/pat-template.png";
+const TEMPLATE = "./lib/resources/templates/pat.png";
 
 interface Scope {
 	message: Message;
