@@ -13,7 +13,7 @@ interface Scope {
 export default (home_scope: Scope) => {
 	const { message, args } = home_scope;
 
-	if (args.length == 0) {
+	if (args.length == 0 || message.mentions.users.size == 0) {
 		message.channel.send(
 			"Pat someone!\n" + ".pat [@user-name]".format(FORMATS.block)
 		);
