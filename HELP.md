@@ -94,6 +94,7 @@
 - `!uwu [phrase]` — “uwuify” your text.
 - `!fortune` — Brings you fortune.
 - `!motivation` — Get a motivational quote (for when you're feeling a lil down).
+- `!pat [@user-name]` — Give someone a pat on the head.
 
 ▬▬▬
 
