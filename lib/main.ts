@@ -220,7 +220,8 @@ export class SimpOMatic {
 				break;
 			} case 'set': {
 				if (args.length < 2) {
-					message.answer('Please provide two arguments.\nSee `!help set`.');
+					message.answer(`Please provide two arguments.\n`
+						+ `See \`${CONFIG.commands.prefix}help set\`.`);
 					break;
 				}
 				try {
@@ -311,7 +312,7 @@ export class SimpOMatic {
 						}
 					}
 					message.answer('Invalid number of arguments to alias,\n'
-						+ 'Please see `!help alias`.');
+						+ `Please see \`${CONFIG.commands.prefix}help alias\`.`);
 				}
 				break;
 			} case 'search': {
