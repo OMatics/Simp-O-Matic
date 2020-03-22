@@ -395,9 +395,9 @@ export class SimpOMatic {
 				});
 				break;
 			} case 'export': {
-				let export_string = export_config(CONFIG, {});
+				let export_string = export_config(GLOBAL_CONFIG, {});
 				if (export_string.length > 1980) {
-					export_string = export_config(CONFIG, { ugly: true });
+					export_string = export_config(GLOBAL_CONFIG, { ugly: true });
 				}
 
 				const today = (new Date())
@@ -409,8 +409,8 @@ export class SimpOMatic {
 
 				const file_name = `export-${today}.json`;
 				const file_dest = `${process.cwd()}/${file_name}`;
-				write_file(file_dest, export_config(CONFIG, {}));
-				pastebin_update(export_config(CONFIG, {}));
+				write_file(file_dest, export_config(GLOBAL_CONFIG, {}));
+				pastebin_update(export_config(GLOBAL_CONFIG, {}));
 
 				if (export_string.length < 1980) {
 					message.channel.send("```json\n" + export_string + "\n```");
