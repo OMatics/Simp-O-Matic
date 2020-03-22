@@ -66,6 +66,5 @@ export default (res, message) => {
 			}
 		}
 	}
-	console.log('Became:', msg);
 	return msg;
 };

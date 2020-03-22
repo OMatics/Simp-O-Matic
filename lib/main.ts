@@ -18,14 +18,12 @@ import './extensions';
 import { deep_merge, pp, compile_match,
 		 export_config, access, glue_strings,
 		 deep_copy, recursive_regex_to_string } from './utils';
-import format_oed from './format_oed';  // O.E.D. JSON entry to markdown.
 
 // Default bot configuration for a Guild, JSON.
 import DEFAULT_GUILD_CONFIG from './default';
 
 // API specific modules.
 import web_search from './api/google';
-import oed_lookup from './api/oxford';
 import { pastebin_latest,
 		 pastebin_update,
 		 pastebin_url } from './api/pastebin';
@@ -194,207 +192,6 @@ export class SimpOMatic {
 				message.reply(`All known commands (excluding aliases): \
 					${joined_commands} and ${final_command}`.squeeze());
 				break;
-			} case 'get': {
-				if (args.length === 0) {  // Or use '.' as argument.
-					message.answer('To view the entire object, use the `!export` command.');
-					break;
-				}
-				// Accessing invalid fields will be caught.
-				try {
-					const accessors = args[0].trim().split('.').squeeze();
-
-					const resolution = JSON.stringify(
-						recursive_regex_to_string(
-							deep_copy(access(CONFIG, accessors))), null, 4);
-
-					const msgs = glue_strings(resolution.trim()
-							.replace(/\n/g, '\n@@@').split('@@@'), 1980)
-						.map(s => '```js\n' + s + '\n```');
-
-					for (const msg of msgs)
-						message.channel.send(msg);
-				} catch (e) {
-					message.channel.send(`Invalid object access-path\n`
-						+ `Problem: \`\`\`\n${e}\n\`\`\``);
-				}
-				break;
-			} case 'set': {
-				if (args.length < 2) {
-					message.answer(`Please provide two arguments.\n`
-						+ `See \`${CONFIG.commands.prefix}help set\`.`);
-					break;
-				}
-				try {
-					const accessors = args[0].trim().split('.').squeeze();
-					const parent = accessors.pop();
-					const obj = access(CONFIG, accessors);
-					obj[parent] = JSON.parse(args[1]);
-					const normal = JSON.stringify(obj[parent], null, 4);
-
-					message.channel.send(`Assignment successful.
-						\`${args[0].trim()} = ${normal}\``.squeeze());
-				} catch (e) {
-					message.channel.send(`Invalid object access-path,`
-						+ `nothing set.\nProblem: \`\`\`\n${e}\n\`\`\``);
-				}
-				break;
-			} case 'alias': {
-				const p = CONFIG.commands.prefix;
-
-				if (args.length === 0 || args[0] === 'ls') {
-					const lines = Object.keys(CONFIG.commands.aliases)
-						.map((e, i) => `${i + 1}.  \`${p}${e}\` ↦ \`${p}${CONFIG.commands.aliases[e].shorten(60)}\`\n`);
-					message.answer('List of **Aliases**:\n');
-					lines.unshift('**KEY:  `alias` ↦ `command it maps to`**\n\n');
-
-					for (const msg of glue_strings(lines))
-						message.channel.send(msg);
-
-					break;
-				}
-
-				// Parse `!alias rm` command.
-				if (args[0] === 'rm' && args.length > 1) {
-					const aliases = CONFIG.commands.aliases;
-					const keys = Object.keys(aliases);
-					let match, index, alias;
-					if (match = args[1].match(/^#?(\d+)/)) {
-						index = Number(match[1]) - 1;
-						if (index >= keys.length) {
-							message.answer('No alias exists at such an index'
-							 + ` (there are only ${keys.length} indices).`);
-							break;
-						}
-						alias = keys[index];
-					} else {
-						alias = args[1];
-						if (alias[0] === p) alias = alias.tail();
-						index = keys.indexOf(alias);
-						if (index === -1) {
-							message.answer(`There does not exist any alias \
-								with the name \`${p}${alias}\`.`.squeeze());
-							break;
-						}
-					}
-					keys.each((_, i) => i === index
-						? delete aliases[alias]
-						: null);
-					message.answer(`Alias \`${p}${alias}\` at index \
-						number ${index + 1}, has been deleted.`.squeeze());
-					break;
-				}
-
-				// Check last:
-				if (args.length > 1) {  // Actually aliasing something.
-					args[0] = args[0].trim();
-					args[1] = args[1].trim();
-
-					if (args[0][0] === CONFIG.commands.prefix)
-						args[0] = args[0].tail();
-
-					if (args[1][0] === CONFIG.commands.prefix)
-						args[1] = args[1].tail();
-
-					CONFIG.commands.aliases[args[0]] = args.tail().join(' ');
-					message.channel.send(
-						'**Alias added:**\n >>> ' +
-						`\`${p}${args[0]}\` now maps to \`${p}${args.tail().join(' ')}\``);
-				} else {
-					if (args.length === 1) {
-						if (args[0] in CONFIG.commands.aliases) {
-							const aliases = Object.keys(CONFIG.commands.aliases);
-							const n = aliases.indexOf(args[0]) + 1;
-							message.answer(`${n}.  \`${p}${args[0]}\` ↦ \`${p}${CONFIG.commands.aliases[args[0]]}\``);
-							break;
-						} else {
-							message.answer('No such alias found.');
-							break;
-						}
-					}
-					message.answer('Invalid number of arguments to alias,\n'
-						+ `Please see \`${CONFIG.commands.prefix}help alias\`.`);
-				}
-				break;
-			} case 'search': {
-				const query = args.join(' ').toLowerCase();
-				const channel = message.channel as TextChannel;
-
-				web_search({
-					kind: 'web',
-					query,
-					key: SECRETS.google.api_key,
-					id: SECRETS.google.search_id,
-					nsfw: channel.nsfw
-				}).then((res) => message.answer(res))
-				  .catch(e => message.answer(e));
-				break;
-			} case 'image': {
-				const query = args.join(' ').toLowerCase();
-				const channel = message.channel as TextChannel;
-
-				web_search({
-					kind: 'image',
-					query,
-					key: SECRETS.google.api_key,
-					id: SECRETS.google.search_id,
-					nsfw: channel.nsfw
-				}).then(res => message.answer(res))
-				  .catch(er => message.answer(er));
-				break;
-			} case 'define': {
-				message.answer('Looking in the Oxford English Dictionary...');
-				const query = args.join(' ');
-
-				const p = CONFIG.commands.prefix;
-				const nasty_reply = `Your word (‘${query}’) is nonsense, either \
-					that or they've forgotten to index it.
-					I'll let you decide.
-
-					P.S. Try the _Urban Dictionary_ \
-					(\`${p}urban ${query}\`)`.squeeze();
-
-				oed_lookup({
-					word: query,
-					lang: GLOBAL_CONFIG.lang,
-					id: SECRETS.oxford.id,
-					key: SECRETS.oxford.key
-				}).then(res => {
-					console.log('Dictionary response:', pp(res));
-					if (!res['results']
-						|| res['results'].length === 0
-						|| !res['results'][0].lexicalEntries
-						|| res['results'][0].lexicalEntries.length === 0
-						|| res['results'][0].lexicalEntries[0].entries.length === 0
-						|| res['results'][0].lexicalEntries[0].entries[0].senses.length === 0) {
-						message.answer(nasty_reply);
-						return;
-					}
-					// Format the dictionary entry as a string.
-					const msg = format_oed(res, message);
-
-					if (msg.length >= 2000) { // This should be rare (try defining `run').
-						let part_msg = "";
-						// This assumes no two lines would ever
-						//   amount to more than 2000 characters.
-						for (const line of msg.split(/\n/g))
-							if (part_msg.length + line.length >= 2000) {
-								message.channel.send(part_msg);
-								part_msg = line + '\n';
-							} else { part_msg += line + '\n'; }
-						// Send what's left over, and not >2000 characters.
-						message.channel.send(part_msg);
-
-						return;
-					}
-					message.channel.send(msg);
-				}).catch(e => {
-					if (e.status === 404) {
-						message.channel.send(`That 404'd.  ${nasty_reply}`);
-					} else {
-						message.channel.send(`Error getting definition:\n${e}`);
-					}
-				});
-				break;
 			} case 'export': {
 				let export_string = export_config(GLOBAL_CONFIG, {});
 				if (export_string.length > 1980) {
@@ -424,10 +221,10 @@ export class SimpOMatic {
 					Pastebin file: ${pastebin_url}`.squeeze());
 				break;
 			} case 'ls': {
-			   const dirs = {
+			   const dirs = JSON.stringify({
 					'__dirname': __dirname,
 					'process.cwd()': process.cwd()
-				};
+				});
 				message.channel.send(`Directories:\n\`\`\`json\n${dirs}\n\`\`\``);
 				break;
 			} case '': {
@@ -636,6 +433,4 @@ pastebin_latest().then(res => {
 	// Start The Simp'O'Matic.
 	SimpOMatic.start();
 }).catch(console.warn);
-
-
 
