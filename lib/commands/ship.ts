@@ -25,7 +25,7 @@ const RESPONSES = [
 function read512bitsBigIntBigEndian(buffer){
 	let biiiiiiiigInt = BigInt(0);
 	for (var i = 512 + 64; i -= 64;)
-		biiiiiiiigInt += cryptoBuffer.readBigUInt64BE(i / 8 - 8) * BigInt(Math.pow(2, i));
+		biiiiiiiigInt += buffer.readBigUInt64BE(i / 8 - 8) * BigInt(Math.pow(2, i));
 	return biiiiiiiigInt;
 }
 export default home_scope => {
