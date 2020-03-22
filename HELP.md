@@ -30,7 +30,7 @@
 - `!id <who>` — Print ID of user, or self if no-one is specified.
 - `!get [accessor]` — Get a runtime configuration variable, using JavaScript object dot-notation.
 - `!set [accessor] [json-value]` — Set a value in the runtime JavaScript configuration object.
-- `!uptime` **〈not impl.〉** — Display how long the bot has been running for.
+- `!uptime` — Display how long the bot has been running for.
 - `!clear #[number-of-messages] <@user-name>` **〈not impl.〉** — Clear a number of messages, from latest sent in the current channel.  Will delete any recent messages, unless a specific username is provided, in which case it will only clear messages sent from that user.
 - `!alias` — Manage aliases to commands:
   - **Have a look at the aliases list, for alternatives to long commands!**
