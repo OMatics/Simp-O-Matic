@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 
 import { FORMATS } from '../extensions';
 import { Message, Attachment, RichEmbed } from 'discord.js';
@@ -22,7 +22,12 @@ const RESPONSES = [
 	{ range: [93, 97], message: "They deeply love each other! :blush:" },
 	{ range: [97, 100], message: "Lovey-dovey couple!! :kissing_heart: :heart: :two_hearts:" },
 ];
-
+function read512bitsBigIntBigEndian(buffer){
+	let biiiiiiiigInt = BigInt(0);
+	for (var i = 512 + 64; i -= 64;)
+		biiiiiiiigInt += cryptoBuffer.readBigUInt64BE(i / 8 - 8) * BigInt(Math.pow(2, i));
+	return biiiiiiiigInt;
+}
 export default home_scope => {
 	const { message, args,
 			HELP_SECTIONS,
@@ -76,11 +81,9 @@ export default home_scope => {
 		return `${percentage} ${progress_bar}`;
 	};
 
-	const die = crypto
-		.createHash('md5')
-		.update(users.reduce((a, c) =>
-			a + BigInt(c.id), BigInt(0))
-		.toString()).digest().readUInt16LE() % 101;
+	const die = Number(read512bitsBigIntBigEndian(createHash('sha512')
+		.update(users.reduce((a, c) => a + BigInt(c.id), BigInt(0))
+		.toString()).digest()) % BigInt(101)); // ^ < 80 cols
 
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
