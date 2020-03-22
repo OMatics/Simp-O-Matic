@@ -1,4 +1,4 @@
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args, HELP_SECTIONS, KNOWN_COMMANDS } = home_scope;
 
 	if (args.length === 0 || args[0] === 'help') {

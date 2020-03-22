@@ -1,8 +1,8 @@
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 
 const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args, SECRETS, CONFIG } = home_scope;
 
 	if (args[0] === 'set' && args.length > 1){
@@ -15,7 +15,11 @@ export default home_scope => {
 			: CONFIG.weather_locations[message.author.id] || 'Cuckfield';
 		const key = SECRETS.openweather.key;
 
-		const error = e => message.answer(`Error getting weather\n\`\`\`${e}\`\`\``);
+		const error = (e: Response) => {
+			message.answer(`Error getting weather\n\`\`\`${e}\`\`\``);
+			return e;
+		};
+
 		fetch(`${WEATHER_URL}?q=${location}&appid=${key}&units=metric`)
 			.catch(error)
 			.then(res => res.json())

@@ -45,7 +45,7 @@ interface Scope {
     args: string[];
 }
 
-export default home_scope => {
+export default (home_scope: HomeScope) => {
     const { message, args } : Scope = home_scope;
 
     if (args.length === 0 || args[0] === 'help') {

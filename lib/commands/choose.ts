@@ -1,4 +1,4 @@
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args } = home_scope;
 	const a = args.length
 		? args.join(' ').split(/\s*(?:,|or)\s*/)

@@ -1,5 +1,5 @@
 import yt_search from '../api/yt_scrape';
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args } = home_scope;
 	const query = args.join(' ').trim();
 	if (query.length === 0 || args.length === 0)

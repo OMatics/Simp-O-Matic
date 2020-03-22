@@ -1,4 +1,4 @@
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args, HELP_SECTIONS,
 			KNOWN_COMMANDS, CONFIG, ALL_HELP,
 			HELP_KEY, HELP_SOURCE, expand_alias } = home_scope;

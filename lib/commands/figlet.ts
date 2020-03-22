@@ -1,5 +1,5 @@
 import { execFileSync as exec_file_sync } from 'child_process';
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	let { message, args } = home_scope;
 	if (args.length === 0)
 		args = ['-f', 'Train', 'Simp'];

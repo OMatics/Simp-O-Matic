@@ -1,6 +1,6 @@
 import urban_search from '../api/urban';
 import '../extensions';
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args, SECRETS } = home_scope;
 	const query = args.join(' ');
 	message.answer('Searching Urban Dictionary...');

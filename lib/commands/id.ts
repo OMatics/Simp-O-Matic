@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message } : { message : Message } = home_scope;
 	const rep = [];
 	['channel', 'user', 'role'].forEach(n =>

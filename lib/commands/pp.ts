@@ -1,4 +1,4 @@
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, CONFIG } = home_scope;
 
 	let user = message.author.id;

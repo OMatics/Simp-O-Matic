@@ -28,7 +28,7 @@ const drugs = {
 	'memantine': [30, 60, 120, 180]
 };
 
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message } = home_scope;
 	const drug = Object.keys(drugs)[Math.floor(25 * Math.random())];
 	message.answer(`${drugs[drug][Math.floor(Math.random()

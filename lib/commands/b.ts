@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-export default home_scope => {
+export default (home_scope: HomeScope) => {
     const { message, args }
         : { message: Message, args: string[] } = home_scope;
 

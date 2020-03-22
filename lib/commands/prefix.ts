@@ -1,4 +1,4 @@
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	const { message, args, CONFIG } = home_scope;
 	message.answer(args.length === 1
 		? args[0].length === 1

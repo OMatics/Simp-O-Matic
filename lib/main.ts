@@ -89,7 +89,7 @@ export class SimpOMatic {
 	}
 
 	expand_alias(operator: string, args: string[]) {
-		const expander = unexpanded => {
+		const expander = (unexpanded: string) => {
 			let expansion = unexpanded;
 			if (CONFIG.commands.aliases.hasOwnProperty(unexpanded))
 				expansion = CONFIG.commands.aliases[unexpanded].trim().squeeze();
@@ -161,16 +161,18 @@ export class SimpOMatic {
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
 
+		const homescope : HomeScope = {  // Basic 'home-scope' is passed in.
+			message, args,
+			HELP_SOURCE, HELP_KEY, GIT_URL,
+			HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
+			CONFIG, SECRETS, KNOWN_COMMANDS,
+			expand_alias: this.expand_alias };
+
 		const commands = read_dir(`${__dirname}/commands`)
 			.map(n => n.slice(0, -3));
 		if (commands.includes(operator))
 			return import(`./commands/${operator}`).then(mod =>
-				mod.default({  // Basic 'home-scope' is passed in.
-					message, args,
-					HELP_SOURCE, HELP_KEY, GIT_URL,
-					HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
-					CONFIG, SECRETS, KNOWN_COMMANDS,
-					expand_alias: this.expand_alias }));
+				mod.default(homescope));
 
 		switch (operator) {
 			case 'commands': {

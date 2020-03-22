@@ -1,4 +1,4 @@
-export default home_scope => {
+export default (home_scope: HomeScope) => {
 	// TODO: if no args, mock the previous message,
 	//   but this could be implemented via .alias and !!^.
 	const { message, args } = home_scope;
