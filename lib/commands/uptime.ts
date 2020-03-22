@@ -15,7 +15,7 @@ export default (home_scope : HomeScope) => {
 
 	const [mins, secs] = [
 		Math.floor(seconds / 60),
-		seconds % 60
+		(seconds % 60).toFixed(2)
 	];
 
 	message.channel.send(
