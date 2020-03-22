@@ -1,9 +1,10 @@
+import { prefix_friendly, help_info } from '../utils';
+
 export default (home_scope: HomeScope) => {
-	const { message, args, HELP_SECTIONS, KNOWN_COMMANDS } = home_scope;
+	const { message, args, CONFIG } = home_scope;
 
 	if (args.length === 0 || args[0] === 'help') {
-		message.channel.send(
-			HELP_SECTIONS[KNOWN_COMMANDS.indexOf('8ball')].trim());
+		message.channel.send(help_info('8ball', CONFIG.commands.prefix));
 		return;
 	}
 

@@ -1,8 +1,9 @@
 import { createHash } from 'crypto';
 
 import { FORMATS } from '../extensions';
-import { Message, MessageAttachment, MessageEmbed } from 'discord.js';
+import { help_info } from '../utils';
 
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 import Jimp from 'jimp';
 
 const TEMPLATE = "./lib/resources/templates/ship.png";
@@ -23,7 +24,7 @@ const RESPONSES = [
 	{ range: [97, 100], message: "Lovey-dovey couple!! :kissing_heart: :heart: :two_hearts:" },
 ];
 
-const BIG_ZERO = BigInt(0)
+const BIG_ZERO = BigInt(0);
 
 const read512bitsBigIntBigEndian = (buffer : Buffer) : bigint => {
 	let val = BIG_ZERO;
@@ -33,15 +34,12 @@ const read512bitsBigIntBigEndian = (buffer : Buffer) : bigint => {
 };
 
 export default (home_scope : HomeScope) => {
-	const { message, args,
-			HELP_SECTIONS,
-			KNOWN_COMMANDS } = home_scope;
+	const { message, args, CONFIG } = home_scope;
 
 	if (args.length === 0 || args[0] === 'help'
 		|| message.mentions.users.size === 0
 		|| message.mentions.users.size > 2) {
-		message.channel.send(
-			HELP_SECTIONS[KNOWN_COMMANDS.indexOf('ship')].trim());
+		message.channel.send(help_info('ship', CONFIG.commands.prefix));
 		return;
 	}
 	const users = [message.mentions.users.size === 1

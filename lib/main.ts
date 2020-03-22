@@ -52,7 +52,7 @@ const SECRETS = JSON.parse(shell('sh ./generate_secrets.sh').toString());
 const [HELP_KEY, HELP, HELP_SOURCE] = read_file('./HELP.md')
 	.toString().split('▬▬▬');
 
-const HELP_SECTIONS = HELP.toString()
+export const HELP_SECTIONS = HELP.toString()
 	.replace(/\n  -/g, '\n      \u25b8')
 	.replace(/\n- /g, '@@@\n\u2b25 ')
 	.split('@@@')
@@ -68,7 +68,7 @@ const ALL_HELP = glue_strings([
 	'\n▬▬▬\n', HELP_SOURCE
 ]);
 
-const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
+export const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
 	e.slice(5).replace(/(\s.*)|(`.*)/g, '').toLowerCase());
 
 const GIT_URL = 'https://github.com/Demonstrandum/Simp-O-Matic';

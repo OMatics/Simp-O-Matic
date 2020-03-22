@@ -1,9 +1,7 @@
-import { glue_strings } from './utils';
+import { glue_strings, help_info } from './utils';
 
-export const rule = (rule_kind: string) => home_scope => {
-	const { message, args,
-		CONFIG, KNOWN_COMMANDS,
-		HELP_SECTIONS } = home_scope;
+export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
+	const { message, args, CONFIG } = home_scope;
 	const rules_array = CONFIG.rules[rule_kind];
 
 	if (args.length === 0 || args[0] === 'ls') {
@@ -29,7 +27,7 @@ export const rule = (rule_kind: string) => home_scope => {
 
 		const index = Number(match[1]) - 1;
 		if (index >= rules_array.length)
-			return message(`Cannot delete rule at index ${index + 1}...`
+			return message.answer(`Cannot delete rule at index ${index + 1}...`
 				+ ` There are only ${rules_array.length} ${rule_kind} rules.`);
 
 		message.answer(`Rule matching \`${rules_array[index].match}\``
@@ -94,6 +92,6 @@ export const rule = (rule_kind: string) => home_scope => {
 	} else {
 		message.answer('Insufficient or nonsensical arguments provided.');
 		message.reply(`Here's how you use the command:\n`
-			+ HELP_SECTIONS[KNOWN_COMMANDS.indexOf(rule_kind)]);
+			+ help_info(rule_kind, CONFIG.commands.prefix));
 	}
 };

@@ -1,6 +1,9 @@
 import { inspect } from 'util';
 import deep_clone from 'deepcopy';
+
+import { HELP_SECTIONS, KNOWN_COMMANDS } from './main';
 import './extensions';
+import prefix from './commands/prefix';
 
 export const deep_copy = deep_clone;
 
@@ -17,6 +20,17 @@ export const glue_strings = (arr: any[], limit: number = 2000) => {
 	new_strings.push(acc);
 	return new_strings;
 };
+
+export const prefix_friendly = (str: string, prefix: string) => str
+	.replace(/`/g, '@@@`').split('@@@')
+	.map((s, i) => (i % 2 === 1)
+		? s.replace(/([^!])!([^!])/g, `$1${prefix}$2`)
+		: s)
+	.join('');
+
+export const help_info = (command: string, prefix: string) => prefix_friendly(
+	HELP_SECTIONS[KNOWN_COMMANDS.indexOf(command)].trim(),
+	prefix);
 
 export const access = (obj: any, shiftable: string[]) =>
 	(shiftable.length === 0)
