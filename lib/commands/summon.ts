@@ -14,7 +14,10 @@ export default (home_scope : HomeScope) => {
 		return;
 	}
 
-	message.mentions.users.first().send(
-		`Psssst. Hey, come over to ${message.guild.name} :point-left:`
-	);
+	message.client.fetchUser(message.mentions.users.first().id)
+		.then(user => {
+			user.send(
+				`Psssst. Hey, come over to ${message.guild.name} :point-left:`
+			)
+	});
 };
