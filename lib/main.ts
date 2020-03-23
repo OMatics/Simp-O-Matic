@@ -440,21 +440,19 @@ function on_termination(error_type) {
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
 
-	if (error_type === 'exit')
-		write_file(
-			`${process.cwd()}/export-exit.json`,
-			export_config(GLOBAL_CONFIG, {}));
+	write_file(
+		`${process.cwd()}/export-exit.json`,
+		export_config(GLOBAL_CONFIG, {}));
 
-	if (error_type === 'beforeExit') {
-		pastebin_update(export_config(GLOBAL_CONFIG, {}))
-			.then(_ => console.log('Finished pastebin update.'))
-			.catch(e => console.warn('Pastebin not saved!', e));
-		// Message all system channels.
-		console.log('Sending system messages.');
-		system_message(CLIENT,
-			`Bot got \`${error_type}\` signal.\n`
-			+ `**Shutting down...**`);
-	}
+	pastebin_update(export_config(GLOBAL_CONFIG, {}))
+		.then(_ => console.log('Finished pastebin update.'))
+		.catch(e => console.warn('Pastebin not saved!', e));
+	// Message all system channels.
+	console.log('Sending system messages.');
+	system_message(CLIENT,
+		`Bot got \`${error_type}\` signal.\n`
+		+ `**Shutting down...**`);
+
 	// Make sure we saved ok.
 	setTimeout(() => {
 		console.log('Clean finished.');

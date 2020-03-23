@@ -33,8 +33,7 @@ export default (home_scope: HomeScope) => {
 			const tz = d.timezone / 3600; // Now in hours.
 			const tz_frac = tz % 1; // Fractional part in hours.
 
-			if (tz_frac === 0)
-				date.setMinutes(date.getMinutes() + tz_frac * 60);
+			date.setMinutes(date.getMinutes() + tz_frac * 60);
 
 			const hour = ((24 + date.getUTCHours() + tz - tz_frac) % 24)
 				.toFixed().padStart(2, '0');
@@ -51,7 +50,7 @@ export default (home_scope: HomeScope) => {
 						{ name: 'daytime',   value: d.main.temp_max + '°C', inline: true },
 						{ name: 'nighttime', value: d.main.temp_min + '°C', inline: true },
 						{ name: 'humidity',   value: d.main.humidity +  '%', inline: true },
-						{ name: 'wind', value: `${directions[Math.round(d.wind.deg / 45)]} ${d.wind.speed} m/s`, inline: true })
+						{ name: 'wind', value: `${directions[Math.round(d.wind.deg / 45)]} ${d.wind.speed} ㎧`, inline: true })
 				: new MessageEmbed()
 					.setTitle(`Cannot get weather information from ${location}.`);
 
