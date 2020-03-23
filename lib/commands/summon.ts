@@ -1,20 +1,14 @@
-import { FORMATS } from '../extensions';
+import { help_info } from '../utils';
 
 export default (home_scope : HomeScope) => {
-	const { message, args } = home_scope;
+	const { message, args, CONFIG } = home_scope;
 
 	if (args.length === 0 || args[0] === 'help'
-		|| message.mentions.users.size == 0) {
-		message.answer(
-			"Poke someone and I'll summon them over here!\n"
-				.format(FORMATS.italics) +
-			".summon [@user-name]"
-				.format(FORMATS.block)
-		);
-		return;
-	}
+	|| message.mentions.users.size === 0)
+		return message.reply(help_info('summon', CONFIG.commands.prefix));
 
 	message.mentions.users.first().send(
-		`Psssst. Hey, come over to ${message.guild.name} :point-left:`
+		`Psssst. Hey, come over to ${message.guild.name} :point_left:\n`
+		+ `(${message.member.user.tag} is trying to summon you).`
 	);
 };
