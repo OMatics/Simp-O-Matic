@@ -14,7 +14,7 @@ export default (home_scope : HomeScope) => {
 		return;
 	}
 
-	message.mentions.users.first().sendMessage(
+	message.mentions.users.first().send(
 		`Psssst. Hey, come over to ${message.guild.name} :point-left:`
 	);
 };
