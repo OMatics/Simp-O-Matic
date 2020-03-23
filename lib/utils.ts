@@ -108,12 +108,12 @@ export const recursive_regex_to_string = o => {
 
 export const export_config = (obj: Types.GlobalConfig, { ugly = false }) => {
 	const o: Types.GlobalConfig = recursive_regex_to_string(deep_clone(obj));
+
 	// Make sure all rules are unique,
 	//  i.e. eliminate duplicate rules.
-
 	for (const guild in obj.guilds)
 		if (obj.guilds.hasOwnProperty(guild))
-			['respond', 'reject', 'replace']
+			['respond', 'reject', 'replace', 'trigger']
 				.each(name => o.guilds[guild].rules[name] = o.guilds[guild].rules[name]
 					.map(JSON.stringify)
 					.unique()

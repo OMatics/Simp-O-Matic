@@ -521,7 +521,7 @@ pastebin_latest().then(res => {
 	// Precompile all regular-expressions in known places.
 	for(const guild in GLOBAL_CONFIG.guilds)
 		if (GLOBAL_CONFIG.guilds.hasOwnProperty(guild))
-			['respond', 'reject', 'replace']
+			['respond', 'reject', 'replace', 'trigger']
 				.each(name =>
 					GLOBAL_CONFIG.guilds[guild].rules[name]
 						.mut_map(compile_match));
