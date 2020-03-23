@@ -33,12 +33,12 @@ export default (home_scope: HomeScope) => {
 				const embed = d.main
 					? new MessageEmbed()
 						.setTitle(`${d.main.temp}°C (feels like ${d.main.feels_like}°C)`)
-						.setAuthor(`${hour}:${date.getMinutes()} {d.name}, ${country}`)
+						.setAuthor(`${hour}:${date.getMinutes()} ${d.name}, ${country}`)
 						.setDescription(d.weather[0].description)
 						.setThumbnail(`https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`)
 						.addFields(
-							{ name: 'Day temp', value: d.main.temp_max + '°C', inline: true },
-							{ name: 'Night temp', value: d.main.temp_min + '°C', inline: true })
+							{ name: 'day temp', value: d.main.temp_max + '°C', inline: true },
+							{ name: 'night temp', value: d.main.temp_min + '°C', inline: true })
 				: new MessageEmbed()
 					.setTitle(`Cannot get weather information from ${location}.`);
 
