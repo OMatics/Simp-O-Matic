@@ -35,11 +35,20 @@ cat <<- JSON
         "auth_provider_x509_cert_url": "$GOOGLE_AUTH_PROVIDER_X509_CERT_URL",
         "client_x509_cert_url": "$GOOGLE_CLIENT_X509_CERT_URL"
     },
+    "yandex": {
+        "geocoder": {
+            "key": "$YANDEX_GEOCODER_KEY"
+        }
+    },
     "openweather": {
         "key": "$OPENWEATHER_KEY"
     },
+    "darksky": {
+        "key": "$DARKSKY_KEY"
+    },
     "pastebin": {
-        "key": "$PASTEBIN_KEY"
+        "key": "$PASTEBIN_KEY",
+        "password": "$PASTEBIN_PASSWORD"
     }
 }
 JSON
