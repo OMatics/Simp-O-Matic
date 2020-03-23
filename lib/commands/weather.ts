@@ -48,8 +48,8 @@ export default (home_scope: HomeScope) => {
 					.setDescription(d.weather[0].description)
 					.setThumbnail(`https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`)
 					.addFields(
-						{ name: 'day-time',   value: d.main.temp_max + '°C', inline: true },
-						{ name: 'night-time', value: d.main.temp_min + '°C', inline: true },
+						{ name: 'daytime',   value: d.main.temp_max + '°C', inline: true },
+						{ name: 'nighttime', value: d.main.temp_min + '°C', inline: true },
 						{ name: 'humidity',   value: d.main.humidity +  '%', inline: true },
 						{ name: 'wind', value: `${directions[Math.round(d.wind.deg / 45)]} ${d.wind.speed} m/s`, inline: true })
 				: new MessageEmbed()

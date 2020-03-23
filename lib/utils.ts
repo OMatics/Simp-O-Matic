@@ -3,7 +3,6 @@ import deep_clone from 'deepcopy';
 
 import { HELP_SECTIONS, KNOWN_COMMANDS } from './main';
 import './extensions';
-import prefix from './commands/prefix';
 
 export const deep_copy = deep_clone;
 
