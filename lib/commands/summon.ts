@@ -10,5 +10,8 @@ export default (home_scope : HomeScope) => {
 	message.client.users.fetch(message.mentions.users.first().id)
 		.then(user => user.send(
 			`Psssst. Hey, come over to ${message.guild.name} :point_left:\n`
-			+ `(${message.member.user.tag} is trying to summon you).`));
+			+ `(${message.member.user.tag} is trying to summon you).`))
+		.catch(err => {
+			message.channel.send(err)
+		});
 };
