@@ -30,6 +30,10 @@
 - `!id <who>` — Print ID of user, or self if no-one is specified.
 - `!get [accessor]` — Get a runtime configuration variable, using JavaScript object dot-notation.
 - `!set [accessor] [json-value]` — Set a value in the runtime JavaScript configuration object.
+- `!system` — Get messages about current bot-status.
+  - `!system status` — Get brief information about current bot-status.
+  - `!system channel` — Get the currently set channel for receiving technical messages.
+  - `!system channel [#channel-name]` — Set the new system-info messages channel.
 - `!uptime` — Display how long the bot has been running for.
 - `!clear #[number-of-messages] <@user-name>` **〈not impl.〉** — Clear a number of messages, from latest sent in the current channel.  Will delete any recent messages, unless a specific username is provided, in which case it will only clear messages sent from that user.
 - `!alias` — Manage aliases to commands:
@@ -84,7 +88,7 @@
 - `!figlet <options> [phrase]` — Print text in ASCII format, using Unix-like command-line arguments.
 - `!roll <upper-bound>` — Roll a dice, default upper bound is 6.
 - `!8ball` — Ask a question, receive a response.
-- `!summon [@user-name]` **〈not impl.〉** — Summon someone to the server by making the bot poke them in their DMs about it.
+- `!summon [@user-name]` — Summon someone to the server by making the bot poke them in their DMs about it.
 - `!mock [phrase]` — Say something, _bUt iN a MocKiNg WaY_...
 - `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
 - `!ship [@user-name] [@user-name]` — Shows the love grade between two people.
