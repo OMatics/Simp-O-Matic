@@ -231,7 +231,7 @@ Number.prototype.to_metric = function (figures) {
 };
 
 Number.prototype.truncate = function() {
-	return Number(this.toFixed());
+	return this.valueOf() - (this.valueOf() % 1);
 };
 
 // Discord Extensions:
