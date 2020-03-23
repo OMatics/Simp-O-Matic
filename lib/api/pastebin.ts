@@ -22,9 +22,11 @@ export const pastebin_update = async (stringified : string) => {
 
 		return await paste.edit(PASTE_ID, {
 			contents: stringified
-		}, async (worked, _) => {
+		}, (worked, _) => {
 			if (!worked)
-				return console.log('Error updating paste...');
+				return Promise.reject('Error updating paste...');
+			return Promise.resolve('Pastebin edit successful!');
 		});
 	});
+	return Promise.resolve('Pastebin update successful');
 };
