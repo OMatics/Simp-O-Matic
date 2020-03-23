@@ -55,5 +55,5 @@ export default (home_scope: HomeScope) => {
 		});
 	};
 
-	pat(message.mentions.users.first().avatarURL());
+	pat(message.mentions.users.first().avatarURL({ 'format': 'png' }));
 };
