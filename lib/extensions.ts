@@ -21,6 +21,7 @@ declare global {
 	};
 
 	type ConfigType = {
+		system_channel: string,
 		pp_sizes: { [key: string]: number }
 		weather_locations: { [key: string]: string },
 		commands: {

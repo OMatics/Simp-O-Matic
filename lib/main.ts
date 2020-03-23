@@ -23,7 +23,6 @@ import { deep_merge, pp, compile_match,
 import DEFAULT_GUILD_CONFIG from './default';
 
 // API specific modules.
-import web_search from './api/google';
 import { pastebin_latest,
 		 pastebin_update,
 		 pastebin_url } from './api/pastebin';
@@ -77,6 +76,17 @@ console.log('File/Execution locations:', {
 	'process.cwd()': process.cwd()
 });
 
+const system_message = (client: Client, msg: string) => {
+	for (const guild in GLOBAL_CONFIG.guilds)
+		if (GLOBAL_CONFIG.guilds.hasOwnProperty(guild)
+			&& GLOBAL_CONFIG.guilds[guild].system_channel
+			&& client !== null)
+			client.channels
+				.fetch(GLOBAL_CONFIG.guilds[guild].system_channel)
+				.then((c: TextChannel) =>
+					c.send(msg));
+};
+
 @Discord
 export class SimpOMatic {
 	private static _CLIENT : Client;
@@ -90,6 +100,8 @@ export class SimpOMatic {
 		);
 		console.log('Secrets:', pp(SECRETS));
 		console.log('Known commands:', pp(KNOWN_COMMANDS));
+		system_message(this._CLIENT, 'We\'re back online baby!');
+		return this._CLIENT;
 	}
 
 	expand_alias(operator: string, args: string[], message: Message) {
@@ -396,11 +408,18 @@ export class SimpOMatic {
 	}
 }
 
-function on_termination() {
+let CLIENT: Client = null;
+
+function on_termination(error_type) {
 	// Back-up the resultant CONFIG to an external file.
+	console.warn(`Received ${error_type}, shutting down.`);
 	console.log('Cleaning up...');
 	write_file(`${process.cwd()}/export-exit.json`, export_config(GLOBAL_CONFIG, {}));
 	pastebin_update(export_config(GLOBAL_CONFIG, {}));
+	// Message all system channels.
+	system_message(CLIENT,
+		`Bot got \`${error_type}\` signal.\n`
+		+ `**Shutting down...**`);
 	// Make sure we saved ok.
 	setTimeout(() => {
 		console.log('Clean finished.');
@@ -409,12 +428,13 @@ function on_termination() {
 }
 
 // Handle exits.
-process.on('exit',    on_termination);
-process.on('SIGINT',  on_termination);
-process.on('SIGTERM', on_termination);
-process.on('SIGUSR1', on_termination);
-process.on('SIGUSR2', on_termination);
-process.on('uncaughtException', on_termination);
+process
+	.on('SIGTERM', on_termination.bind(this, 'SIGTERM'))
+	.on('SIGINT',  on_termination.bind(this, 'SIGINT'))
+	.on('exit',    on_termination.bind(this, 'exit'))
+	.on('SIGUSR1', on_termination.bind(this, 'SIGUSR1'))
+	.on('SIGUSR2', on_termination.bind(this, 'SIGUSR2'))
+	.on('uncaughtException', on_termination.bind(this, 'exception'));
 
 // CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
@@ -431,6 +451,6 @@ pastebin_latest().then(res => {
 						.mut_map(compile_match));
 
 	// Start The Simp'O'Matic.
-	SimpOMatic.start();
+	CLIENT = SimpOMatic.start();
 }).catch(console.warn);
 

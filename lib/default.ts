@@ -3,10 +3,10 @@
 ///  laid out.  All fields are accounted for here.
 
 const DEFAULT_GUILD_CONFIG : ConfigType = {
+	system_channel: null,
 	pp_sizes: {
 		'541761315887120399': 16
 	},
-
 	weather_locations: {
 		'541761315887120399': 'Moscow'
 	},
@@ -62,11 +62,15 @@ const DEFAULT_GUILD_CONFIG : ConfigType = {
 			{
 				match: "/(^|[^\\p{L}\\p{N}])+bots?([^\\p{L}\\p{N}]|$)+/iu",
 				response: "The hell you sayn' about bots?"
+			},
+			{
+				match: "/Good (Morning|Day) (Star|Sun)shine/i",
+				response: "The Earth says Hello!"
 			}
 		],
 		reject: [
 			{
-				match: "/\\.{20,}/",
+				match: "/\\.{30,}/",
 				response: "Too many dots..."
 			},
 		],
@@ -75,8 +79,17 @@ const DEFAULT_GUILD_CONFIG : ConfigType = {
 				match: "/tbh/i",
 				response: 'desu'
 			},
+			{
+				match: "/Yahweh/i",
+				response: "Adonai"
+			}
 		],
-		trigger: [],
+		trigger: [
+			{
+				match: "/is the bot down/i",
+				response: "uptime"
+			}
+		],
 		// Blacklist (initially everyone can do everything,
 		//  except for those listed specifically on this list).
 		blacklist: {
