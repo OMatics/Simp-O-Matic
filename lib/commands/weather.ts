@@ -32,8 +32,8 @@ export default (home_scope: HomeScope) => {
 
 				const embed = d.main
 					? new MessageEmbed()
-						.setTitle(`${d.main.temp}°C (feels like ${d.main.feels_like}°C`)
-						.setAuthor(`${d.name}, ${country} ${hour}:${date.getMinutes()}`)
+						.setTitle(`${d.main.temp}°C (feels like ${d.main.feels_like}°C)`)
+						.setAuthor(`${hour}:${date.getMinutes()} {d.name}, ${country}`)
 						.setDescription(d.weather[0].description)
 						.setThumbnail(`https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`)
 						.addFields(
