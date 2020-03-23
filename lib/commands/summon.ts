@@ -14,9 +14,7 @@ export default (home_scope : HomeScope) => {
 		return;
 	}
 
-	message.author.sendMessage("hehe I poked you");
-
-	// message.mentions.users.first().send(
-	// 	`Psssst. Hey, come over to ${message.guild.name} :point-left:`
-	// );
+	message.mentions.users.first().sendMessage(
+		`Psssst. Hey, come over to ${message.guild.name} :point-left:`
+	);
 };
