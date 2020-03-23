@@ -1,4 +1,5 @@
 import fetch, { Response } from 'node-fetch';
+import { MessageAttachment, MessageEmbed } from 'discord.js';
 
 const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 
@@ -29,15 +30,18 @@ export default (home_scope: HomeScope) => {
 				const hour = (24 + date.getUTCHours() + tz) % 24;
 				const country = !d.sys ? 'somewhere' : d.sys.country;
 
-				if (d.main)
-					message.answer(`${hour}:${date.getMinutes()} ${d.name}, \
-						${country}: ${d.main.temp}°C \
-						(feels like ${d.main.feels_like}°C) \
-						${d.weather[0].description}, \
-						${d.main.temp_max}°C max, \
-						${d.main.temp_min}°C min`.squeeze());
-				else message.answer(`Cannot get weather information`
-					+ ` from ${location}.`);
+				const embed = d.main?new Discord.MessageEmbed()
+				.setTitle(`${d.main.temp}°C (feels like ${d.main.feels_like}°C`)
+				.setAuthor(`${d.name}, ${country} ${hour}:${date.getMinutes()}`)
+				.setDescription(d.weather[0].description)
+				.setThumbnail(`https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`)
+				.addFields(
+					{name: 'Day temp', value: d.main.temp_max + '°C', inline: true},
+					{name: 'Night temp', value: d.main.temp_min + '°C', inline: true}
+				)
+				:new Discord.MessageEmbed().setTitle(`Cannot get weather information from ${location}.`);
+
+				message.channel.send(embed);
 			})
 			.catch(error);
 	}
