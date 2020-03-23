@@ -26,8 +26,13 @@ export default (home_scope: HomeScope) => {
 			.then(res => res.json())
 			.then(d => {
 				const date = new Date();
-				const tz = d.timezone / 3600; // TODO: What if `tz` has a fractional part...
-				const hour = (24 + date.getUTCHours() + tz) % 24;
+				const tz = d.timezone / 3600; // Now in hours.
+				const tz_frac = tz % 1; // Fractional part.
+
+				if (tz_frac === 0)
+					date.setMinutes(date.getMinutes() + tz_frac * 60);
+
+				const hour = (24 + date.getUTCHours() + tz - tz_frac) % 24;
 				const country = !d.sys ? 'somewhere' : d.sys.country;
 
 				const embed = d.main

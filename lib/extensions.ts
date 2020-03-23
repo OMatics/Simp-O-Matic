@@ -106,6 +106,7 @@ declare global {
 	interface Number {
 		round_to(dp: number): number;
 		to_metric(figures): string;
+		truncate(): number;
 	}
 }
 
@@ -227,6 +228,10 @@ Number.prototype.to_metric = function (figures) {
 		.toFixed(figures)
 		.replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1")
 		+ SI_EXTENSIONS[i].symbol;
+};
+
+Number.prototype.truncate = function() {
+	return Number(this.toFixed());
 };
 
 // Discord Extensions:
