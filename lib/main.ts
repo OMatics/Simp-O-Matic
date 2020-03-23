@@ -26,6 +26,7 @@ import DEFAULT_GUILD_CONFIG from './default';
 import { pastebin_latest,
 		 pastebin_update,
 		 pastebin_url } from './api/pastebin';
+import { Guild } from 'discord.js';
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
@@ -92,18 +93,42 @@ export class SimpOMatic {
 	private static _CLIENT : Client;
 	private _COMMAND_HISTORY : Message[] = [];
 
+	static init_guild(guild: Guild) {
+		const guild_id = guild.id;
+		GLOBAL_CONFIG.guilds[guild_id] = deep_copy(DEFAULT_GUILD_CONFIG);
+	}
+
 	static start() {
 		this._CLIENT = new Client();
 		this._CLIENT.login(
 			SECRETS.api.token,
 			`${__dirname}/*Discord.ts`
-		).then(() => {
-			console.log('Bot logged in.')
-			setTimeout(() =>
-				system_message(this._CLIENT, "**We're back online baby!**"),
-				2000);
-		});
+		).then(() => console.log('Bot logged in.'));
+		this._CLIENT.on('ready', () => this.events());
+
 		return this._CLIENT;
+	}
+
+	static events() {
+		const client = this._CLIENT;
+		system_message(client, "**We're back online baby!**");
+		client.on('guildCreate', guild => {
+			if (!GLOBAL_CONFIG.guilds.hasOwnProperty(guild.id))
+				this.init_guild(guild);
+			// TODO:
+			// Maybe try and find a channel to try message in (a main channel)?
+			// Ask them to set a main channel and system channel via commands.
+			// Ask them to read !help and !commands and !aliases.
+			// etc.
+		});
+		client.on('guildMemberAdd', member => {
+			const guild_id = member.guild.id;
+			// TODO: Say hello to a member in main channel.
+		});
+		client.on('guildMemberRemove', member => {
+			const guild_id = member.guild.id;
+			// TODO: Say goodbye to a member in main channel.
+		});
 	}
 
 	expand_alias(operator: string, args: string[], message: Message) {
@@ -367,7 +392,7 @@ export class SimpOMatic {
 
 		// Initialise completely new Guilds.
 		if (!GLOBAL_CONFIG.guilds.hasOwnProperty(guild_id))
-			GLOBAL_CONFIG.guilds[guild_id] = deep_copy(DEFAULT_GUILD_CONFIG);
+			SimpOMatic.init_guild(message.guild);
 
 		const CONFIG = GLOBAL_CONFIG.guilds[guild_id];
 		// Ignore empty messages...

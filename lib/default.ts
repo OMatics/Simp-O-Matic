@@ -3,6 +3,7 @@
 ///  laid out.  All fields are accounted for here.
 
 const DEFAULT_GUILD_CONFIG : ConfigType = {
+	main_channel: null,
 	system_channel: null,
 	pp_sizes: {
 		'541761315887120399': 16
