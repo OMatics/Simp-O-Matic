@@ -106,8 +106,8 @@ export const recursive_regex_to_string = o => {
 	return o;
 };
 
-export const export_config = (obj: GlobalConfigType, { ugly = false }) => {
-	const o: GlobalConfigType = recursive_regex_to_string(deep_clone(obj));
+export const export_config = (obj: Types.GlobalConfig, { ugly = false }) => {
+	const o: Types.GlobalConfig = recursive_regex_to_string(deep_clone(obj));
 	// Make sure all rules are unique,
 	//  i.e. eliminate duplicate rules.
 

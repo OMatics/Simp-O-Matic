@@ -30,7 +30,7 @@ import { Guild } from 'discord.js';
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
-let GLOBAL_CONFIG : GlobalConfigType = {
+let GLOBAL_CONFIG : Types.GlobalConfig = {
 	name: "Simp'O'Matic",
 	tag: "#1634",
 	permissions: 8,
@@ -529,4 +529,3 @@ pastebin_latest().then(res => {
 	// Start The Simp'O'Matic.
 	CLIENT = SimpOMatic.start();
 }).catch(console.warn);
-

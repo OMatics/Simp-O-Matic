@@ -2,7 +2,7 @@
 ///  and to act as a reference to how the config shall be
 ///  laid out.  All fields are accounted for here.
 
-const DEFAULT_GUILD_CONFIG : ConfigType = {
+const DEFAULT_GUILD_CONFIG : Types.Config = {
 	main_channel: null,
 	system_channel: null,
 	pp_sizes: {
