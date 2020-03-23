@@ -97,10 +97,12 @@ export class SimpOMatic {
 		this._CLIENT.login(
 			SECRETS.api.token,
 			`${__dirname}/*Discord.ts`
-		);
-		console.log('Secrets:', pp(SECRETS));
-		console.log('Known commands:', pp(KNOWN_COMMANDS));
-		system_message(this._CLIENT, 'We\'re back online baby!');
+		).then(() => {
+			console.log('Bot logged in.')
+			setTimeout(() =>
+				system_message(this._CLIENT, "**We're back online baby!**"),
+				2000);
+		});
 		return this._CLIENT;
 	}
 
@@ -414,8 +416,11 @@ function on_termination(error_type) {
 	console.warn(`Received ${error_type}, shutting down.`);
 	console.log('Cleaning up...');
 	write_file(`${process.cwd()}/export-exit.json`, export_config(GLOBAL_CONFIG, {}));
-	pastebin_update(export_config(GLOBAL_CONFIG, {}));
+	pastebin_update(export_config(GLOBAL_CONFIG, {}))
+		.then(_ => console.log('Finished pastebin update.'))
+		.catch(e => console.warn('Pastebin not saved!', e));
 	// Message all system channels.
+	console.log('Sending system messages.');
 	system_message(CLIENT,
 		`Bot got \`${error_type}\` signal.\n`
 		+ `**Shutting down...**`);
@@ -423,7 +428,7 @@ function on_termination(error_type) {
 	setTimeout(() => {
 		console.log('Clean finished.');
 		process.exit(0);
-	}, 6000).unref();
+	}, 3000).unref();
 }
 
 // Handle exits.

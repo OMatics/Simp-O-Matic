@@ -1,7 +1,7 @@
 import { help_info } from '../utils';
-const sys_channel = (channel: string) =>
-	(channel)
-		? `is set to ${channel}.`
+const sys_channel = (channel_id: string) =>
+	(channel_id)
+		? `is set to <#${channel_id}>.`
 		: `has not been set.`;
 
 export default (home_scope: HomeScope) => {
@@ -23,9 +23,9 @@ export default (home_scope: HomeScope) => {
 		if (channels.size === 0)
 			return message.reply('System-information channel '
 				+ sys_channel(CONFIG.system_channel));
-		CONFIG.system_channel = channels.first().toString();
+		CONFIG.system_channel = channels.first().id;
 		return message.reply(
-			`System-information channel set to ${CONFIG.system_channel}.`);
+			`System-information channel set to <#${CONFIG.system_channel}>.`);
 	}
 
 	message.reply(help_info('system', CONFIG.commands.prefix));
