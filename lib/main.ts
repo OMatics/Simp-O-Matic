@@ -499,7 +499,7 @@ function on_termination(error_type) {
 	setTimeout(() => {
 		console.log('Clean finished.');
 		process.exit(0);
-	}, 7000).unref();  // If we haven't exited in 7s, just exit anyway.
+	}, 7000);  // If we haven't exited in 7s, just exit anyway.
 }
 
 // Handle exits.

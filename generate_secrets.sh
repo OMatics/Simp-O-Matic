@@ -43,6 +43,9 @@ cat <<- JSON
             "key": "$YANDEX_TRANSLATE_KEY"
         }
     },
+    "mapbox": {
+        "key": "$MAPBOX_KEY"
+    },
     "openweather": {
         "key": "$OPENWEATHER_KEY"
     },
