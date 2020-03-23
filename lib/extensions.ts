@@ -71,6 +71,7 @@ declare global {
 		each(callbackfn : (value : T, index : number, array : T[]) => void, thisArg? : T): void;
 		mut_unique(): T[];
 		mut_map(f: (T) => any): any[];
+		choose(): T;
 	}
 
 	interface TextFormat {
@@ -147,6 +148,11 @@ Array.prototype.mut_map = function (f) {
 		if (this.hasOwnProperty(i) && i !== 'length')
 			this[i] = f(this[i]);
 	return this;
+};
+
+Array.prototype.choose = function () {
+	// Math.random gives a value in the range [0;1).
+	return this[Math.floor(Math.random() * this.length)];
 };
 
 // String Extensions:

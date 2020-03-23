@@ -71,6 +71,15 @@ export const KNOWN_COMMANDS = HELP_SECTIONS.map(e =>
 
 const GIT_URL = 'https://github.com/Demonstrandum/Simp-O-Matic';
 
+const WELCOME_MESSAGES = [
+	"Welcome USER_NAME, what brings you to these parts?"
+];
+
+const FAREWELL_MESSAGES = [
+	"See you later alligator, USER_TAG...",
+	"Bye USER_TAG, we won't miss you."
+];
+
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
 	'__dirname': __dirname,
@@ -95,7 +104,18 @@ export class SimpOMatic {
 
 	static init_guild(guild: Guild) {
 		const guild_id = guild.id;
+		// Set default configuration.
 		GLOBAL_CONFIG.guilds[guild_id] = deep_copy(DEFAULT_GUILD_CONFIG);
+
+		// Set system-messages and main channels to some default.
+		const default_channel = guild.channels.cache.find(channel =>
+			channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
+
+		if (default_channel) {
+			GLOBAL_CONFIG.guilds[guild_id].main_channel
+				= GLOBAL_CONFIG.guilds[guild_id].system_channel
+				= default_channel.id;
+		}
 	}
 
 	static start() {
@@ -116,18 +136,35 @@ export class SimpOMatic {
 			if (!GLOBAL_CONFIG.guilds.hasOwnProperty(guild.id))
 				this.init_guild(guild);
 			// TODO:
-			// Maybe try and find a channel to try message in (a main channel)?
 			// Ask them to set a main channel and system channel via commands.
 			// Ask them to read !help and !commands and !aliases.
 			// etc.
 		});
 		client.on('guildMemberAdd', member => {
 			const guild_id = member.guild.id;
-			// TODO: Say hello to a member in main channel.
+			const main_channel = GLOBAL_CONFIG.guilds[guild_id].main_channel;
+			if (main_channel) {
+				const channel = member.guild.channels.cache.find(c =>
+					c.id === main_channel) as TextChannel;
+				if (channel && channel.send)
+					// Greet member.
+					channel.send(WELCOME_MESSAGES
+						.choose()
+						.replace('USER_NAME', member.user.toString()));
+			}
 		});
 		client.on('guildMemberRemove', member => {
 			const guild_id = member.guild.id;
-			// TODO: Say goodbye to a member in main channel.
+			const main_channel = GLOBAL_CONFIG.guilds[guild_id].main_channel;
+			if (main_channel) {
+				const channel = member.guild.channels.cache.find(c =>
+					c.id === main_channel) as TextChannel;
+				if (channel && channel.send)
+					// Wave goodbye to member.
+					channel.send(FAREWELL_MESSAGES
+						.choose()
+						.replace('USER_TAG', member.user.tag));
+			}
 		});
 	}
 
@@ -439,19 +476,24 @@ let CLIENT: Client = null;
 function on_termination(error_type) {
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
+	// Message all system channels.
+	console.log('Sending system messages.');
+	system_message(CLIENT,
+		`Bot got \`${error_type}\` signal.\n`
+		+ `**Shutting down...**`);
 
 	write_file(
 		`${process.cwd()}/export-exit.json`,
 		export_config(GLOBAL_CONFIG, {}));
 
 	pastebin_update(export_config(GLOBAL_CONFIG, {}))
-		.then(_ => console.log('Finished pastebin update.'))
-		.catch(e => console.warn('Pastebin not saved!', e));
-	// Message all system channels.
-	console.log('Sending system messages.');
-	system_message(CLIENT,
-		`Bot got \`${error_type}\` signal.\n`
-		+ `**Shutting down...**`);
+		.then(_ => {
+			console.log('Finished pastebin update.');
+			system_message(CLIENT, `Current configuration saved.`);
+		}).catch(e => {
+			console.warn('Pastebin not saved!', e);
+			system_message(CLIENT, `Could not export configuration.\n${e}`);
+		});
 
 	// Make sure we saved ok.
 	setTimeout(() => {
