@@ -285,8 +285,8 @@ export class SimpOMatic {
 	}
 
 	async last_message(opts) : Promise<string> {
-		const CONFIG = GLOBAL_CONFIG.guilds[opts.guild.id];
 		const channel = opts.channel as TextChannel;
+		const CONFIG = GLOBAL_CONFIG.guilds[channel.guild.id];
 
 		if (!opts.offset) opts.offset = 1;
 		if (opts.mention) opts.mentioning = opts.mentioning.trim();
@@ -333,7 +333,6 @@ export class SimpOMatic {
 					expansions[i] = await this.last_message({
 						command: true,
 						channel: message.channel,
-						guild: message.guild
 					});
 					continue;
 				}
@@ -350,7 +349,7 @@ export class SimpOMatic {
 					command: !opts.includes('^'),
 					mention, mentioning,
 					offset: offset || 1,
-					channel: message.channel
+					channel: message.channel,
 				});
 			}
 		}
