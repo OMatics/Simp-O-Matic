@@ -47,8 +47,8 @@ export default (home_scope : HomeScope) => {
 		: message.mentions.users.first(), message.mentions.users.last()];
 
 	const user_avatars = {
-		first: users[0].avatarURL,
-		second: users[1].avatarURL
+		first: users[0].avatarURL(),
+		second: users[1].avatarURL()
 	};
 
 	const in_range = ([min, max]: number[], num: number) =>
