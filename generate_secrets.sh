@@ -38,6 +38,9 @@ cat <<- JSON
     "yandex": {
         "geocoder": {
             "key": "$YANDEX_GEOCODER_KEY"
+        },
+        "translate": {
+            "key": "$YANDEX_TRANSLATE_KEY"
         }
     },
     "openweather": {
