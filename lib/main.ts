@@ -439,30 +439,37 @@ let CLIENT: Client = null;
 function on_termination(error_type) {
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
-	console.log('Cleaning up...');
-	write_file(`${process.cwd()}/export-exit.json`, export_config(GLOBAL_CONFIG, {}));
-	pastebin_update(export_config(GLOBAL_CONFIG, {}))
-		.then(_ => console.log('Finished pastebin update.'))
-		.catch(e => console.warn('Pastebin not saved!', e));
-	// Message all system channels.
-	console.log('Sending system messages.');
-	system_message(CLIENT,
-		`Bot got \`${error_type}\` signal.\n`
-		+ `**Shutting down...**`);
+
+	if (error_type === 'exit')
+		write_file(
+			`${process.cwd()}/export-exit.json`,
+			export_config(GLOBAL_CONFIG, {}));
+
+	if (error_type === 'beforeExit') {
+		pastebin_update(export_config(GLOBAL_CONFIG, {}))
+			.then(_ => console.log('Finished pastebin update.'))
+			.catch(e => console.warn('Pastebin not saved!', e));
+		// Message all system channels.
+		console.log('Sending system messages.');
+		system_message(CLIENT,
+			`Bot got \`${error_type}\` signal.\n`
+			+ `**Shutting down...**`);
+	}
 	// Make sure we saved ok.
 	setTimeout(() => {
 		console.log('Clean finished.');
 		process.exit(0);
-	}, 3000).unref();
+	}, 7000).unref();  // If we haven't exited in 7s, just exit anyway.
 }
 
 // Handle exits.
 process
-	.on('SIGTERM', on_termination.bind(this, 'SIGTERM'))
-	.on('SIGINT',  on_termination.bind(this, 'SIGINT'))
-	.on('exit',    on_termination.bind(this, 'exit'))
-	.on('SIGUSR1', on_termination.bind(this, 'SIGUSR1'))
-	.on('SIGUSR2', on_termination.bind(this, 'SIGUSR2'))
+	.on('SIGTERM',    on_termination.bind(this, 'SIGTERM'))
+	.on('SIGINT',     on_termination.bind(this, 'SIGINT'))
+	.on('beforeExit', on_termination.bind(this, 'beforeExit'))
+	.on('exit',       on_termination.bind(this, 'exit'))
+	.on('SIGUSR1',    on_termination.bind(this, 'SIGUSR1'))
+	.on('SIGUSR2',    on_termination.bind(this, 'SIGUSR2'))
 	.on('uncaughtException', on_termination.bind(this, 'exception'));
 
 // CONFIG will eventually update to the online version.
