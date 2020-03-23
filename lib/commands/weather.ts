@@ -66,7 +66,7 @@ export default (home_scope: HomeScope) => {
 						.addFields(
 							{ name: 'daytime',   value: d.daily.data[0].temperatureHigh + '°C', inline: true },
 							{ name: 'nighttime', value: d.daily.data[0].temperatureLow + '°C', inline: true },
-							{ name: 'humidity',  value: 100 * d.currently.humidity + '%', inline: true},
+							{ name: 'humidity',  value: d.currently.humidity.toString().subString(2) + '%', inline: true},
 							{ name: 'wind', value: `${DIRECTIONS[Math.round(d.currently.windBearing / 45) % 8]} ${d.currently.windSpeed}㎧`, inline: true })
 						.setFooter('Powered by Dark Sky', 'https://darksky.net/images/darkskylogo.png')
 					: new MessageEmbed().setTitle(`Cannot get weather information from ${location}.`);
