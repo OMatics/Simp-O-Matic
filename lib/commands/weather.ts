@@ -67,7 +67,7 @@ export default (home_scope: HomeScope) => {
 							{ name: 'nighttime', value: d.daily.data[0].temperatureLow + '°C', inline: true },
 							{ name: 'humidity',  value: d.currently.humidity + '%', inline: true},
 							{ name: 'wind', value: `${directions[Math.round(d.currently.windBearing / 45) % 8]} ${d.currently.windSpeed}㎧`, inline: true })
-						.setFooter('Powered by Dark Sky(R)');
+						.setFooter('Powered by Dark Sky(R)')
 					: new MessageEmbed().setTitle(`Cannot get weather information from ${location}.`)
 
 				message.channel.send(embed);
