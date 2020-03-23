@@ -49,7 +49,7 @@ export default (home_scope: HomeScope) => {
 					.addFields(
 						{ name: 'daytime',   value: d.main.temp_max + '°C', inline: true },
 						{ name: 'nighttime', value: d.main.temp_min + '°C', inline: true },
-						{ name: 'humidity',   value: d.main.humidity +  '%', inline: true },
+						{ name: 'humidity',   value: d.main.humidity +  '%' },
 						{ name: 'wind', value: `${directions[Math.round(d.wind.deg / 45)]} ${d.wind.speed} ㎧`, inline: true })
 				: new MessageEmbed()
 					.setTitle(`Cannot get weather information from ${location}.`);
