@@ -7,8 +7,8 @@ export default (home_scope : HomeScope) => {
 	|| message.mentions.users.size === 0)
 		return message.reply(help_info('summon', CONFIG.commands.prefix));
 
-	message.mentions.users.first().send(
-		`Psssst. Hey, come over to ${message.guild.name} :point_left:\n`
-		+ `(${message.member.user.tag} is trying to summon you).`
-	);
+	message.client.users.fetch(message.mentions.users.first().id)
+		.then(user => user.send(
+			`Psssst. Hey, come over to ${message.guild.name} :point_left:\n`
+			+ `(${message.member.user.tag} is trying to summon you).`));
 };
