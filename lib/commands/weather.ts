@@ -24,7 +24,7 @@ const ICONS = {
 }
 
 const WEATHER_URL = 'https://api.darksky.net/forecast';
-const GEOCODE_URL = 'https://api.mapbox.com/geocoding/v5/mapbox.places';
+const GEOCODE_URL = 'https://geocode-maps.yandex.ru/1.x/?format=json';
 
 export default (home_scope: HomeScope) => {
 	const { message, args, SECRETS, CONFIG } = home_scope;
@@ -40,18 +40,19 @@ export default (home_scope: HomeScope) => {
 		: CONFIG.weather_locations[message.author.id] || 'Cuckfield';
 
 	const key = SECRETS.darksky.key;
-	const geokey = SECRETS.mapbox.key;
+	const geokey = SECRETS.yandex.geocoder.key;
 
 	const error = (e: Response) => {
 		message.answer(`Error getting weather\n\`\`\`${e}\`\`\``);
 		return e;
 	};
 
-	fetch(`${GEOCODE_URL}/${location}.json?access_token=${geokey}&limit=1&language=en`)
+	fetch(`${GEOCODE_URL}&apikey=${geokey}&geocode=${location}&lang=en-US`)
 	.catch(error)
 	.then(res => res.json())
 	.then(c => {
-		fetch(`${WEATHER_URL}/${key}/${c.features[0].center[0]},${c.features[0].center[1]}?exclude=minutely,hourly,alerts,flags&units=si`)
+		let latlon = c.response.featureMember[0].GeoObject.Point.pos.split(' ')
+		fetch(`${WEATHER_URL}/${key}/${latlon}?exclude=minutely,hourly,alerts,flags&units=si`)
 			.catch(error)
 			.then(res => res.json())
 			.then(d => {
@@ -59,14 +60,14 @@ export default (home_scope: HomeScope) => {
 				const embed = d && d.currently
 					? new MessageEmbed()
 						.setTitle(`${d.currently.temperature}°C (feels like ${d.currently.apparentTemperature}°C)`)
-						.setAuthor(`${ICONS[d.currently.icon]} ${date.getHours()}:${date.getMinutes()} ${c.features[0].place_name}`)
-						.setDescription(MOON_PHASES[Math.round(d.daily.data[0].moonPhase * 7)] + d.currently.summary)
+						.setAuthor(`${ICONS[d.currently.icon]} ${date.getHours()}:${date.getMinutes()} ${c.response.featureMember[0].GeoObject.name}`)
+						.setDescription(MOON_PHASES[Math.round(d.daily.data[0].moonPhase * 7)] + ' ' +d.currently.summary)
 						.addFields(
 							{ name: 'daytime',   value: d.daily.data[0].temperatureHigh + '°C', inline: true },
 							{ name: 'nighttime', value: d.daily.data[0].temperatureLow + '°C', inline: true },
 							{ name: 'humidity',  value: d.currently.humidity + '%', inline: true},
 							{ name: 'wind', value: `${DIRECTIONS[Math.round(d.currently.windBearing / 45) % 8]} ${d.currently.windSpeed}㎧`, inline: true })
-						.setFooter('Powered by Dark Sky (R)')
+						.setFooter('Powered by Dark Sky', 'https://darksky.net/images/darkskylogo.png')
 					: new MessageEmbed().setTitle(`Cannot get weather information from ${location}.`)
 
 				message.channel.send(embed);
