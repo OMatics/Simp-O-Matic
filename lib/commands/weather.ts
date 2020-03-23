@@ -1,6 +1,8 @@
 import fetch, { Response } from 'node-fetch';
 import { MessageAttachment, MessageEmbed } from 'discord.js';
 
+const countries = require('../resources/countries.json');
+const directions = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest', 'north'];
 const WEATHER_URL = 'http://api.openweathermap.org/data/2.5/weather';
 
 export default (home_scope: HomeScope) => {
@@ -32,13 +34,15 @@ export default (home_scope: HomeScope) => {
 
 				const embed = d.main
 					? new MessageEmbed()
-						.setTitle(`${d.main.temp}°C (feels like ${d.main.feels_like}°C)`)
-						.setAuthor(`${hour}:${date.getMinutes()} ${d.name}, ${country}`)
+						.setTitle(`${d.main.temp}°C (feels ${d.main.feels_like}°C)`)
+						.setAuthor(`${hour}:${date.getMinutes()} ${d.name}, ${countries[country].toLowerCase()}`)
 						.setDescription(d.weather[0].description)
 						.setThumbnail(`https://openweathermap.org/img/wn/${d.weather[0].icon}@2x.png`)
 						.addFields(
-							{ name: 'day temp', value: d.main.temp_max + '°C', inline: true },
-							{ name: 'night temp', value: d.main.temp_min + '°C', inline: true })
+							{ name: 'daytime', value: d.main.temp_max + '°C', inline: true },
+							{ name: 'nighttime', value: d.main.temp_min + '°C', inline: true },
+							{ name: 'humidity', value: d.main.humidity + '%', inline: true },
+							{ name: 'wind', value: `${directions[Math.round(d.wind.deg / 45)]} ${d.wind.speed} m/s`, inline: true })
 				: new MessageEmbed()
 					.setTitle(`Cannot get weather information from ${location}.`);
 
