@@ -119,17 +119,20 @@ export class SimpOMatic {
 	}
 
 	static start() {
-		this._CLIENT = new Client();
-		this._CLIENT.login(
+		const client = this._CLIENT = new Client();
+		const logged_in = client.login(
 			SECRETS.api.token,
 			`${__dirname}/*Discord.ts`
-		).then(() => console.log('Bot logged in.'));
-		this._CLIENT.on('ready', () => this.events());
+		);
+		logged_in.then(() => console.log('Bot logged in.'));
+		client.on('ready', () => this.events());
 
 		return this._CLIENT;
 	}
 
 	static events() {
+		console.log('Bot ready to do work!');
+
 		const client = this._CLIENT;
 		system_message(client, "**We're back online baby!**");
 		client.on('guildCreate', guild => {
@@ -163,7 +166,8 @@ export class SimpOMatic {
 					// Wave goodbye to member.
 					channel.send(FAREWELL_MESSAGES
 						.choose()
-						.replace('USER_TAG', member.user.tag));
+						.replace('USER_TAG', member.nickname
+							|| member.user.tag.split('#').first()));
 			}
 		});
 	}
