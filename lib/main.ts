@@ -504,15 +504,15 @@ function on_termination(error_type) {
 
 // Handle exits.
 process
-	.on('SIGTERM',    on_termination.bind(this, 'SIGTERM'))
-	.on('SIGINT',     on_termination.bind(this, 'SIGINT'))
 	.on('beforeExit', on_termination.bind(this, 'beforeExit'))
 	.on('exit',       on_termination.bind(this, 'exit'))
+	.on('SIGTERM',    on_termination.bind(this, 'SIGTERM'))
+	.on('SIGINT',     on_termination.bind(this, 'SIGINT'))
 	.on('SIGUSR1',    on_termination.bind(this, 'SIGUSR1'))
 	.on('SIGUSR2',    on_termination.bind(this, 'SIGUSR2'))
 	.on('uncaughtException', on_termination.bind(this, 'exception'));
 
-// CONFIG will eventually update to the online version.
+// GLOBAL_CONFIG will eventually update to the online version.
 pastebin_latest().then(res => {
 	GLOBAL_CONFIG = deep_merge(GLOBAL_CONFIG, res);
 	// Remove any duplicates.
