@@ -25,6 +25,7 @@ declare global {
 			main_channel: string,
 			system_channel: string,
 			pp_sizes: { [key: string]: number }
+			cron_jobs: any[],
 			weather_locations: { [key: string]: string },
 			commands: {
 				prefix: string,

@@ -11,7 +11,7 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 	weather_locations: {
 		'541761315887120399': 'Moscow'
 	},
-
+	cron_jobs: [],
 	commands: {
 		prefix: '!',
 		max_history: 40,
