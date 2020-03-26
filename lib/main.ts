@@ -201,7 +201,7 @@ export class SimpOMatic {
 		return expanded;
 	}
 
-	process_command(message : Message) {
+	process_command(message : Message, ignore_spam: boolean = false) {
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
 		if (message.content.startsWith('..')) return;
@@ -213,23 +213,25 @@ export class SimpOMatic {
 		}
 		const current_command = this._COMMAND_HISTORY.last();
 
-		// Try and slow the fellas down a little.
-		if (!!last_command
-			&& last_command.channel === current_command.channel
-			&& last_command.author.id === current_command.author.id) {
-			// Only give spam warning if commands are coming
-			//  fast _in the same channel_.
-			const delta = current_command.createdTimestamp - last_command.createdTimestamp;
-			if (last_command.content === current_command.content
-				&& delta <= 1400) {
-				if (delta <= 400) return;
-				return message.answer(`I can't help but notice you're running \
-					the same commands over in rather rapid succession.
-					Would you like to slow down a little?`.squeeze());
-			}
-			if (delta <= 900) {
-				if (delta <= 300) return;
-				return message.answer('Slow down there bucko.');
+		if (!ignore_spam) {
+			// Try and slow the fellas down a little.
+			if (!!last_command
+				&& last_command.channel === current_command.channel
+				&& last_command.author.id === current_command.author.id) {
+				// Only give spam warning if commands are coming
+				//  fast _in the same channel_.
+				const delta = current_command.createdTimestamp - last_command.createdTimestamp;
+				if (last_command.content === current_command.content
+					&& delta <= 1400) {
+					if (delta <= 400) return;
+					return message.answer(`I can't help but notice you're running \
+the same commands over in rather rapid succession.
+Would you like to slow down a little?`.squeeze());
+				}
+				if (delta <= 900) {
+					if (delta <= 300) return;
+					return message.answer('Slow down there bucko.');
+				}
 			}
 		}
 

@@ -36,8 +36,8 @@ const MATCHERS = {
 	months: 'jan feb mar apr may jun jul aug sep oct nov dec'
 		.split(' ').map(month => month.capitalize()),
 	prefix: (x: string) => new RegExp("^\\" + x),
-	ordinals: /st|nd|rd|th/,
-	greenwich: /pm|am/
+	ordinals: /(st|nd|rd|th)/,
+	greenwich: /(pm|am)/
 };
 
 const RESPONSES = {
@@ -48,6 +48,7 @@ const RESPONSES = {
 		schedule: ':warning: There is no schedule to execute the command on.'
 	},
 	empty: ":warning: There are no cron jobs being executed.",
+	clear: "Cleared all executed cron jobs.",
 	removed: (id: number) =>
 		`Removed cron job #${id.toString().format(FORMATS.bold)}.`,
 	added: (cron: Cron) =>
@@ -57,7 +58,8 @@ const RESPONSES = {
 		let result: string = "";
 
 		result += `#${cron.id} `.format(FORMATS.bold);
-		result += `${cron.command.name.shorten(20)}`.format(FORMATS.block);
+		result += `${cron.command.name} ${cron.command.args.join(' ')}`
+			.shorten(20).format(FORMATS.block);
 
 		if (schedule?.hours && schedule?.minutes) {
 			result += `: ${schedule.hours}:${schedule.minutes}`;
@@ -85,6 +87,9 @@ const RESPONSES = {
 				result += `${schedule.ordinal}`;
 		}
 
+		if (cron?.executed_at)
+			return result.format(FORMATS.strikethrough);
+
 		return result;
 	}
 };
@@ -94,6 +99,14 @@ export class Timer {
 
 	constructor(homescope: HomeScope) {
 		this.homescope = homescope;
+	}
+
+	get defaultDate() {
+		const now = new Date();
+		const default_values = {
+			month: now.getMonth() - 1
+		};
+		return default_values;
 	}
 
 	compare(job: Cron): void {
@@ -123,15 +136,16 @@ export class Timer {
 		if (job.executed_at === timespan)
 			return;
 
-		console.log('Executed cron job #' + job.id);
+		console.log('Executed cron job #', job.id);
 
 		this.homescope.message.content =
-			`${this.homescope.CONFIG.commands.prefix} ${job.command.name} ${job.command.args.join(' ')}`;
+			`${this.homescope.CONFIG.commands.prefix}${job.command.name} ${job.command.args.join(' ')}`;
 
 		job.executed_at = timespan;
 
 		this.homescope.main.process_command(
-			this.homescope.message
+			this.homescope.message,
+			true
 		);
 	}
 
@@ -176,14 +190,15 @@ export default (home_scope: HomeScope) => {
 		message.answer(RESPONSES.removed(job));
 	};
 
+	const clear = () => {
+		crons = crons.filter(f => !f?.executed_at);
+		submit();
+		message.answer(RESPONSES.clear);
+	};
+
 	const list = () => {
 		if (crons.length === 0)
 			return message.answer(RESPONSES.empty);
-
-		console.log('list command:', crons
-					.filter(x => x !== null)
-					.map(x => RESPONSES.list(x))
-					.join("\n"));
 
 		message.channel.send(
 			crons
@@ -258,6 +273,9 @@ export default (home_scope: HomeScope) => {
 		(isNaN(job))
 			? message.answer(RESPONSES.help.rm)
 			: rm(job);
+	}
+	else if (args[0] === 'clear') {
+		clear();
 	}
 	else {
 		const cron: Cron = parse(args);

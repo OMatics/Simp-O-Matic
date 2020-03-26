@@ -65,6 +65,7 @@
 - `!cron` **〈not impl.〉** — Run commands repeatedly based on some timer (look-up cron syntax for more info):
   - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.
   - `!cron <ls>` — lists all active cron-jobs numerically.
+  - `!cron <clear>` — clears all executed cron-jobs.
   - `!cron rm #[job-index]` — removes a cron-job by index.
 - `!choose [comma-separated-values]` **〈not impl.〉** — Choose randomly from a list of items, separated by commas.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
