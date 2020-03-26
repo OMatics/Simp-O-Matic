@@ -12,20 +12,20 @@ interface Schedule {
 	month?: string;
 	dayOfWeek?: string;
 	greenwich?: Greenwich;
-	ordinal?: Ordinal
+	ordinal?: Ordinal;
 }
 
 interface Command {
-	name: string,
-	args?: string[]
-};
+	name: string;
+	args?: string[];
+}
 
 interface Cron {
-	id: number,
-	schedule?: Schedule,
-	command?: Command
+	id: number;
+	schedule?: Schedule;
+	command?: Command;
 	executed_at?: number;
-};
+}
 
 const MATCHERS = {
 	hour_mins:
@@ -53,7 +53,7 @@ const RESPONSES = {
 	added: (cron: Cron) =>
 		`New cron (#${cron.id.toString().format(FORMATS.bold)}) has been added.`,
 	list: (cron: Cron) => {
-		let { schedule } = cron;
+		const { schedule } = cron;
 		let result: string = "";
 
 		result += `#${cron.id} `.format(FORMATS.bold);
@@ -67,7 +67,7 @@ const RESPONSES = {
 		}
 
 		if (schedule?.dayOfWeek) {
-			let weekday = MATCHERS.weekdays[
+			const weekday = MATCHERS.weekdays[
 				Number(schedule.dayOfWeek) - 1
 			]?.toUpperCase();
 
@@ -75,7 +75,7 @@ const RESPONSES = {
 		}
 
 		if (schedule?.dayOfMonth) {
-			let month = MATCHERS.months[
+			const month = MATCHERS.months[
 				Number(schedule.month) - 1
 			]?.capitalize();
 
@@ -97,7 +97,7 @@ export class Timer {
 	}
 
 	compare(job: Cron): void {
-		let current = new Date();
+		const current = new Date();
 		current.setDate(current.getDate());
 		current.setUTCHours(current.getHours() % 12);
 		current.setSeconds(0);
@@ -108,8 +108,8 @@ export class Timer {
 	}
 
 	timestamp(job: Cron): number {
-		let date = new Date();
-		let { hours, minutes, month, dayOfMonth } = job.schedule;
+		const date = new Date();
+		const { hours, minutes, month, dayOfMonth } = job.schedule;
 
 		date.setUTCHours(Number(hours), Number(minutes), 0);
 		date.setMonth(Number(month) - 1);
@@ -136,7 +136,7 @@ export class Timer {
 	}
 
 	verify(jobs: Cron[]): void {
-		jobs.forEach((job: Cron) => this.compare(job))
+		jobs.forEach((job: Cron) => this.compare(job));
 	}
 }
 
@@ -177,24 +177,24 @@ export default (home_scope: HomeScope) => {
 	};
 
 	const list = () => {
-		if (crons.length == 0)
+		if (crons.length === 0)
 			return message.answer(RESPONSES.empty);
 
 		console.log('list command:', crons
-					.filter(x => x != null)
+					.filter(x => x !== null)
 					.map(x => RESPONSES.list(x))
 					.join("\n"));
 
 		message.channel.send(
 			crons
-				.filter(x => x != null)
+				.filter(x => x !== null)
 				.map(x => RESPONSES.list(x))
 				.join("\n")
 		);
-	}
+	};
 
 	const parse = (argm: string[]): Cron => {
-		let cron: Cron = {
+		const cron: Cron = {
 			id: crons.slice(-1)[0]?.id + 1 || 0
 		};
 
@@ -224,7 +224,7 @@ export default (home_scope: HomeScope) => {
 						argument.split(MATCHERS.ordinals);
 
 					const date =
-						matches(argument, MATCHERS.ordinals) == undefined
+						matches(argument, MATCHERS.ordinals) === undefined
 						? { month: argument }
 						: { dayOfMonth, ordinal: ordinal as Ordinal };
 
@@ -253,7 +253,7 @@ export default (home_scope: HomeScope) => {
 	if (args[0] === 'ls')
 		list();
 	else if (args[0] === 'rm') {
-		let job: number = Number(args[1]);
+		const job: number = Number(args[1]);
 
 		(isNaN(job))
 			? message.answer(RESPONSES.help.rm)
@@ -265,7 +265,7 @@ export default (home_scope: HomeScope) => {
 		if (!cron?.command)
 			message.answer(RESPONSES.help.command);
 		else if (!cron?.schedule)
-			message.answer(RESPONSES.help.schedule)
+			message.answer(RESPONSES.help.schedule);
 		else {
 			crons.push(cron);
 			submit();

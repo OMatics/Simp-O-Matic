@@ -1,48 +1,48 @@
 import { Message, User } from 'discord.js';
 import { FORMATS } from '../extensions';
 
-namespace Types {
-	type ScoreStats = {
-		missed: number,
-		scored: number
-	};
-
-	export type Mask = '_' | '.' | '-' | ':';
-
-	export interface Score {
-		[id: string]: ScoreStats
-	};
-
-	export interface Guess {
-		id: string,
-		answer: string,
-		attempt?: string
-	};
-
-	export interface Config {
-		attempt_limit: number,
-		mask: Mask;
-	};
-
-	export interface Messages {
-		help: string,
-		lose: string,
-		miss: string,
-		in_progress: string,
-		win: (id: string) => string,
-		start: (word: string) => string,
-		guess: (attempt: string) => string,
-		result: (missed: number,
-				 scored: number) => string;
-	};
-
-	export enum Status {
-		Started,
-		InProgress
-	}
-}
-
 declare global {
+	namespace Types {
+		type ScoreStats = {
+			missed: number,
+			scored: number
+		};
+
+		export type Mask = '_' | '.' | '-' | ':';
+
+		export interface Score {
+			[id: string]: ScoreStats;
+		}
+
+		export interface Guess {
+			id: string;
+			answer: string;
+			attempt?: string;
+		}
+
+		export interface HangmanConfig {
+			attempt_limit: number;
+			mask: Mask;
+		}
+
+		export interface Messages {
+			help: string;
+			lose: string;
+			miss: string;
+			in_progress: string;
+			win: (id: string) => string;
+			start: (word: string) => string;
+			guess: (attempt: string) => string;
+			result: (missed: number,
+					scored: number) => string;
+		}
+
+		export enum Status {
+			Started,
+			InProgress
+		}
+	}
+
 	interface Array<T> {
 		result(): string;
 		pick(): string;
@@ -59,7 +59,7 @@ Array.prototype.result = function () {
 
 Array.prototype.pick = function (): string {
 	return this[Math.floor(Math.random() * this.length)];
-}
+};
 
 String.prototype.mask_with = function (mask: Types.Mask = '_') {
 	return [...(mask.repeat(this.length))];
@@ -72,17 +72,17 @@ const WORDS: string[] = [
 
 let GAME_STATUS: Types.Status;
 
-let scores: Types.Score = {
+const scores: Types.Score = {
 	"29138138129139128": {
 		missed: 0,
 		scored: 0
 	}
-}
+};
 
-const CONFIG: Types.Config = {
+const CONFIG: Types.HangmanConfig = {
 	attempt_limit: 10,
 	mask: '_'
-}
+};
 
 const MESSAGES: Types.Messages = {
 	help: "To start a new hangman game"
@@ -128,11 +128,11 @@ const [id, attempts, output]: [string, number, string[]] = [
 	answer.mask_with(CONFIG.mask)
 ];
 
-const score = (id: string) =>
-	scores[id].scored++;
+const score = (u_id: string) =>
+	scores[u_id].scored++;
 
-const miss = (id: string) =>
-	scores[id].missed++;
+const miss = (u_id: string) =>
+	scores[u_id].missed++;
 
 const guessed = (attempt: string) =>
 	MESSAGES.guess(attempt);
@@ -144,15 +144,16 @@ const lose = () =>
 	console.log(MESSAGES.lose);
 	// message.channel.send(MESSAGES.lose);
 
-const win = (id: string) => {
-	score(id);
-	const { missed, scored } = scores[id];
-	MESSAGES.win(id);
+const win = (u_id: string) => {
+	score(u_id);
+	const { missed, scored } = scores[u_id];
+	MESSAGES.win(u_id);
 	MESSAGES.result(missed, scored);
 };
 
+// FIX THESE SHADOW VARIABLES (id, answer)
 const guess = ({ id, answer, attempt }: Types.Guess) => {
-	if (GAME_STATUS != (Types.Status.Started | Types.Status.InProgress)) {
+	if (GAME_STATUS !== (Types.Status.Started | Types.Status.InProgress)) {
 		console.log(MESSAGES.in_progress);
 		return;
 	}
@@ -162,7 +163,7 @@ const guess = ({ id, answer, attempt }: Types.Guess) => {
 	if (attempt.length === answer.length)
 		(attempt === answer) ? win(id) : miss(id);
 
-	if (answer.indexOf(attempt) != -1) {
+	if (answer.indexOf(attempt) !== -1) {
 		miss(id);
 
 		return (scores[id].missed >= attempts)
