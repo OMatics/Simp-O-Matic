@@ -27,6 +27,7 @@ import { pastebin_latest,
 		 pastebin_update,
 		 pastebin_url } from './api/pastebin';
 import { Guild } from 'discord.js';
+import { Timer } from './commands/cron';
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
@@ -254,10 +255,12 @@ export class SimpOMatic {
 			HELP_SOURCE, HELP_KEY, GIT_URL,
 			HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
 			CONFIG, SECRETS, KNOWN_COMMANDS,
-			expand_alias: this.expand_alias };
+			expand_alias: this.expand_alias,
+			main: this };
 
 		const commands = read_dir(`${__dirname}/commands`)
 			.map(n => n.slice(0, -3));
+
 		if (commands.includes(operator))
 			return import(`./commands/${operator}`).then(mod =>
 				mod.default(homescope));

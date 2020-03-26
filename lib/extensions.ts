@@ -1,3 +1,5 @@
+import { SimpOMatic } from './main';
+
 // Global Extensions:
 declare global {
 	type HomeScope = {
@@ -6,7 +8,8 @@ declare global {
 		GIT_URL: string, HELP_MESSAGES: string[],
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
 		CONFIG: Types.Config, SECRETS: any, KNOWN_COMMANDS: string[],
-		expand_alias: (operator: string, args: string[], message: Message) => string
+		expand_alias: (operator: string, args: string[], message: Message) => string,
+		main: SimpOMatic;
 	};
 
 	namespace Types {
@@ -26,6 +29,7 @@ declare global {
 			system_channel: string,
 			pp_sizes: { [key: string]: number }
 			cron_jobs: any[],
+			cron_interval: number;
 			weather_locations: { [key: string]: string },
 			commands: {
 				prefix: string,
@@ -197,7 +201,7 @@ export const FORMATS: TextFormat = {
 };
 
 String.prototype.format = function (fmt: string) {
-    return `${fmt}${this}${fmt}`;
+    return `${fmt}${this.toString()}${fmt}`;
 };
 
 String.prototype.shorten = function (width=40) {

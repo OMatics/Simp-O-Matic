@@ -12,6 +12,7 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 		'541761315887120399': 'Moscow'
 	},
 	cron_jobs: [],
+	cron_interval: 2000,
 	commands: {
 		prefix: '!',
 		max_history: 40,
