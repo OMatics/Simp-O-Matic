@@ -2,6 +2,7 @@ import { inspect } from 'util';
 import deep_clone from 'deepcopy';
 
 import { HELP_SECTIONS, KNOWN_COMMANDS } from './main';
+import { pastebin_latest } from './api/pastebin';
 import './extensions';
 
 export const deep_copy = deep_clone;
@@ -121,3 +122,22 @@ export const export_config = (obj: Types.GlobalConfig, { ugly = false }) => {
 
 	return JSON.stringify(o, null, ugly ? null : 4);
 };
+
+export const pastebin_pull = (global_conf: Types.GlobalConfig) =>
+	new Promise((resolve, reject) => {
+		// GLOBAL_CONFIG will eventually update to the online version.
+		pastebin_latest().then(res => {
+			global_conf = deep_merge(global_conf, res);
+			// Remove any duplicates.
+			const gc_string = export_config(global_conf, { ugly: true });
+			global_conf = JSON.parse(gc_string);
+			// Precompile all regular-expressions in known places.
+			for (const guild in global_conf.guilds)
+				if (global_conf.guilds.hasOwnProperty(guild))
+					['respond', 'reject', 'replace', 'trigger']
+						.each(name =>
+							global_conf.guilds[guild].rules[name]
+								.mut_map(compile_match));
+			return resolve(global_conf);
+		}).catch(reject);
+	});
