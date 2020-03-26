@@ -487,9 +487,10 @@ export class SimpOMatic {
 
 let CLIENT: Client = null;
 
-function on_termination(error_type) {
+function on_termination(error_type, e?: Error) {
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
+	if (e) console.warn(e);
 	// Message all system channels.
 	console.log('Sending system messages.');
 	system_message(CLIENT,
@@ -517,6 +518,7 @@ function on_termination(error_type) {
 }
 
 // Handle exits.
+const global_this = this;
 process
 	.on('beforeExit', on_termination.bind(this, 'beforeExit'))
 	.on('exit',       on_termination.bind(this, 'exit'))
@@ -524,7 +526,10 @@ process
 	.on('SIGINT',     on_termination.bind(this, 'SIGINT'))
 	.on('SIGUSR1',    on_termination.bind(this, 'SIGUSR1'))
 	.on('SIGUSR2',    on_termination.bind(this, 'SIGUSR2'))
-	.on('uncaughtException', on_termination.bind(this, 'exception'));
+	.on('uncaughtException', e =>
+		on_termination.bind(global_this, 'exception', e));
+
+process.on('uncaughtException', (e) => e);
 
 // GLOBAL_CONFIG will eventually update to the online version.
 pastebin_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
