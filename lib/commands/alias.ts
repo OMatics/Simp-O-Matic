@@ -64,6 +64,9 @@ export default (home_scope: HomeScope) => {
 			`\`${p}${args[0]}\` now maps to \`${p}${args.tail().join(' ')}\``);
 	} else {
 		if (args.length === 1) {
+            if (args[0][0] === CONFIG.commands.prefix)
+				args[0] = args[0].tail();
+
 			if (args[0] in CONFIG.commands.aliases) {
 				const aliases = Object.keys(CONFIG.commands.aliases);
 				const n = aliases.indexOf(args[0]) + 1;

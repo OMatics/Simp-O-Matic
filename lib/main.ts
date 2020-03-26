@@ -17,7 +17,7 @@ import { execSync as shell } from 'child_process';
 import './extensions';
 import { deep_merge, pp, compile_match,
 		 export_config, access, glue_strings,
-		 deep_copy, recursive_regex_to_string } from './utils';
+		 deep_copy, recursive_regex_to_string, pastebin_pull } from './utils';
 
 // Default bot configuration for a Guild, JSON.
 import DEFAULT_GUILD_CONFIG from './default';
@@ -303,6 +303,16 @@ export class SimpOMatic {
 					has been saved to the local file system.
 					Pastebin file: ${pastebin_url}`.squeeze());
 				break;
+			} case 'refresh': {
+				message.reply('Pulling pastebin...');
+				pastebin_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
+					GLOBAL_CONFIG = res;
+					message.reply('Dynamic configuration refresh succeded.');
+				}).catch(e => {
+					message.reply('Could not update from pastebin:\n```'
+						+ e.toString() + '```');
+				});
+				break;
 			} case 'ls': {
 			   const dirs = JSON.stringify({
 					'__dirname': __dirname,
@@ -480,9 +490,10 @@ export class SimpOMatic {
 
 let CLIENT: Client = null;
 
-function on_termination(error_type) {
+function on_termination(error_type, e?: Error) {
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
+	if (e) console.warn(e);
 	// Message all system channels.
 	console.log('Sending system messages.');
 	system_message(CLIENT,
@@ -510,6 +521,7 @@ function on_termination(error_type) {
 }
 
 // Handle exits.
+const global_this = this;
 process
 	.on('beforeExit', on_termination.bind(this, 'beforeExit'))
 	.on('exit',       on_termination.bind(this, 'exit'))
@@ -517,22 +529,14 @@ process
 	.on('SIGINT',     on_termination.bind(this, 'SIGINT'))
 	.on('SIGUSR1',    on_termination.bind(this, 'SIGUSR1'))
 	.on('SIGUSR2',    on_termination.bind(this, 'SIGUSR2'))
-	.on('uncaughtException', on_termination.bind(this, 'exception'));
+	.on('uncaughtException', e =>
+		on_termination.bind(global_this, 'exception', e));
+
+process.on('uncaughtException', (e) => e);
 
 // GLOBAL_CONFIG will eventually update to the online version.
-pastebin_latest().then(res => {
-	GLOBAL_CONFIG = deep_merge(GLOBAL_CONFIG, res);
-	// Remove any duplicates.
-	const gc_string = export_config(GLOBAL_CONFIG, { ugly: true });
-	GLOBAL_CONFIG = JSON.parse(gc_string);
-	// Precompile all regular-expressions in known places.
-	for(const guild in GLOBAL_CONFIG.guilds)
-		if (GLOBAL_CONFIG.guilds.hasOwnProperty(guild))
-			['respond', 'reject', 'replace', 'trigger']
-				.each(name =>
-					GLOBAL_CONFIG.guilds[guild].rules[name]
-						.mut_map(compile_match));
-
+pastebin_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
+	GLOBAL_CONFIG = res;
 	// Start The Simp'O'Matic.
 	CLIENT = SimpOMatic.start();
 }).catch(console.warn);
