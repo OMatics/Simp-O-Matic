@@ -50,7 +50,8 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'git': 'github',
 			'bug': 'issue',
 			'source': 'github',
-			'save': 'export'
+			'save': 'export',
+			'trans': 'translate',
 		},
 	},
 

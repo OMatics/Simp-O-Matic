@@ -62,12 +62,12 @@
   - `!reject <ls>` — numerically lists all rejection rules.
   - `!reject rm #[rule-index]` — removes the rejection-rule specified by a numerical index.
 - `!replace` **〈not impl.〉** — Bots currently do not have the ability to edit other users messages.  We can only wait.
-- `!cron` **〈not impl.〉** — Run commands repeatedly based on some timer (look-up cron syntax for more info):
+- `!cron` — Run commands repeatedly based on some timer (look-up cron syntax for more info):
   - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.
   - `!cron <ls>` — lists all active cron-jobs numerically.
   - `!cron <clear>` — clears all executed cron-jobs.
   - `!cron rm #[job-index]` — removes a cron-job by index.
-- `!choose [comma-separated-values]` **〈not impl.〉** — Choose randomly from a list of items, separated by commas.
+- `!choose [comma-separated-values]` — Choose randomly from a list of items, separated by commas.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
 - `!urban [slang]` — Looks up a piece of slang in the _Urban Dictionary_.
 - `!search [web-search-terms]` — Performs a web-search and returns the most appropriate URL found.
@@ -76,8 +76,8 @@
 - `!cat` **〈not impl.〉** — Pussycat pictures...
 - `!news [news-search-term]` **〈not impl.〉** — Sends you the most relevant news on the specified topic area.
 - `!youtube [youtube-search-terms]` — Searches for and returns a relevant _YouTube_ video.
-- `!wikipedia` **〈not impl.〉** — Search through Wikipedia, returning the most relevant wiki-link.
-- `!translate <language> [phrase]` **〈not impl.〉** — Translate a phrase from a language (if none specified, it will auto-detect).
+- `!wikipedia` — Search through Wikipedia, returning the most relevant wiki-link.
+- `!translate <from-to> [phrase]` — Translate a phrase from one language to another (if none specified, it will translate from `en` (english) to the auto-detected language).
 - `!wolfram` **〈not impl.〉** — Query Wolfram|Alpha.
 - `!weather` — Check the weather:
   - `!weather set [location]` — sets your weather location.
@@ -89,6 +89,8 @@
 - `!figlet <options> [phrase]` — Print text in ASCII format, using Unix-like command-line arguments.
 - `!roll <upper-bound>` — Roll a dice, default upper bound is 6.
 - `!8ball` — Ask a question, receive a response.
+- `!coin` — Flip a coin.
+- `!flip` — GET ANGRY! FLIP SOMETHING OVER!
 - `!summon [@user-name]` — Summon someone to the server by making the bot poke them in their DMs about it.
 - `!mock [phrase]` — Say something, _bUt iN a MocKiNg WaY_...
 - `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
