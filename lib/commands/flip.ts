@@ -1,4 +1,12 @@
+// (╯°□°)╯︵ ┻━┻
+
+import FLIPS from '../resources/flips';
+
+const flip = c => FLIPS[c] || c;
+
 export default (home_scope: HomeScope) => {
-	const { message } = home_scope;
-	message.answer(Math.random() < 0.5 ? 'Heads!' : 'Tails!');
+	const { message, args } = home_scope;
+	message.channel.send('(╯°□°)╯︵ '
+		+ [...args.join(' ')].map(flip).reverse().join(''));
 };
+

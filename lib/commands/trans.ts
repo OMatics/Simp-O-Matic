@@ -8,4 +8,8 @@ export default async (home_scope: HomeScope) => {
 		fetch(`${api_uri}?key=${SECRETS.yandex.translate.key}&text=${args.join(' ')}&lang=` + from + to).catch(console.log).then((res: any) => res.json()).then(tr => message.channel.send([,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,false,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,'api key missing,blocked api key',,'limit reached',,,,,,,,,'text too long (shouldnt happen)',,,,,,,,,'untranslatable.',,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,'unsupported'][tr.code] || tr.text[0]))
 	} else
 		message.answer('.trans [lang to [lang from]] words \n defaults: autodetect en');
-}
+};
+
+// P.S.  If you're reading this code, and wondering why
+//  it looks like that; it's because Danny wrote it.
+//  Danny is on drugs.
