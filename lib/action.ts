@@ -6,7 +6,8 @@ type ActionType = 'kiss' | 'rape' | 'slap' | 'hug' | 'lick';
 interface Actions {
 	title: string;
 	message: string,
-	images: string[]
+	images: string[],
+	transitiveness: boolean
 }
 
 const ACTIONS: Record<ActionType, Actions> = {
@@ -24,7 +25,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://i.imgur.com/RpxJYVD.gif",
 			"https://i.imgur.com/8fcnQFS.gif",
 		],
-		transitiveness: 0
+		transitiveness: true
 	},
 	rape: {
 		title: "Don't struggle :)",
@@ -36,7 +37,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://i.imgur.com/EcBew8x.gif",
 			"https://i.imgur.com/0iEZleS.gif",
 		],
-		transitiveness: 1
+		transitiveness: true
 	},
 	slap: {
 		title: "Ouchie! You've been slapped!",
@@ -53,7 +54,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/HkK2mkYPZ.gif",
 			"https://cdn.weeb.sh/images/BJ8o71tD-.gif",
 		],
-		transitiveness: 0
+		transitiveness: false
 	},
 	hug: {
 		title: "Uguu~~ You got a warm hug!",
@@ -66,7 +67,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/SJfEks3Rb.gif",
 			"https://cdn.weeb.sh/images/HyNJIaVCb.gif",
 		],
-		transitiveness:0
+		transitiveness: false
 	},
 	lick: {
 		title: "You got a wet lick!",
@@ -82,16 +83,14 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/H1EJxR_vZ.gif",
 			"https://cdn.weeb.sh/images/HkEqiExdf.gif",
 		],
-		transitiveness: 0
+		transitiveness: false
 	}
 };
 
-function descriptionString(subject, object, verb, transitiveness){
-	if(transitiveness == 1)
-		return subject.format(FORMATS.bold) + ` ${verb} ` + object.format(FORMATS.bold) + '! :flushed:';
-	else 
-		return object.format(FORMATS.bold) + `, ${verb} from ` + subject.format(FORMATS.bold) + '! :flushed:';
-}
+const description_string = (subject, object, verb, transitiveness) =>
+	transitiveness
+		? subject.format(FORMATS.bold) + ` ${verb} ` + object.format(FORMATS.bold) + '! :flushed:'
+		: object.format(FORMATS.bold) + `, ${verb} from ` + subject.format(FORMATS.bold) + '! :flushed:';
 
 export default class Action {
 	static get(action: ActionType, message: Message): MessageEmbed {
@@ -105,7 +104,7 @@ export default class Action {
 		const embed = new MessageEmbed()
 			.setColor('#ba3d8a')
 			.setTitle(reaction.title)
-			.setDescription(descriptionString(from, to, reaction.message, reaction.transitiveness))
+			.setDescription(description_string(author, to, reaction.message, reaction.transitiveness))
 			.setImage(image);
 
 		return embed;
