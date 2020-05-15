@@ -12,7 +12,7 @@ interface Actions {
 const ACTIONS: Record<ActionType, Actions> = {
 	kiss: {
 		title: "Uh-oh... You're getting a kissu!",
-		message: "you got a kiss from",
+		message: "",
 		images: [
 			"https://i.imgur.com/a5rkTna.gif",
 			"https://i.imgur.com/AnYC2Xi.gif",
@@ -23,22 +23,24 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://i.imgur.com/79hpwpn.gif",
 			"https://i.imgur.com/RpxJYVD.gif",
 			"https://i.imgur.com/8fcnQFS.gif",
-		]
+		],
+		transitiveness: 0
 	},
 	rape: {
 		title: "Don't struggle :)",
-		message: "you got raped by",
+		message: "raped",
 		images: [
 			"https://tenor.com/biv7G.gif",
 			"https://i.imgur.com/rdZHqDX.gif",
 			"https://i.imgur.com/DdUkVBo.gif",
 			"https://i.imgur.com/EcBew8x.gif",
 			"https://i.imgur.com/0iEZleS.gif",
-		]
+		],
+		transitiveness: 1
 	},
 	slap: {
 		title: "Ouchie! You've been slapped!",
-		message: "you got slapped by",
+		message: "you got a slap",
 		images: [
 			"https://cdn.weeb.sh/images/HkskD56OG.gif",
 			"https://cdn.weeb.sh/images/BJSpWec1M.gif",
@@ -50,11 +52,12 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/H16aQJFvb.gif",
 			"https://cdn.weeb.sh/images/HkK2mkYPZ.gif",
 			"https://cdn.weeb.sh/images/BJ8o71tD-.gif",
-		]
+		],
+		transitiveness: 0
 	},
 	hug: {
 		title: "Uguu~~ You got a warm hug!",
-		message: "you got a hug from",
+		message: "you got a hug",
 		images: [
 			"https://cdn.weeb.sh/images/rkIK_u7Pb.gif",
 			"https://cdn.weeb.sh/images/SJByY_QwW.gif",
@@ -62,11 +65,12 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/S1a0DJhqG.gif",
 			"https://cdn.weeb.sh/images/SJfEks3Rb.gif",
 			"https://cdn.weeb.sh/images/HyNJIaVCb.gif",
-		]
+		],
+		transitiveness:0
 	},
 	lick: {
 		title: "You got a wet lick!",
-		message: "you got licked by",
+		message: "you got a lick",
 		images: [
 			"https://cdn.weeb.sh/images/H1zlgRuvZ.gif",
 			"https://cdn.weeb.sh/images/Bkagl0uvb.gif",
@@ -77,9 +81,17 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/H1EJxR_vZ.gif",
 			"https://cdn.weeb.sh/images/H1EJxR_vZ.gif",
 			"https://cdn.weeb.sh/images/HkEqiExdf.gif",
-		]
+		],
+		transitiveness: 0
 	}
 };
+
+function descriptionString(subject, object, verb, transitiveness){
+	if(transitiveness == 1)
+		return subject.format(FORMATS.bold) + ` ${verb} ` + object.format(FORMATS.bold) + '! :flushed:';
+	else 
+		return object.format(FORMATS.bold) + `, ${verb} from ` + subject.format(FORMATS.bold) + '! :flushed:';
+}
 
 export default class Action {
 	static get(action: ActionType, message: Message): MessageEmbed {
@@ -93,9 +105,7 @@ export default class Action {
 		const embed = new MessageEmbed()
 			.setColor('#ba3d8a')
 			.setTitle(reaction.title)
-			.setDescription(
-				`${to.format(FORMATS.bold)}, ${reaction.message} \
-				 ${author.format(FORMATS.bold)}!`.squeeze())
+			.setDescription(descriptionString(from, to, reaction.message, reaction.transitiveness))
 			.setImage(image);
 
 		return embed;
