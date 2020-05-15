@@ -31,7 +31,7 @@ with GitHub rendering).
 
 ## Getting Up & Running
 
-Make sure you have `node` (`v10.x`) and `yarn` installed
+Make sure you have `node` (`v13.11.x`) and `yarn` installed
 (`npm` also possible).
 
 - Clean up from previous build/install:

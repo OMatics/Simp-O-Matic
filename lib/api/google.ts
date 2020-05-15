@@ -38,10 +38,16 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 		delete CACHE[cache_keys[2]];
 	}
 
-	const num_match = param.query.trim().match(/[ ]+(\d+)$/);
+	let num_match = param.query.trim().match(/[ ]+(\d+)$/);
 	if (num_match)
 		query = query.slice(0, -num_match[1].length).trim();
-	const result_index = Math.abs(num_match ? Number(num_match[1]) - 1 : 0) % 10;
+	
+   const result_num : number = Number(num_match[1]) || 1;
+	
+	if (result_num > 10)
+		return reject("Can only query up to 10th result (API restriction).");
+
+	const result_index = Math.abs(result_num - 1);
 	const cs = google.customsearch('v1');
 
 	cs.cse.list({
@@ -57,7 +63,7 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 			return reject('No such results found.');
 
 		const item = res.data.items[result_index];
-		const answer = `Search for ‘${param.query}’: ${item.link}\n>>> ${item.title}`;
+		const answer = `Search for ‘${param.query}’ (result no. ${result_num}) ${item.link}\n>>> ${item.title}`;
 		// Cache this query (DO NOT CACHE NSFW)
 		if (!param.nsfw)
 			CACHE[param.query] = answer;

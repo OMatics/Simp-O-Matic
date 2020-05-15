@@ -113,7 +113,9 @@ declare global {
 
 	interface Number {
 		round_to(dp: number): number;
+		to_extension(figures, ext): string;
 		to_metric(figures): string;
+		to_abbrev(figures): string;
 		truncate(): number;
 	}
 }
@@ -231,16 +233,34 @@ const SI_EXTENSIONS = [
 	{ value: 1E18, symbol: "E" }
 ];
 
-Number.prototype.to_metric = function (figures) {
-	let i = SI_EXTENSIONS.length - 1;
+const NORMIE_EXTENSIONS = [
+	{ value: 1, symbol: "" },
+	{ value: 1E3, symbol: "K" },
+	{ value: 1E6, symbol: "M" },
+	{ value: 1E9, symbol: "B" },
+	{ value: 1E12, symbol: "t" },
+	{ value: 1E15, symbol: "q" },
+	{ value: 1E18, symbol: "Q" }
+];
+
+Number.prototype.to_extension = function (figures, ext) {
+	let i = ext.length - 1;
 	for (; i > 0; --i)
-		if (this >= SI_EXTENSIONS[i].value)
+		if (this >= ext[i].value)
 			break;
 
-	return (this.valueOf() / SI_EXTENSIONS[i].value)
+	return (this.valueOf() / ext[i].value)
 		.toFixed(figures)
 		.replace(/\.0+$|(\.[0-9]*[1-9])0+$/, "$1")
-		+ SI_EXTENSIONS[i].symbol;
+		+ ext[i].symbol;
+};
+
+Number.prototype.to_metric = function (figures) {
+	return this.to_extension(figures, SI_EXTENSIONS);
+};
+
+Number.prototype.to_abbrev = function (figures) {
+	return this.to_extension(figures, NORMIE_EXTENSIONS);
 };
 
 Number.prototype.truncate = function() {

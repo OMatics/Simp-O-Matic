@@ -18,7 +18,7 @@ const yt_search = (params: YTSearch) => new Promise((resolve, reject) => {
 				upload_date, link: url } = res[0];
 
 		return resolve(`Searh for ‘${params.query}’: ${url}\n> ${title} | \
-			${views.to_metric()} views | uploaded ${upload_date} | \
+			${views.to_abbrev()} views | uploaded ${upload_date} | \
 			by: ${by}.`.squeeze());
 	});
 });
