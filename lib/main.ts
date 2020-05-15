@@ -351,12 +351,24 @@ Would you like to slow down a little?`.squeeze());
 			if (!responder) continue; // Sparse arrays!
 			const match = content.match(responder.match);
 			const { response } = responder;
+
+			if (responder.listens
+			&& responder.listens.length > 0
+			&& !responder.listens.includes(message.author.id))
+				continue;
+
 			if (match && response) message.answer(response);
 		}
 		for (const rejecter of CONFIG.rules.reject) {
 			if (!rejecter) continue; // Sparse arrays!
 			const match = content.match(rejecter.match);
 			const { response } = rejecter;
+
+			if (rejecter.listens
+				&& rejecter.listens.length > 0
+				&& !rejecter.listens.includes(message.author.id))
+				continue;
+
 			if (match) {
 				if (response) message.answer(response);
 				if (message.deletable) {
@@ -406,7 +418,7 @@ Would you like to slow down a little?`.squeeze());
 	async expand(message : Message) : Promise<string> {
 		// History expansion with !!, !!@, !!^@, !!<ordinal>, etc.
 		const expansions = message.content
-			.replace(/(!!@?\^?\d*)/g, '@EXP$1@EXP')
+			.replace(/(!![@\^]?[\^@]?\d*)/g, '@EXP$1@EXP')
 			.replace(/(\s)/g, '@EXP$1@EXP')
 			.split('@EXP').squeeze();
 

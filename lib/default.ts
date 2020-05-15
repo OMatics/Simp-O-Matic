@@ -6,7 +6,8 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 	main_channel: null,
 	system_channel: null,
 	pp_sizes: {
-		'541761315887120399': 16
+		'541761315887120399': 16,
+		'265958795254038535': 36
 	},
 	weather_locations: {
 		'541761315887120399': 'Moscow'
@@ -60,15 +61,25 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 		respond: [
 			{
 				match: "/^\\s*thanks\\p{P}*\\s*$/iu",
-				response: 'Obama.'
+				response: 'Obama.',
+				listens: []
 			},
 			{
 				match: "/(^|[^\\p{L}\\p{N}])+bots?([^\\p{L}\\p{N}]|$)+/iu",
-				response: "The hell you sayn' about bots?"
+				response: "The hell you sayn' about bots?",
+				listens: []
 			},
 			{
 				match: "/Good (Morning|Day) (Star|Sun)shine/i",
-				response: "The Earth says Hello!"
+				response: "The Earth says Hello!",
+				listens: []
+			},
+			{
+				match: "/\b(hello|hi)\b/i",
+				response: "Hello my lord and master.",
+				listens: [
+					'265958795254038535'
+				]
 			}
 		],
 		reject: [

@@ -15,7 +15,8 @@ declare global {
 	namespace Types {
 		export type Match = {
 			match: string | RegExp,
-			response: string
+			response: string,
+			listens?: string[]
 		};
 
 		export type Ignore = {
