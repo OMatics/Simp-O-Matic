@@ -42,7 +42,7 @@ const web_search = (param : CSE) => new Promise((resolve, reject) => {
 	if (num_match)
 		query = query.slice(0, -num_match[1].length).trim();
 	
-   const result_num : number = Number(num_match[1]) || 1;
+   const result_num : number = num_match ? Number(num_match[1]) : 1;
 	
 	if (result_num > 10)
 		return reject("Can only query up to 10th result (API restriction).");
