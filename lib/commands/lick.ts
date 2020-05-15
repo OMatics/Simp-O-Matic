@@ -7,7 +7,7 @@ export default (home_scope: HomeScope) => {
 
 	if (args.length === 0 || message.mentions.users.size === 0)
 		return message.channel.send(
-			"You kissed your own hand. :face_with_hand_over_mouth:");
+			"You licked your own hand... Tastes salty :yum:");
 
-	message.channel.send(Action.get('kiss', message));
+	message.channel.send(Action.get('lick', message));
 };
