@@ -12,7 +12,7 @@ export default (home_scope: HomeScope) => {
 			+ " be either `respond`, `reject`, `replace` or `trigger`"
 			+ "\nSee `help` page for `listen` for more information.");
 
-	const index_str = args[1]?.trim();
+	const index_str = args[1] || "";
 	const index = Number(index_str[0] === '#'
 		? index_str.tail()
 		: index_str);
@@ -22,7 +22,7 @@ export default (home_scope: HomeScope) => {
 			+ " (greater than zero), that represents the index of the rule");
 
 	const rule_no = CONFIG.rules[rule_type].length;
-	if (index > rule_no)
+	if (index > rule_no || CONFIG.rules[rule_type][index - 1] === undefined)
 		return message.answer(`Index (${index}) is out of range.\n`
 			+ `Only ${rule_no} elements exist in ${rule_type} rules.`);
 
