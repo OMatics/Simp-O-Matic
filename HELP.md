@@ -69,6 +69,13 @@
   - `!cron <ls>` — lists all active cron-jobs numerically.
   - `!cron <clear>` — clears all executed cron-jobs.
   - `!cron rm #[job-index]` — removes a cron-job by index.
+- `!git` — Information on commits and more of the bot's Git repository:
+  - `!git history <#number>` — Gives latest commits to the repo, number defaults to 5.
+  - `!git latest` — Gets latest commit.
+  - `!git contributors` — List of contributors.
+  - `!git breakdown` — Breakdown of additions and deletions by contributors.
+  - `!git stars` — Get star count.
+  - `!git forks` — Get fork count.
 - `!choose [comma-separated-values]` — Choose randomly from a list of items, separated by commas.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
 - `!urban [slang]` — Looks up a piece of slang in the _Urban Dictionary_.

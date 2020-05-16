@@ -98,6 +98,8 @@ const system_message = (client: Client, msg: string) => {
 					c.send(msg));
 };
 
+import server from './web';
+
 @Discord
 export class SimpOMatic {
 	private static _CLIENT : Client;
@@ -170,6 +172,13 @@ export class SimpOMatic {
 						.replace('USER_TAG', member.nickname
 							|| member.user.tag.split('#').first()));
 			}
+		});
+
+		// Send messages on web-hooks.
+		server(body => {
+			system_message(client, "Received data:\n```"
+				+ JSON.stringify(body, null, 4)
+				+ "```");
 		});
 	}
 
