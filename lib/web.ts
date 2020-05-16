@@ -1,6 +1,8 @@
 import http from 'http';
 import { readFileSync as read_file } from 'fs';
+import process from 'process';
 
+const PORT = Number(process.env.PORT) || 8080;
 
 export default handle_post => {
 	const request_listener: http.RequestListener = (req, res) => {
@@ -39,7 +41,7 @@ export default handle_post => {
 		}
 	};
 	const server = http.createServer(request_listener);
-	server.listen(8080, '0.0.0.0', () => {
+	server.listen(PORT, '0.0.0.0', () => {
 		console.log(`Web server started on http://0.0.0.0:8080/`)
 	});
 };
