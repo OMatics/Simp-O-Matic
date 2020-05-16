@@ -96,6 +96,9 @@
 - `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
 - `!ship [@user-name] [@user-name]` — Shows the love grade between two people.
 - `!kiss [@user-name]` — Blow a kiss to someone you like!
+- `!hug [@user-name]` — Give someone a warm hug!
+- `!lick [@user-name]` — Give someone a lickety lick!
+- `!slap [@user-name]` — Slap someone hard in the face!
 - `!emojify [phrase]` — Turn your text into discord-style emoji.
 - `!B [phrase]` — Replace some elements of your text with a certain U+1F171.
 - `!uwu [phrase]` — “uwuify” your text.
@@ -103,6 +106,7 @@
 - `!motivation` — Get a motivational quote (for when you're feeling a lil down).
 - `!pat [@user-name]` — Give someone a pat on the head.
 - `!emojis` — Lists all the emojis on the server.
+- `!hangman <options>` **〈not impl.〉** — Hangman game to play with your friends.
 
 ▬▬▬
 
