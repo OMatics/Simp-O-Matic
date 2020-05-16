@@ -62,6 +62,8 @@
   - `!reject <ls>` — numerically lists all rejection rules.
   - `!reject rm #[rule-index]` — removes the rejection-rule specified by a numerical index.
 - `!replace` **〈not impl.〉** — Bots currently do not have the ability to edit other users messages.  We can only wait.
+- `!listen` — Specify rules only to listen yo specific users:
+  - `!listen [rule-type] #[rule-index] [...@username(s)]` — Will cause rule at index `#rule-index` of certain `rule-type` (either `respond`, `reject`, `replace` or `trigger`) to only work on specified username(s).
 - `!cron` — Run commands repeatedly based on some timer (look-up cron syntax for more info):
   - `!cron [minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>` — runs a command (with or without arguments) repeatedly as specified by the schedule signature.
   - `!cron <ls>` — lists all active cron-jobs numerically.

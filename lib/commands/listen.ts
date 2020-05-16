@@ -1,5 +1,5 @@
 const RULES = [
-	'reply', 'reject',
+	'respond', 'reject',
 	'replace', 'trigger'
 ];
 
@@ -9,10 +9,14 @@ export default (home_scope: HomeScope) => {
 	const rule_type = args[0];
 	if (!RULES.includes(rule_type))
 		return message.answer("`listen` command first argument must"
-			+ " be either `reply`, `reject`, `replace` or `trigger`"
+			+ " be either `respond`, `reject`, `replace` or `trigger`"
 			+ "\nSee `help` page for `listen` for more information.");
 
-	const index = Number(args[1].trim());
+	const index_str = args[1].trim();
+	const index = Number(index_str[0] === '#'
+		? index_str.tail()
+		: index_str);
+
 	if (!index)
 		return message.answer("Second argument must be a number"
 			+ " (greater than zero), that represents the index of the rule");
