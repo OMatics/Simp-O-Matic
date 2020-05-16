@@ -3,7 +3,10 @@ process.stdin.resume();
 
 // Discord Bot API.
 import { Discord, On, Client } from '@typeit/discord';
-import { Message, MessageAttachment, TextChannel } from 'discord.js';
+import { Message,
+		 MessageAttachment,
+		 MessageEmbed,
+		 TextChannel } from 'discord.js';
 
 // System interaction modules.
 import {
@@ -87,7 +90,7 @@ console.log('File/Execution locations:', {
 	'process.cwd()': process.cwd()
 });
 
-const system_message = (client: Client, msg: string) => {
+const system_message = async (client: Client, msg: any) => {
 	for (const guild in GLOBAL_CONFIG.guilds)
 		if (GLOBAL_CONFIG.guilds.hasOwnProperty(guild)
 			&& GLOBAL_CONFIG.guilds[guild].system_channel
@@ -176,9 +179,31 @@ export class SimpOMatic {
 
 		// Send messages on web-hooks.
 		server(body => {
-			system_message(client, "Received data:\n```"
-				+ JSON.stringify(body, null, 4)
-				+ "```");
+			if (body.ref === "refs/heads/master" || body.action) {
+				const embed = new MessageEmbed()
+					.setColor("#ef88c5")
+					.setURL(body.repository.html_url)
+					.setThumbnail("https://github.com/Demonstrandum/Simp-O-Matic/raw/master/lib/resources/banners/banner.png")
+					.setAuthor(body.sender.login, body.sender.avatar_url);
+
+				if (body.head_commit) {
+					const push_embed = embed
+						.setTitle("Latest Commit")
+						.setDescription(body.head_commit.message)
+						.setURL(body.head_commit.url);
+
+					system_message(client, push_embed);
+
+				} else if (body.starred_at) {
+					const star_embed = embed
+						.setTitle("Star Added!");
+					system_message(client, star_embed);
+				}
+			} else {
+				system_message(client, "Received unknown data:\n```"
+					+ JSON.stringify(body, null, 4).slice(0, 1930)
+					+ "```");
+			}
 		});
 	}
 
