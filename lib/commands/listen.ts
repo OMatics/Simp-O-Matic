@@ -12,7 +12,7 @@ export default (home_scope: HomeScope) => {
 			+ " be either `respond`, `reject`, `replace` or `trigger`"
 			+ "\nSee `help` page for `listen` for more information.");
 
-	const index_str = args[1].trim();
+	const index_str = args[1]?.trim();
 	const index = Number(index_str[0] === '#'
 		? index_str.tail()
 		: index_str);
@@ -39,4 +39,5 @@ export default (home_scope: HomeScope) => {
 		rule.listens = [];
 
 	rule.listens.push.apply(rule.listens, ids);
+	message.answer("Rule listener added successfully.");
 };
