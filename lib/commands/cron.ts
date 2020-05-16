@@ -4,16 +4,43 @@ import DEFAULT_GUILD_CONFIG from '../default';
 
 type Greenwich = 'pm' | 'am';
 type Ordinal   = 'st' | 'nd' | 'rd' | 'th';
+type AnyValue  = '*';
+
+interface ListValue {
+	values: string[]
+};
+
+interface RangeValue {
+	range: string[],
+	step?: string
+};
+
+interface PlaceValue {
+	[place: number]: object
+}
+
+type Expr = string
+	| RangeValue
+	| ListValue
+	| AnyValue;
+
+enum Place {
+	MINUTE,
+	HOUR,
+	MONTHDAY,
+	MONTH,
+	WEEKDAY
+};
 
 interface Schedule {
-	hours?: string;
-	minutes?: string;
-	dayOfMonth?: string;
-	month?: string;
-	dayOfWeek?: string;
+	hours?: Expr;
+	minutes?: Expr;
+	dayOfMonth?: Expr;
+	month?: Expr;
+	dayOfWeek?: Expr;
 	greenwich?: Greenwich;
 	ordinal?: Ordinal;
-}
+};
 
 interface Command {
 	name: string;
@@ -28,16 +55,18 @@ interface Cron {
 }
 
 const MATCHERS = {
-	hour_mins:
-		/^(((0|1)[0-9])|2[0-3]):[0-5][0-9]\s?(pm|am)?$/i,
-	day_of_month:
-		/(?:\b)(([1-9]|0[1-9]|[1-2][0-9]|3[0-1])(st|nd|rd|th)?)(?:\b|\/)/i,
+	hour_mins: '^(((0|1)[0-9])|2[0-3]):[0-5][0-9]\\s?(pm|am)?$',
+	day_of_month: '^(?:\\b)(([1-9]|0[1-9]|[1-2][0-9]|3[0-1])(st|nd|rd|th)?)(?:\\b|\\/)$',
+	any_value: '^\\*$',
+	numerics: '(^(\\d\\.?)+$)',
+	range: '(^\\d+\\-\\d+|\\*\\/\\d+)(\\/\\d+)?$',
+	list: '^(\\d+\\,\\d+)$',
 	weekdays: 'sun mon tue wed thu fri sat'.split(' '),
 	months: 'jan feb mar apr may jun jul aug sep oct nov dec'
 		.split(' ').map(month => month.capitalize()),
-	prefix: (x: string) => new RegExp("^\\" + x),
-	ordinals: /(st|nd|rd|th)/,
-	greenwich: /(pm|am)/
+	prefix: (x: string) => "^\\" + x,
+	ordinals: '(st|nd|rd|th)',
+	greenwich: '(pm|am)'
 };
 
 const RESPONSES = {
@@ -49,10 +78,8 @@ const RESPONSES = {
 	},
 	empty: ":warning: There are no cron jobs being executed.",
 	clear: "Cleared all executed cron jobs.",
-	removed: (id: number) =>
-		`Removed cron job #${id.toString().format(FORMATS.bold)}.`,
-	added: (cron: Cron) =>
-		`New cron (#${cron.id.toString().format(FORMATS.bold)}) has been added.`,
+	removed: (id: number) => `Removed cron job #${id.toString().format(FORMATS.bold)}.`,
+	added: (cron: Cron) => `New cron (#${cron.id.toString().format(FORMATS.bold)}) has been added.`,
 	list: (cron: Cron) => {
 		const { schedule } = cron;
 		let result: string = "";
@@ -150,7 +177,7 @@ export class Timer {
 	}
 
 	verify(jobs: Cron[]): void {
-		jobs.forEach((job: Cron) => this.compare(job));
+		jobs.forEach(this.compare);
 	}
 }
 
@@ -180,8 +207,8 @@ export default (home_scope: HomeScope) => {
 	const submit = () =>
 		CONFIG.cron_jobs = crons;
 
-	const matches = (value: string, regex: RegExp): string | undefined =>
-		(value.match(regex) || {})?.input;
+	const matches = (value: string, regex: string): string | undefined =>
+		(value.match(new RegExp(regex)) || {})?.input;
 
 	const rm = (job: number) => {
 		delete crons[crons.map(x => x.id).indexOf(job)];
@@ -208,58 +235,121 @@ export default (home_scope: HomeScope) => {
 		);
 	};
 
-	const parse = (argm: string[]): Cron => {
-		const cron: Cron = {
+	const parse = (args: string[]): Cron => {
+		const { prefix } = CONFIG.commands;
+
+		let cron: Cron = {
 			id: crons.slice(-1)[0]?.id + 1 || 0
 		};
 
-		argm.some((argument, i) => {
-			argument = argument.trim();
+		const add = (schedule: Schedule): void => {
+			cron.schedule = {
+				...cron.schedule,
+				...schedule
+			};
+		};
 
-			switch (argument) {
-				case (
-					matches(argument, MATCHERS.prefix(CONFIG.commands.prefix))
-				): cron.command = {
-						name: argument.split(CONFIG.commands.prefix)[1],
-						args: argm.slice(i + 1)
-					};
-					break;
-				case (matches(argument, MATCHERS.hour_mins)):
-					const [hour, mins] = argument.split(':');
-					const [min, greenwich] = mins.split(MATCHERS.greenwich);
+		const populate = (value: Expr, position: number): void => {
+			add(({
+				[Place.HOUR]:     { hours:      value },
+				[Place.MINUTE]:   { minutes:    value },
+				[Place.MONTHDAY]: { dayOfMonth: value },
+				[Place.WEEKDAY]:  { dayOfWeek:  value },
+				[Place.MONTH]:    { month:      value }
+			} as PlaceValue)[position]);
+		};
 
-					cron.schedule = {
-						hours: hour,
-						minutes: min,
-						greenwich: greenwich as Greenwich
-					};
-					break;
-				case (matches(argument, MATCHERS.day_of_month)):
-					const [dayOfMonth, ordinal] =
-						argument.split(MATCHERS.ordinals);
+		const command = (expr: string, index: number): void => {
+			cron.command = {
+				name: expr.split(prefix)[1],
+				args: args.slice(index + 1)
+			};
+		};
 
-					const date =
-						matches(argument, MATCHERS.ordinals) === undefined
-						? { month: argument }
-						: { dayOfMonth, ordinal: ordinal as Ordinal };
+		const hour_mins = (expr: string): void => {
+			const [hour, mins] = expr.split(':');
+			const [min, greenwich] = mins.split(new RegExp(MATCHERS.greenwich));
 
-					cron.schedule = {
-						...cron.schedule,
-						...date
-					};
-					break;
-			}
+			add({
+				hours: hour,
+				minutes: min,
+				greenwich: greenwich as Greenwich
+			});
+		};
+
+		const day_of_month = (expr: string): void => {
+			const [dayOfMonth, ordinal] =
+				expr.split(new RegExp(MATCHERS.ordinals));
+
+			const date =
+				matches(expr, MATCHERS.ordinals) === undefined
+				? { month: expr }
+				: { dayOfMonth, ordinal: ordinal as Ordinal };
+
+			add(date);
+		};
+
+		const day_of_week = (expr: string): void => {
+			add({
+				dayOfWeek: (
+					MATCHERS.weekdays.indexOf(expr) + 1
+				).toString()
+			});
+		};
+
+		const numerics = (expr: Expr, position: number): void =>
+			populate(expr, position);
+
+		const any_value = (position: number): void => {
+			if (cron.schedule?.hours &&
+				cron.schedule?.minutes &&
+				cron.schedule?.hours !== '*' &&
+				cron.schedule.minutes !== '*' &&
+				cron.schedule?.greenwich) position += 1;
+
+			args[position] = '';
+			populate('*', position);
+		};
+
+		const range = (expr: string, position: number): void => {
+			let [from, to, step] = expr.split(/[\-\/]/);
+			const values: RangeValue = { range: [from, to] };
+
+			if (values.range[0] == '*' && Number(values.range[1]) != NaN)
+				step = values.range[1];
+
+			if (step) values.step = step;
+
+			populate(values, position);
+		};
+
+		const list = (expr: string, position: number): void => {
+			const values = expr.split(',');
+			const list: ListValue = { values };
+			populate(list, position);
+		};
+
+		args.some((argument, i) => {
+			let position = args.indexOf(argument);
+
+			const MAPPINGS = {
+				[MATCHERS.prefix(prefix)]: () => command(argument, i),
+				[MATCHERS.hour_mins]:      () => hour_mins(argument),
+				[MATCHERS.range]:          () => range(argument, position),
+				[MATCHERS.list]:           () => list(argument, position),
+				[MATCHERS.numerics]:       () => numerics(argument, position),
+				[MATCHERS.day_of_month]:   () => day_of_month(argument),
+				[MATCHERS.any_value]:      () => any_value(position)
+			};
+
+			for (let matcher in MAPPINGS)
+				if (matches(argument, matcher))
+					MAPPINGS[matcher]();
 
 			argument = argument.toLowerCase();
 
-			if (MATCHERS.weekdays.includes(argument)) {
-				cron.schedule = {
-					...cron.schedule,
-					dayOfWeek: (
-						MATCHERS.weekdays.indexOf(argument) + 1
-					).toString()
-				};
-			}
+			if (MATCHERS.weekdays.includes(argument))
+				day_of_week(argument);
 		});
 
 		return cron;
