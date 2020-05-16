@@ -12,7 +12,7 @@ export default (home_scope: HomeScope) => {
 			+ " be either `respond`, `reject`, `replace` or `trigger`"
 			+ "\nSee `help` page for `listen` for more information.");
 
-	const index_str = args[1] || "";
+	const index_str = args[1] || "NaN";
 	const index = Number(index_str[0] === '#'
 		? index_str.tail()
 		: index_str);

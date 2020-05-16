@@ -73,6 +73,10 @@ export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
 				options = 'ui';
 			response = args.tail().join(' ').trim();
 		}
+		const p = CONFIG.commands.prefix;
+		if (response.startsWith(p) && rule_kind === 'trigger') {
+			response = response.slice(p.length);
+		}
 		// Add the rule to the CONFIG.rules.
 		try {
 			CONFIG.rules[rule_kind].push({

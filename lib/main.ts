@@ -345,7 +345,7 @@ Would you like to slow down a little?`.squeeze());
 	process_generic(message : Message) {
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
-		const { content } = message;
+		const { content } = message;  // Original content.
 		if (!content) return; // Message with no content (deleted)...
 		for (const responder of CONFIG.rules.respond) {
 			if (!responder) continue; // Sparse arrays!
@@ -358,6 +358,23 @@ Would you like to slow down a little?`.squeeze());
 				continue;
 
 			if (match && response) message.answer(response);
+		}
+		for (const triggerer of CONFIG.rules.trigger) {
+			if (!triggerer) continue; // Sparse arrays!
+			const match = content.match(triggerer.match);
+			const { response } = triggerer;
+
+			if (triggerer.listens
+				&& triggerer.listens.length > 0
+				&& !triggerer.listens.includes(message.author.id))
+				continue;
+
+			if (match && response) {
+				const p = CONFIG.commands.prefix;
+				message.content = `${p}${response}`;
+				// Send it back as a command.
+				this.on_message(message, SimpOMatic._CLIENT);
+			}
 		}
 		for (const rejecter of CONFIG.rules.reject) {
 			if (!rejecter) continue; // Sparse arrays!
