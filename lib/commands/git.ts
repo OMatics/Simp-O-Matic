@@ -1,4 +1,4 @@
-import * as git from 'nodegit';
+import git from 'nodegit';
 import fetch from 'node-fetch';
 
 import path from 'path';
@@ -25,7 +25,7 @@ const get_history = (max: number): Promise<History[]> =>
 		let count = 0;
 		const hist_array: History[] = [];
 		history.on("commit", commit => {
-			if (++count >= max) return res(hist_array);
+			if (count++ >= max) return;
 			const entry: History = {
 				hash: commit.sha().toString().slice(0, 7),
 				message: commit.message().trim(),
@@ -33,6 +33,7 @@ const get_history = (max: number): Promise<History[]> =>
 			};
 			hist_array.push(entry);
 		});
+		history.on("end", () => res(hist_array));
 		history.start();
 	});
 
@@ -74,19 +75,20 @@ export default async (homescope : HomeScope) => {
 		return message.channel.send(str);
 	}
 
-	if (args[0].startsWith('contr')) {
+	if (args[0].startsWith('cont')) {
 		const breakdown = await shortlog();
 		return message.channel.send("**Contributors:**\n"
-			+ Object.keys(breakdown).join("\n"));
+			+ Object.keys(breakdown).map(e => ` - ${e}`).join("\n"));
 	}
 
-	if (args[0] === 'breakdown') {
+	if (args[0].startsWith('break')) {
 		const breakdown = await shortlog();
 		const pad = Object.values(breakdown).reduce((acc, e) =>
 			e.toString().length > acc ? e.toString().length : acc, 1);
 		const formatted = Object.keys(breakdown).map(e =>
 			`\`${breakdown[e].toString().padStart(pad)}\`: ${e}`);
-		return message.channel.send(formatted.join("\n"));
+		return message.channel.send("**Commits per Contributor:**\n"
+			+ formatted.join("\n"));
 	}
 
 	const res = await fetch(GITHUB_API);
