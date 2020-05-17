@@ -19,11 +19,14 @@ jobs:
         node-version: [13.11.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2      
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - run: sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+    - run: sudo apt-get update
+    - run: sudo apt-get install libssl-dev
     - run: yarn install
     - run: yarn build
     - run: tsc  # Apparently TSC failing doesn't cause yarn build to fail too...
