@@ -7,16 +7,16 @@ type Ordinal   = 'st' | 'nd' | 'rd' | 'th';
 type AnyValue  = '*';
 
 interface ListValue {
-	values: string[]
-};
+	values: string[];
+}
 
 interface RangeValue {
-	range: string[],
-	step?: string
-};
+	range: string[];
+	step?: string;
+}
 
 interface PlaceValue {
-	[place: number]: object
+	[place: number]: object;
 }
 
 type Expr = string
@@ -30,17 +30,19 @@ enum Place {
 	MONTHDAY,
 	MONTH,
 	WEEKDAY
-};
+}
 
 interface Schedule {
-	hours?: Expr;
-	minutes?: Expr;
-	dayOfMonth?: Expr;
-	month?: Expr;
-	dayOfWeek?: Expr;
-	greenwich?: Greenwich;
-	ordinal?: Ordinal;
-};
+	hours: Expr;
+	minutes: Expr;
+	dayOfMonth: Expr;
+	month: Expr;
+	dayOfWeek: Expr;
+	greenwich: Greenwich;
+	ordinal: Ordinal;
+}
+
+type Defaults = keyof Omit<Schedule, 'greenwich' | 'ordinal'>;
 
 interface Command {
 	name: string;
@@ -49,7 +51,7 @@ interface Command {
 
 interface Cron {
 	id: number;
-	schedule?: Schedule;
+	schedule?: Partial<Schedule>;
 	command?: Command;
 	executed_at?: number;
 }
@@ -91,7 +93,7 @@ const RESPONSES = {
 		if (schedule?.hours && schedule?.minutes) {
 			result += `: ${schedule.hours}:${schedule.minutes}`;
 			if (schedule?.greenwich)
-				result += `${schedule.greenwich.toUpperCase()}`;
+				result += schedule.greenwich.toUpperCase();
 			result += ' :clock3: ';
 		}
 
@@ -235,14 +237,14 @@ export default (home_scope: HomeScope) => {
 		);
 	};
 
-	const parse = (args: string[]): Cron => {
+	const tokenize = (args: string[]): Cron => {
 		const { prefix } = CONFIG.commands;
 
 		let cron: Cron = {
 			id: crons.slice(-1)[0]?.id + 1 || 0
 		};
 
-		const add = (schedule: Schedule): void => {
+		const add = (schedule: Partial<Schedule>): void => {
 			cron.schedule = {
 				...cron.schedule,
 				...schedule
@@ -259,14 +261,14 @@ export default (home_scope: HomeScope) => {
 			} as PlaceValue)[position]);
 		};
 
-		const command = (expr: string, index: number): void => {
+		const set_command = (expr: string, index: number): void => {
 			cron.command = {
-				name: expr.split(prefix)[1],
+				name: expr,
 				args: args.slice(index + 1)
 			};
 		};
 
-		const hour_mins = (expr: string): void => {
+		const set_hour_mins = (expr: string): void => {
 			const [hour, mins] = expr.split(':');
 			const [min, greenwich] = mins.split(new RegExp(MATCHERS.greenwich));
 
@@ -277,7 +279,7 @@ export default (home_scope: HomeScope) => {
 			});
 		};
 
-		const day_of_month = (expr: string): void => {
+		const set_day_of_month = (expr: string): void => {
 			const [dayOfMonth, ordinal] =
 				expr.split(new RegExp(MATCHERS.ordinals));
 
@@ -289,7 +291,7 @@ export default (home_scope: HomeScope) => {
 			add(date);
 		};
 
-		const day_of_week = (expr: string): void => {
+		const set_day_of_week = (expr: string): void => {
 			add({
 				dayOfWeek: (
 					MATCHERS.weekdays.indexOf(expr) + 1
@@ -297,25 +299,29 @@ export default (home_scope: HomeScope) => {
 			});
 		};
 
-		const numerics = (expr: Expr, position: number): void =>
+		const set_numerics = (expr: Expr, position: number): void => {
 			populate(expr, position);
+		};
 
-		const any_value = (position: number): void => {
+		const set_any_value = (position: number): void => {
 			if (cron.schedule?.hours &&
 				cron.schedule?.minutes &&
 				cron.schedule?.hours !== '*' &&
-				cron.schedule.minutes !== '*' &&
+				cron.schedule?.minutes !== '*' &&
 				cron.schedule?.greenwich) position += 1;
 
 			args[position] = '';
 			populate('*', position);
 		};
 
-		const range = (expr: string, position: number): void => {
+		const set_range = (expr: string, position: number): void => {
 			let [from, to, step] = expr.split(/[\-\/]/);
 			const values: RangeValue = { range: [from, to] };
 
-			if (values.range[0] == '*' && Number(values.range[1]) != NaN)
+			const has_step = (range: string[]) =>
+				range[0] == '*' && Number(range[1]) != NaN;
+
+			if (has_step(values.range))
 				step = values.range[1];
 
 			if (step) values.step = step;
@@ -323,23 +329,36 @@ export default (home_scope: HomeScope) => {
 			populate(values, position);
 		};
 
-		const list = (expr: string, position: number): void => {
+		const set_list = (expr: string, position: number): void => {
 			const values = expr.split(',');
 			const list: ListValue = { values };
+
 			populate(list, position);
+		};
+
+		const get_defaults = (key: Defaults): string => {
+			const now = new Date();
+
+			return {
+				hours:      now.getHours(),
+				minutes:    now.getMinutes(),
+				month:      now.getMonth(),
+				dayOfMonth: now.getDate(),
+				dayOfWeek:  now.getDay()
+			}[key].toString();
 		};
 
 		args.some((argument, i) => {
 			let position = args.indexOf(argument);
 
-			const MAPPINGS = {
-				[MATCHERS.prefix(prefix)]: () => command(argument, i),
-				[MATCHERS.hour_mins]:      () => hour_mins(argument),
-				[MATCHERS.range]:          () => range(argument, position),
-				[MATCHERS.list]:           () => list(argument, position),
-				[MATCHERS.numerics]:       () => numerics(argument, position),
-				[MATCHERS.day_of_month]:   () => day_of_month(argument),
-				[MATCHERS.any_value]:      () => any_value(position)
+			const MAPPINGS: Record<string, Function> = {
+				[MATCHERS.prefix(prefix)]: () => set_command(argument, i),
+				[MATCHERS.hour_mins]:      () => set_hour_mins(argument),
+				[MATCHERS.range]:          () => set_range(argument, position),
+				[MATCHERS.list]:           () => set_list(argument, position),
+				[MATCHERS.numerics]:       () => set_numerics(argument, position),
+				[MATCHERS.day_of_month]:   () => set_day_of_month(argument),
+				[MATCHERS.any_value]:      () => set_any_value(position)
 			};
 
 			for (let matcher in MAPPINGS)
@@ -349,8 +368,17 @@ export default (home_scope: HomeScope) => {
 			argument = argument.toLowerCase();
 
 			if (MATCHERS.weekdays.includes(argument))
-				day_of_week(argument);
+				set_day_of_week(argument);
 		});
+
+		Object
+			.keys(cron.schedule as object)
+			.forEach((value: string) => {
+				let key = <Defaults>value;
+
+				if (cron.schedule && cron.schedule[key] == '*')
+					cron!.schedule[key] = get_defaults(key);
+			});
 
 		return cron;
 	};
@@ -360,7 +388,7 @@ export default (home_scope: HomeScope) => {
 	else if (args[0] === 'rm') {
 		const job: number = Number(args[1]);
 
-		(isNaN(job))
+		isNaN(job)
 			? message.answer(RESPONSES.help.rm)
 			: rm(job);
 	}
@@ -368,7 +396,7 @@ export default (home_scope: HomeScope) => {
 		clear();
 	}
 	else {
-		const cron: Cron = parse(args);
+		const cron: Cron = tokenize(args);
 
 		if (!cron?.command)
 			message.answer(RESPONSES.help.command);

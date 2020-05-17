@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Simp'O'Matic &mdash; Discord Bot</title>
+	<title>404 &mdash; Not Found!</title>
 	{{FAVICONS}}
 	<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;300&display=swap" rel="stylesheet">
@@ -35,35 +35,17 @@
 			align-items: center;
 			justify-content: center;
 		}
-		svg {
-			width: 100vw;
-			height: auto;
-			position: fixed;
-			top: 50%;
-			transform: translateY(-50%);
-			left: 0;
-			opacity: 0.12;
-		}
 		.center {
 			color: var(--grey);
 			--font-height: 3em;
 			text-align: center;
-		}
-		.center p {
-			letter-spacing: -1px;
-			font-weight: bold;
-			width: 16em;
-			display: inline-block;
-			margin: 0;
-			font-size: 1.2em;
-			opacity: 0.7;
 		}
 		.center h1 {
 			font-size: var(--font-height);
 			filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.13));
 		}
 		.center h1 img {
-			height: calc(var(--font-height) / 2);
+			height: calc(var(--font-height) / 1.8);
 			margin: 0 0.2em;
 		}
 		.center h1 .pink {
@@ -74,7 +56,7 @@
 			height: 1.1em;
 			width: 0.3em;
 			border-radius: 3px;
-			background: var(--pink);
+			background: var(--grey);
 		}
 		.grey {
 			color: var(--grey);
@@ -82,39 +64,20 @@
 		.pink {
 			color: var(--pink);
 		}
-		.simp {
-			font-family: "Baloo 2";
-			font-weight: 300
-		}
-		.matic, .o {
-			font-family: "Exo 2";
-			font-weight: 100;
-			position: relative;
-			top: -5px;
-		}
-		.o {
-			font-weight: 300
-		}
 	</style>
 </head>
 <body>
-	{{LOGO_NOTEXT_SVG}}
 	<div id="content">
 		<div class="center">
 			<h1>
 				<div class="bar"></div>
-				<span class="grey" style="position: relative; top: -3px"><span class="simp">simp</span><span class="o">'o'</span><span class="matic">matic</span></span>
-				<span class="pink">is Online</span>
+				<span class="pink">404</span>
+				<span class="grey">&ndash; Where you tryna' go?</span>
 				<img
 					class="emoji"
-					alt="uwu"
-					src="https://discordemoji.com/assets/emoji/BlobUWU.png" />
+					alt="waitwhat"
+					src="https://cdn.discordapp.com/emojis/706641167760228442.png">
 			</h1>
-			<p>Active in <span class="pink">{{GUILD_COUNT}}</span> Guilds!</p>
-			<p>
-				Maybe <span class="pink">Danny</span> will put
-				cool usage graphs here one day...
-			</p>
 		</div>
 	</div>
 	<!-- GitLink -->

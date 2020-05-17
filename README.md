@@ -1,7 +1,7 @@
 # The Simp'O'Matic
 
 <p align="center">
-  <img width="300" src="lib/resources/banners/banner-FFFFFF.png">
+  <img width="300" src="lib/resources/banners/logo-text-outlines.svg?sanitize=true">
 </p>
 
 ## Help Out
