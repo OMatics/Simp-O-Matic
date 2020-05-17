@@ -5,7 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Simp'O'Matic &mdash; Discord Bot</title>
 	{{FAVICONS}}
-	<link href="https://fonts.googleapis.com/css2?family=Balsamiq+Sans:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;300&display=swap" rel="stylesheet">
 	<style>
 		:root {
 			--grey: #666472;
@@ -17,7 +18,7 @@
 		}
 		body, html {
 			font-size: 16px;
-			font-family: 'Balsamiq Sans', 'cursive';
+			font-family: "Baloo 2", cursive;
 			padding: 0;
 			margin: 0;
 			height: 100%;
@@ -70,7 +71,6 @@
 		}
 		.bar {
 			display: inline-block;
-			vertical-align: text-top;
 			height: 1.1em;
 			width: 0.3em;
 			border-radius: 3px;
@@ -82,6 +82,19 @@
 		.pink {
 			color: var(--pink);
 		}
+		.simp {
+			font-family: "Baloo 2";
+			font-weight: 300
+		}
+		.matic, .o {
+			font-family: "Exo 2";
+			font-weight: 100;
+			position: relative;
+			top: -5px;
+		}
+		.o {
+			font-weight: 300
+		}
 	</style>
 </head>
 <body>
@@ -90,7 +103,7 @@
 		<div class="center">
 			<h1>
 				<div class="bar"></div>
-				<span class="grey">Simp'O'Matic</span>
+				<span class="grey" style="position: relative; top: -3px"><span class="simp">simp</span><span class="o">'o'</span><span class="matic">matic</span></span>
 				<span class="pink">is Online</span>
 				<img
 					class="emoji"
