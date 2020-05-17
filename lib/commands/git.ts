@@ -104,7 +104,7 @@ export default async (homescope : HomeScope) => {
 
 	if (args[0].startsWith('fork')) {
 		return message.answer(
-			`GitHub Stars: :writing_hand: ${repo_info.forks_count}`);
+			`GitHub Forks: :writing_hand: ${repo_info.forks_count}`);
 	}
 
 	message.answer("That's not how you use that command, here's how:\n"
