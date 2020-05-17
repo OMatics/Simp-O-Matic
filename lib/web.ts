@@ -4,7 +4,7 @@ import process from 'process';
 
 const PORT = Number(process.env.PORT) || 8080;
 
-export default handle_post => {
+export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 	const request_listener: http.RequestListener = (req, res) => {
 		if (req.method === 'POST') {
 			console.log('Web-hook:');
@@ -30,7 +30,15 @@ export default handle_post => {
 					'Content-Type': 'text/html'
 				});
 
-				res.write(read_file('./web/index.html').toString());
+				const guild_count = Object
+					.keys(GLOBAL_CONFIG.guilds)
+					.length
+					.toString();
+
+				const index_contents = read_file('./web/index.html')
+					.toString()
+					.replace(/{{\s*GUILD_COUNT\s*}}/g, guild_count);
+				res.write(index_contents);
 				res.end();
 				break;
 			default:

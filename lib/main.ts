@@ -178,7 +178,7 @@ export class SimpOMatic {
 		});
 
 		// Send messages on web-hooks.
-		server(body => {
+		server(GLOBAL_CONFIG, body => {
 			if (body.ref === "refs/heads/master" || body.action) {
 				const embed = new MessageEmbed()
 					.setColor("#ef88c5")
