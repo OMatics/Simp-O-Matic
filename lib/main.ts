@@ -200,7 +200,7 @@ export class SimpOMatic {
 					system_message(client, star_embed);
 				}
 			} else {
-				system_message(client, "Received unknown data:\n```"
+				system_message(client, "Received unknown data:\n```json\n"
 					+ JSON.stringify(body, null, 4).slice(0, 1930)
 					+ "```");
 			}

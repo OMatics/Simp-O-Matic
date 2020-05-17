@@ -48,7 +48,6 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'boomerfy': 'boomer',
 			'mocking': 'mock',
 			'pull': 'fork',
-			'git': 'github',
 			'bug': 'issue',
 			'source': 'github',
 			'save': 'export',
