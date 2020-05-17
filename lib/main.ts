@@ -240,7 +240,9 @@ export class SimpOMatic {
 
 		if (message.content.startsWith('..')) return;
 
-		if(CONFIG.whitelistchannels.length > 0 && CONFIG.whitelistchannels.includes(message.channel.id))
+		if (CONFIG.whitelistchannels
+		 && CONFIG.whitelistchannels.length > 0
+		 && CONFIG.whitelistchannels.includes(message.channel.id))
 			return;
 
 		const last_command = this._COMMAND_HISTORY.last();
