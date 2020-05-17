@@ -84,6 +84,8 @@ export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 		}
 
 		const favicons = read_file('./web/favicons.html');
+		const logo_svg = read_file('./web/logo-notext.svg');
+
 		switch (url) {
 			case '/':
 				res.writeHead(200, {
@@ -98,6 +100,7 @@ export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 				const index_contents = templater(
 					read_file('./web/index.html'),
 					{
+						'LOGO_NOTEXT_SVG': logo_svg,
 						'GUILD_COUNT': guild_count,
 						'FAVICONS': favicons
 					});

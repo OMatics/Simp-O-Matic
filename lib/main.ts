@@ -183,7 +183,7 @@ export class SimpOMatic {
 				const embed = new MessageEmbed()
 					.setColor("#ef88c5")
 					.setURL(body.repository.html_url)
-					.setThumbnail("https://github.com/Demonstrandum/Simp-O-Matic/raw/master/lib/resources/banners/banner.png")
+					.setThumbnail("https://raw.githubusercontent.com/Demonstrandum/Simp-O-Matic/master/lib/resources/banners/logo-notext.svg")
 					.setAuthor(body.sender.login, body.sender.avatar_url);
 
 				if (body.head_commit) {
