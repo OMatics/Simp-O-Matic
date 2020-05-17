@@ -50,6 +50,7 @@
         "jimp": "^0.9.6",
         "node-fetch": "^2.6.0",
         "nodegit": "^0.26.5",
+		"request": "^2.34",
         "scrape-youtube": "^0.0.5",
         "tslib": "^1.11.1",
         "typescript": "^3.8.3",
