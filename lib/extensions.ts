@@ -28,6 +28,7 @@ declare global {
 		type Config = {
 			main_channel: string,
 			system_channel: string,
+			whitelistchannels: string[],
 			pp_sizes: { [key: string]: number }
 			cron_jobs: any[],
 			cron_interval: number;
