@@ -6,6 +6,14 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 	main_channel: null,
 	system_channel: null,
 	whitelistchannels: [],
+	stats : {
+		actions: {
+			rape: []
+		},
+		commands: {
+
+		}
+	},
 	pp_sizes: {
 		'541761315887120399': 16,
 		'265958795254038535': 36
