@@ -14,7 +14,7 @@ import {
 	writeFileSync as write_file,
 	readdirSync   as  read_dir
 } from 'fs';
-import { execSync as shell } from 'child_process';
+import { execSync as shell, exec } from 'child_process';
 
 // Local misc/utility functions.
 import './extensions';
@@ -132,6 +132,11 @@ export class SimpOMatic {
 		);
 		logged_in.then(() => console.log('Bot logged in.'));
 		client.on('ready', () => this.events());
+
+		// Clone local `.git'.
+		exec('./clone_nocheckout.sh', {
+			cwd: process.cwd()
+		});
 
 		return this._CLIENT;
 	}
