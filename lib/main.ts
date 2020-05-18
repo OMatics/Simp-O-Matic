@@ -295,7 +295,7 @@ Would you like to slow down a little?`.squeeze());
 		}
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
-		CONFIG.stats.commands.operator++;
+		CONFIG.stats.commands[operator]++;
 		const homescope : HomeScope = {  // Basic 'home-scope' is passed in.
 			message, args,
 			HELP_SOURCE, HELP_KEY, GIT_URL,
