@@ -37,6 +37,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://i.imgur.com/DdUkVBo.gif",
 			"https://i.imgur.com/EcBew8x.gif",
 			"https://i.imgur.com/0iEZleS.gif",
+			"https://giant.gfycat.com/GroundedTenderKitten.gif"
 		],
 		transitiveness: true
 	},
