@@ -7,7 +7,7 @@ declare global {
 		HELP_SOURCE: string, HELP_KEY: string,
 		GIT_URL: string, HELP_MESSAGES: string[],
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
-		CONFIG: any, SECRETS: any, KNOWN_COMMANDS: string[],
+		CONFIG: Types.Config, SECRETS: any, KNOWN_COMMANDS: string[],
 		expand_alias: (operator: string, args: string[], message: Message) => string,
 		main: SimpOMatic;
 	};
@@ -25,14 +25,29 @@ declare global {
 			speech?: boolean
 		};
 
-		type Config = {
+		export type Stats = {
+			actions: {
+				[key: string]: any
+				// Any for now, Danny should pick the correct type.
+			},
+			commands: {
+				[key: string]: number
+			}
+		};
+
+		export type Config = {
 			main_channel: string,
 			system_channel: string,
 			whitelistchannels: string[],
-			pp_sizes: { [key: string]: number }
+			pp_sizes: {
+				[key: string]: number
+			},
 			cron_jobs: any[],
-			cron_interval: number;
-			weather_locations: { [key: string]: string },
+			cron_interval: number,
+			weather_locations: {
+				[key: string]: string
+			},
+			stats: Stats,
 			commands: {
 				prefix: string,
 				max_history: number,
@@ -65,7 +80,7 @@ declare global {
 			tag: string,
 			permissions: number,
 			lang: 'en' | 'en-us' | 'en-gb',
-			guilds: { [key: string]: any }
+			guilds: { [key: string]: Config }
 		};
 	}
 

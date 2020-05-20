@@ -293,11 +293,14 @@ Would you like to slow down a little?`.squeeze());
 				+ '\n**Fix this immediately.**');
 			return;
 		}
+
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
-		CONFIG.stats = CONFIG.stats || {};
+		CONFIG.stats = CONFIG.stats || <Types.Stats>{};
 		CONFIG.stats.commands = CONFIG.stats.commands || {};
-		CONFIG.stats.commands[operator] = ++CONFIG.stats.commands[operator] || 0;
+		CONFIG.stats.commands[operator] =
+			++CONFIG.stats.commands[operator] || 1;
+
 		const homescope : HomeScope = {  // Basic 'home-scope' is passed in.
 			message, args,
 			HELP_SOURCE, HELP_KEY, GIT_URL,

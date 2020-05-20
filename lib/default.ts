@@ -2,16 +2,16 @@
 ///  and to act as a reference to how the config shall be
 ///  laid out.  All fields are accounted for here.
 
-const DEFAULT_GUILD_CONFIG = {
+const DEFAULT_GUILD_CONFIG : Types.Config = {
 	main_channel: null,
 	system_channel: null,
 	whitelistchannels: [],
-	stats : {
+	stats: {
 		actions: {
 			rape: []
 		},
 		commands: {
-
+			rape: 0
 		}
 	},
 	pp_sizes: {
