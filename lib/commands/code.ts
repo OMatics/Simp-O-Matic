@@ -23,13 +23,13 @@ export default (homescope : HomeScope) => {
 		const msg = `Source code for \`${p}${command}\`:`;
 		
 		if (source.length > 1900) {
-			const chunks = glue_strings(source.split('\n'), 1950);
+			const chunks = glue_strings(source.split(/^/m), 1950);
+
+			message.channel.send(msg);
 
 			for (const chunk of chunks)
 				message.channel.send(
 					chunk.format(FORMATS.code_block, 'typescript'));
-
-			message.channel.send(msg);
 		} else {
 			message.channel.send(`${msg}\n`
 				+ source.format(FORMATS.code_block, 'typescript'));
