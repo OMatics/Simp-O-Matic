@@ -14,7 +14,7 @@ import {
 	writeFileSync as write_file,
 	readdirSync   as  read_dir
 } from 'fs';
-import { execSync as shell } from 'child_process';
+import { execSync as shell, exec } from 'child_process';
 
 // Local misc/utility functions.
 import './extensions';
@@ -133,6 +133,11 @@ export class SimpOMatic {
 		logged_in.then(() => console.log('Bot logged in.'));
 		client.on('ready', () => this.events());
 
+		// Clone local `.git'.
+		exec('./clone_nocheckout.sh', {
+			cwd: process.cwd()
+		});
+
 		return this._CLIENT;
 	}
 
@@ -200,7 +205,7 @@ export class SimpOMatic {
 					system_message(client, star_embed);
 				}
 			} else {
-				system_message(client, "Received unknown data:\n```"
+				system_message(client, "Received unknown data:\n```json\n"
 					+ JSON.stringify(body, null, 4).slice(0, 1930)
 					+ "```");
 			}
@@ -239,6 +244,11 @@ export class SimpOMatic {
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
 		if (message.content.startsWith('..')) return;
+
+		if  (CONFIG.whitelistchannels
+		 &&  CONFIG.whitelistchannels.length > 0
+		 && !CONFIG.whitelistchannels.includes(message.channel.id))
+			return;
 
 		const last_command = this._COMMAND_HISTORY.last();
 		this._COMMAND_HISTORY.push(message);
@@ -285,7 +295,9 @@ Would you like to slow down a little?`.squeeze());
 		}
 		operator = operator.toLowerCase();
 		console.log('Received command:', [operator, args]);
-
+		CONFIG.stats = CONFIG.stats || {};
+		CONFIG.stats.commands = CONFIG.stats.commands || {};
+		CONFIG.stats.commands[operator] = ++CONFIG.stats.commands[operator] || 0;
 		const homescope : HomeScope = {  // Basic 'home-scope' is passed in.
 			message, args,
 			HELP_SOURCE, HELP_KEY, GIT_URL,

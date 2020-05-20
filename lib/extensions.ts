@@ -7,7 +7,7 @@ declare global {
 		HELP_SOURCE: string, HELP_KEY: string,
 		GIT_URL: string, HELP_MESSAGES: string[],
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
-		CONFIG: Types.Config, SECRETS: any, KNOWN_COMMANDS: string[],
+		CONFIG: any, SECRETS: any, KNOWN_COMMANDS: string[],
 		expand_alias: (operator: string, args: string[], message: Message) => string,
 		main: SimpOMatic;
 	};
@@ -28,6 +28,7 @@ declare global {
 		type Config = {
 			main_channel: string,
 			system_channel: string,
+			whitelistchannels: string[],
 			pp_sizes: { [key: string]: number }
 			cron_jobs: any[],
 			cron_interval: number;
@@ -64,7 +65,7 @@ declare global {
 			tag: string,
 			permissions: number,
 			lang: 'en' | 'en-us' | 'en-gb',
-			guilds: { [key: string]: Config }
+			guilds: { [key: string]: any }
 		};
 	}
 

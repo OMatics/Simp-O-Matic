@@ -2,9 +2,18 @@
 ///  and to act as a reference to how the config shall be
 ///  laid out.  All fields are accounted for here.
 
-const DEFAULT_GUILD_CONFIG : Types.Config = {
+const DEFAULT_GUILD_CONFIG = {
 	main_channel: null,
 	system_channel: null,
+	whitelistchannels: [],
+	stats : {
+		actions: {
+			rape: []
+		},
+		commands: {
+
+		}
+	},
 	pp_sizes: {
 		'541761315887120399': 16,
 		'265958795254038535': 36
@@ -48,7 +57,6 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'boomerfy': 'boomer',
 			'mocking': 'mock',
 			'pull': 'fork',
-			'git': 'github',
 			'bug': 'issue',
 			'source': 'github',
 			'save': 'export',

@@ -61,6 +61,10 @@
   - `!reject [match] <reply>` — rejects certain messages, matching a regular-expression (specifying a reply is optional).
   - `!reject <ls>` — numerically lists all rejection rules.
   - `!reject rm #[rule-index]` — removes the rejection-rule specified by a numerical index.
+- `!trigger` — Triggers a command on messages meeting certain patterns:
+  - `!trigger [match] [!command]` — runs a command when a message matching a regular-expression is seen.
+  - `!trigger <ls>` — numerically lists all trigger rules.
+  - `!trigger rm #[rule-index]` — removes the trigger-rule specified by a numerical index.
 - `!replace` **〈not impl.〉** — Bots currently do not have the ability to edit other users messages.  We can only wait.
 - `!listen` — Specify rules only to listen yo specific users:
   - `!listen [rule-type] #[rule-index] [...@username(s)]` — Will cause rule at index `#rule-index` of certain `rule-type` (either `respond`, `reject`, `replace` or `trigger`) to only work on specified username(s).
@@ -70,11 +74,12 @@
   - `!cron <clear>` — clears all executed cron-jobs.
   - `!cron rm #[job-index]` — removes a cron-job by index.
 - `!git` — Information on commits and more of the bot's Git repository:
-  - `!git history <#number>` — Gives latest commits to the repo, number defaults to 5.
-  - `!git latest` — Gets latest commit.
+  - `!git history <#number>` — Gives latest commits to the repo, number defaults to 8.
+  - `!git <latest>` — Gets latest commit.
   - `!git contributors` — List of contributors.
   - `!git breakdown` — Breakdown of additions and deletions by contributors.
   - `!git stars` — Get star count.
+  - `!git watches` — Get watch count.
   - `!git forks` — Get fork count.
 - `!choose [comma-separated-values]` — Choose randomly from a list of items, separated by commas.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
