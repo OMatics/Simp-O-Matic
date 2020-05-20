@@ -116,6 +116,7 @@
 - `!pat [@user-name]` — Give someone a pat on the head.
 - `!emojis` — Lists all the emojis on the server.
 - `!hangman <options>` **〈not impl.〉** — Hangman game to play with your friends.
+- `!sourcecode [!command]` — shows the source code of a certain command.
 
 ▬▬▬
 

@@ -106,7 +106,7 @@ declare global {
 		tail(): string;
 		first(): string;
 		last(off? : number): string;
-		format(fmt: string): string;
+		format(fmt: string, code_block_lang?: string): string;
 		emojify(): string;
 		shorten(width?: number): string;
 		lines(): string[];
@@ -203,8 +203,8 @@ export const FORMATS: TextFormat = {
 	hidden: '||',
 };
 
-String.prototype.format = function (fmt: string) {
-    return `${fmt}${this.toString()}${fmt}`;
+String.prototype.format = function (fmt: string, code_block_lang?: string) {
+    return `${fmt}${code_block_lang ? code_block_lang + "\n" : ''}${this.toString()}${fmt}`;
 };
 
 String.prototype.shorten = function (width=40) {
