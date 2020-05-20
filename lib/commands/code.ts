@@ -1,5 +1,8 @@
 import { readFileSync as read_file } from 'fs';
 
+import { FORMATS } from '../extensions';
+import { glue_strings } from '../utils';
+
 export default (homescope : HomeScope) => {
 	const { message, args, CONFIG } = homescope;
 	const p = CONFIG.commands.prefix;
@@ -16,10 +19,21 @@ export default (homescope : HomeScope) => {
 	const filename = `${process.cwd()}/lib/commands/${command}.ts`;
 	
 	try {
-		const source = read_file(filename);
-		const msg = `Source code for \`${p}${command}\`:`
-			+ "\n```typescript\n" + source + "\n```";
-		message.channel.send(msg);
+		const source = read_file(filename).toString();
+		const msg = `Source code for \`${p}${command}\`:`;
+		
+		if (source.length > 1900) {
+			const chunks = glue_strings(source.split('\n'), 1950);
+
+			for (const chunk of chunks)
+				message.channel.send(
+					chunk.format(FORMATS.code_block, 'typescript'));
+
+			message.channel.send(msg);
+		} else {
+			message.channel.send(`${msg}\n`
+				+ source.format(FORMATS.code_block, 'typescript'));
+		}
 	} catch {
 		message.answer(`Source for \`${p}${command}\``
 			+ ` (\`${filename}\`), was not found.`);
