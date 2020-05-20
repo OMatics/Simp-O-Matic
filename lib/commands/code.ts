@@ -11,7 +11,7 @@ export default (homescope : HomeScope) => {
 
 	const expansion = CONFIG.commands.aliases[command];
 	if (expansion) return message.channel.send(`\`${p}${command}\``
-		+ `is a command that expands to \`${p}${expansion}\`.`);
+		+ `is an alias that expands to \`${p}${expansion}\`.`);
 
 	const filename = `${process.cwd()}/lib/commands/${command}.ts`;
 	
