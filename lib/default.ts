@@ -62,6 +62,8 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'sourcecode': 'code',
 			'introspect': 'code',
 			'inspect': 'code',
+			'whatis': 'code',
+			'which': 'code',
 			'save': 'export',
 			'trans': 'translate',
 		},
