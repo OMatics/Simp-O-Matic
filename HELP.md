@@ -113,6 +113,7 @@
 - `!hug [@user-name]` — Give someone a warm hug!
 - `!lick [@user-name]` — Give someone a lickety lick!
 - `!slap [@user-name]` — Slap someone hard in the face!
+- `!rim [@user-name]` — Rim someones butthole!
 - `!emojify [phrase]` — Turn your text into discord-style emoji.
 - `!B [phrase]` — Replace some elements of your text with a certain U+1F171.
 - `!uwu [phrase]` — “uwuify” your text.
