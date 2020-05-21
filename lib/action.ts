@@ -157,8 +157,7 @@ export default class Action {
 	}
 
 	static get(action: ActionType, message: Message): MessageEmbed {
-		const { username: author } = message.author;
-		const { username: to }     = message.mentions.users.first();
+		var [author, to] = [message.author, message.mentions.users.first()].map(message.guild.member).map(u => u.nickname);
 
 		const reaction: Actions = ACTIONS[action];
 		const images = reaction.images;
