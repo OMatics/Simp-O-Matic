@@ -66,6 +66,7 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'which': 'code',
 			'save': 'export',
 			'trans': 'translate',
+			'cuddle': 'hug',
 		},
 	},
 

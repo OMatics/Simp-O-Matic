@@ -110,6 +110,7 @@
 - `!boomer [phrase]` — Say something, but in the way your demented boomer uncle would write it on Facebook.
 - `!ship [@user-name] [@user-name]` — Shows the love grade between two people.
 - `!kiss [@user-name]` — Blow a kiss to someone you like!
+- `!suck [@user-name]` — Suck on someones fingers uwu...
 - `!hug [@user-name]` — Give someone a warm hug!
 - `!lick [@user-name]` — Give someone a lickety lick!
 - `!slap [@user-name]` — Slap someone hard in the face!
