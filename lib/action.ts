@@ -1,7 +1,7 @@
 import { FORMATS } from './extensions';
 import { Message, MessageEmbed } from 'discord.js';
 
-type ActionType = 'kiss' | 'rape' | 'slap' | 'hug' | 'lick';
+type ActionType = 'kiss' | 'rape' | 'slap' | 'hug' | 'lick' | 'rim';
 
 interface Actions {
 	title: string;
@@ -85,6 +85,18 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.weeb.sh/images/H1EJxR_vZ.gif",
 			"https://cdn.weeb.sh/images/H1EJxR_vZ.gif",
 			"https://cdn.weeb.sh/images/HkEqiExdf.gif",
+		]
+	},
+	rim: {
+		title: "Your butthole is being licked! ( it's so soft and yummy!!! )",
+		message: "you got rimmed",
+		emoji: 'stuck_out_tongue',
+		images: [
+			"https://media1.tenor.com/images/0a2cdce1fc35a069cdcb992f89c8855b/tenor.gif?itemid=4859151",
+			"https://media1.tenor.com/images/2c15d00633af18a31a1d45aeb6e7ae0d/tenor.gif?itemid=9152683",
+			"https://media1.tenor.com/images/1063e876a461f4be347b496a9ecd271c/tenor.gif?itemid=9340107",
+			"https://media1.tenor.com/images/29b9e96dfcc7d66ca30c6b7117ed664c/tenor.gif?itemid=12656500",
+			"https://media1.tenor.com/images/069076cc8054bb8b114c5a37eec70a1f/tenor.gif?itemid=13248504",
 		]
 	}
 };
