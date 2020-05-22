@@ -213,6 +213,8 @@ export class SimpOMatic {
 						client.channels
 							.fetch(GLOBAL_CONFIG.guilds[guild].system_channel)
 							.then((c: TextChannel) => c.send(msg));
+					} else if (guild) {
+						console.log(`Guild: '${guild}', does not exist.`);
 					} else {
 						system_message(client, msg);
 					}
