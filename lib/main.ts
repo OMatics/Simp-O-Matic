@@ -181,7 +181,8 @@ export class SimpOMatic {
 							|| member.user.tag.split('#').first()));
 			}
 		});
-
+		
+		// TODO: In web-server, check for correct secret.
 		// Send messages on web-hooks.
 		server(GLOBAL_CONFIG, body => {
 			if (body.ref === "refs/heads/master" || body.action) {
@@ -203,6 +204,23 @@ export class SimpOMatic {
 					const star_embed = embed
 						.setTitle("Star Added!");
 					system_message(client, star_embed);
+				}
+			} else if (body.console === true) {
+				const send_message = (msg: string, guild?) => {
+					if (guild
+					&& GLOBAL_CONFIG.guilds.hasOwnProperty(guild)
+					&& GLOBAL_CONFIG.guilds[guild].system_channel) {
+						client.channels
+							.fetch(GLOBAL_CONFIG.guilds[guild].system_channel)
+							.then((c: TextChannel) => c.send(msg));
+					} else {
+						system_message(client, msg);
+					}
+				}
+				if (body.message) {
+					send_message(body.message, body.guild);
+				} else if (body.command) {
+					// TODO?
 				}
 			} else {
 				system_message(client, "Received unknown data:\n```json\n"
