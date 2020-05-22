@@ -162,7 +162,7 @@ export default class Action {
 			.map(u => u.nickname);
 		const reaction: Actions = ACTIONS[action];
 		const images = reaction.images;
-		const image = images[Math.floor(Math.random() * images.length)];
+		const image = images[(Number(message.cleanContent.split(' ')[1]) || (Math.floor(Math.random() * images.length) + 1)) - 1];
 
 		const embed = new MessageEmbed()
 			.setColor('#ba3d8a')
