@@ -11,14 +11,14 @@ def send_message message
   }
   body[:guild] = $guild unless $guild == 'GLOBAL'
   payload = JSON.dump body
-  puts "Sending payload: #{payload}"
+  puts " [*] Sending payload:\n    #{payload}"
 
   command = ['curl', '-d', payload, URL]
   system *command
 end
 
 loop do
-  print "#{$guild}> "
+  print "[#{$guild}]> "
   input = gets.strip
   if input.start_with? '/'
     command, *args = input[1..].split ' '
