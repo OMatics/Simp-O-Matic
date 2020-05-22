@@ -159,7 +159,7 @@ export default class Action {
 	static get(action: ActionType, message: Message): MessageEmbed {
 		const [author, to] = [message.author, message.mentions.users.first()]
 			.map(m => message.guild.member(m))
-			.map(u => u.nickname);
+			.map(u => u.displayName);
 		const reaction: Actions = ACTIONS[action];
 		const images = reaction.images;
 		const image = images[(Number(message.cleanContent.split(' ')[1]) || (Math.floor(Math.random() * images.length) + 1)) - 1];
