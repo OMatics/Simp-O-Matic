@@ -11,11 +11,11 @@ export default (home_scope: HomeScope) => {
 		const accessors = args[0].trim().split('.').squeeze();
 		const parent = accessors.pop();
 		const obj = access(CONFIG, accessors);
-		obj[parent] = JSON.parse(args[1]);
+		obj[parent] = JSON.parse(args.tail().join(' '));
 		const normal = JSON.stringify(obj[parent], null, 4);
 
 		message.channel.send(`Assignment successful.
-						\`${args[0].trim()} = ${normal}\``.squeeze());
+			\`${args[0].trim()} = ${normal}\``.squeeze());
 	} catch (e) {
 		message.channel.send(`Invalid object access-path,`
 			+ `nothing set.\nProblem: \`\`\`\n${e}\n\`\`\``);

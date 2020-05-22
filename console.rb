@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'json'
+require 'readline'
 
 URL = 'simp-o-matic.herokuapp.com'
 $guild = 'GLOBAL'
@@ -17,9 +18,7 @@ def send_message message
   system *command
 end
 
-loop do
-  print "[#{$guild}]> "
-  input = gets.strip
+while input = Readline.readline("[#{$guild}]> ", true)
   if input.start_with? '/'
     command, *args = input[1..].split ' '
 
