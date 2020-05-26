@@ -2,6 +2,7 @@
 secrets.json
 .env
 export_secrets.sh
+console.rb
 
 # Node / NPM / Yarn
 node_modules/
