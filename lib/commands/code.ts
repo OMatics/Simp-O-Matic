@@ -51,10 +51,11 @@ export default async (homescope : HomeScope) => {
 	if (expansion) return message.channel.send(`\`${p}${command}\``
 		+ `is an alias that expands to \`${p}${expansion}\`.`);
 
-	const filename = `${process.cwd()}/lib/commands/${command}.ts`;
+	const filename = `lib/commands/${command}.ts`;
 	
 	try {
-		const source = read_file(filename).toString();
+		const source = read_file(`${process.cwd()}/${filename}`)
+			.toString();
 		const authors = await file_authors(filename);
 		const author_str = "\n**Authors**: " + Object.keys(authors)
 			.map(author => `(\`${authors[author]}\`) ${author}`)
@@ -78,8 +79,9 @@ export default async (homescope : HomeScope) => {
 				+ source.format(FORMATS.code_block, 'typescript')
 				+ author_str);
 		}
-	} catch {
+	} catch (error) {
+		console.log(`Error in code.ts: ${error}`);
 		message.answer(`Source for \`${p}${command}\``
-			+ ` (\`${filename}\`), was not found.`);
+			+ ` (\`${process.cwd()}/${filename}\`), was not found.`);
 	}
 };
