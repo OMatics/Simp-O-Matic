@@ -1,7 +1,7 @@
 import { FORMATS } from './extensions';
 import { Message, MessageEmbed } from 'discord.js';
 
-type ActionType = 'kiss' | 'suck' | 'rape' | 'slap' | 'hug' | 'lick' | 'rim' | 'kill' | 'suicide';
+type ActionType = 'kiss' | 'suck' | 'rape' | 'slap' | 'hug' | 'lick' | 'rim' | 'kill';
 
 interface Actions {
 	title: string;
@@ -141,22 +141,13 @@ const ACTIONS: Record<ActionType, Actions> = {
 	},
 	kill: {
 		title: "You have died.",
-		message: "You feel the life slowly draining from your body as your draw in your last breaths.",
+		message: "you were killed by",
 		emoji: 'skull',
 		images: [
 			"https://img2.gelbooru.com/images/7c/9c/7c9cdd15e03df0a2ba06b9bb9aa98180.png",
-		] 
-	},
-	suicide: {
-		title: "You have killed yourself.",
-		message: "Good riddance.",
-		emoji: 'skull',
-		images: [
-			"https://img2.gelbooru.com/images/12/86/1286caaa436406cc4e283e8fd0277a74.png",
-		]
-	}
-	
-	
+		],
+		transistiveness: true
+	}	
 };
 
 export default class Action {

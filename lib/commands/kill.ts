@@ -6,7 +6,7 @@ export default (home_scope: HomeScope) => {
 			: { message: Message, args: string[] } = home_scope;
 
 	if (args.length === 0 || message.mentions.users.size === 0)
-		return message.channel.send(Action.get('suicide', message);
+		return message.channel.send("You killed yoursef.");
 
 	message.channel.send(Action.get('kill', message));
 };
