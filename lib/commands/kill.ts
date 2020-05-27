@@ -6,7 +6,10 @@ export default (home_scope: HomeScope) => {
 			: { message: Message, args: string[] } = home_scope;
 
 	if (args.length === 0 || message.mentions.users.size === 0)
-		return message.channel.send("You killed yoursef.");
+		const attached = new MessageAttachment(
+			'./lib/resources/suicide.png', 
+			'suicide.png');
+		return message.channel.send("You killed yourself.");
 
 	message.channel.send(Action.get('kill', message));
 };
