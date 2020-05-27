@@ -7,7 +7,7 @@ export default (home_scope: HomeScope) => {
 			: { message: Message, args: string[] } = home_scope;
 	
 	const attached = new MessageAttachment(
-			'./lib/resources/suicide.png', 
+			'https://img2.gelbooru.com/images/12/86/1286caaa436406cc4e283e8fd0277a74.png', 
 			'suicide.png');
 			
 	if (args.length === 0 || message.mentions.users.size === 0)
