@@ -141,12 +141,12 @@ const ACTIONS: Record<ActionType, Actions> = {
 	},
 	kill: {
 		title: "You have died.",
-		message: "you were killed by",
+		message: "killed",
 		emoji: 'skull',
 		images: [
 			"https://img2.gelbooru.com/images/7c/9c/7c9cdd15e03df0a2ba06b9bb9aa98180.png",
 		],
-		transistiveness: true
+		transitiveness: true
 	}	
 };
 
