@@ -130,23 +130,13 @@ export class Timer {
 		this.homescope = homescope;
 	}
 
-	get defaultDate() {
+	get now(): number {
 		const now = new Date();
-		const default_values = {
-			month: now.getMonth() - 1
-		};
-		return default_values;
-	}
-
-	compare(job: Cron): void {
-		const current = new Date();
-		current.setDate(current.getDate());
-		current.setUTCHours(current.getHours() % 12);
-		current.setSeconds(0);
-		current.setMilliseconds(0);
-
-		if (current.getTime() === this.timestamp(job))
-			this.dispatch(job, current.getTime());
+		now.setDate(now.getDate());
+		now.setUTCHours(now.getHours() % 12);
+		now.setSeconds(0);
+		now.setMilliseconds(0);
+		return now.getTime();
 	}
 
 	timestamp(job: Cron): number {
@@ -156,12 +146,20 @@ export class Timer {
 		date.setUTCHours(Number(hours), Number(minutes), 0);
 		date.setMonth(Number(month) - 1);
 		date.setMilliseconds(0);
+		date.setSeconds(0);
 		date.setDate(Number(dayOfMonth));
 
 		return date.getTime();
 	}
 
-	dispatch(job: Cron, timespan: number) {
+	compare(job: Cron): void {
+		if (this.now === this.timestamp(job))
+			this.dispatch(job, this.now);
+		else
+			console.log('SKIPPED', this.now, this.timestamp(job));
+	}
+
+	dispatch(job: Cron, timespan: number): void {
 		if (job.executed_at === timespan)
 			return;
 
@@ -179,7 +177,7 @@ export class Timer {
 	}
 
 	verify(jobs: Cron[]): void {
-		jobs.forEach(this.compare);
+		jobs.forEach(job => this.compare(job));
 	}
 }
 
