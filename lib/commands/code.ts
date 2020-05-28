@@ -19,16 +19,12 @@ const file_authors = async (filename: string): Promise<Authors> => {
 	for (let i = 0; i < blame.getHunkCount(); i++) {
 		// Hunk has bad type signatures, someone should tell `nodegit'.
 		const hunk: any = blame.getHunkByIndex(i);
-		for (let j = 0; j < hunk.linesInHunk(); j++) {
-			const oid = hunk.finalCommitId();
-			const commit = await repo.getCommit(oid);
-			const name = commit.author().name();
+		const oid = hunk.finalCommitId();
+		const commit = await repo.getCommit(oid);
+		const name = commit.author().name();
 			
-			if (authors.hasOwnProperty(name))
-				authors[name] += 1;
-			else
-				authors[name] = 1;
-		}
+		if (authors.hasOwnProperty(name)) authors[name] += 1;
+		else                              authors[name]  = 1;
 	}
 
 	return authors;
@@ -57,9 +53,9 @@ export default async (homescope : HomeScope) => {
 		const source = read_file(`${process.cwd()}/${filename}`)
 			.toString();
 		const authors = await file_authors(filename);
-		const author_str = "\n**Authors**: " + Object.keys(authors)
+		const author_str = "\n**Author(s)**: " + Object.keys(authors)
 			.map(author => `(\`${authors[author]}\`) ${author}`)
-			.join(',');
+			.join(', ');
 
 		const msg = `Source code for \`${p}${command}\`:\n`;
 		

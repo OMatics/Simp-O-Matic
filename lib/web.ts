@@ -81,6 +81,15 @@ export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 				res.write(content);
 				res.end();
 			} catch {}
+		} else if (url.endsWith('.css')) {
+			try {
+				const content = read_file(relative);
+				res.writeHead(200, {
+					'Content-Type': 'text/css'
+				});
+				res.write(content);
+				res.end();
+			} catch {}
 		}
 
 		const favicons = read_file('./web/favicons.html');

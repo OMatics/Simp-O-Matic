@@ -174,9 +174,10 @@ export class Timer {
 
 		this.homescope.message.answer("Ran cron #" + job.id);
 
-		this.homescope.main.process_command(
+		// `on_message` does important expansions.
+		this.homescope.main.on_message(
 			this.homescope.message,
-			true
+			this.homescope.CLIENT
 		);
 	}
 

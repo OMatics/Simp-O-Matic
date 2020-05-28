@@ -327,7 +327,8 @@ Would you like to slow down a little?`.squeeze());
 			HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
 			CONFIG, SECRETS, KNOWN_COMMANDS,
 			expand_alias: this.expand_alias,
-			main: this };
+			CLIENT: SimpOMatic._CLIENT, main: this
+		};
 
 		const commands = read_dir(`${__dirname}/commands`)
 			.map(n => n.slice(0, -3));

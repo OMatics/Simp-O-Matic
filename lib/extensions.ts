@@ -1,4 +1,5 @@
 import { SimpOMatic } from './main';
+import { Client } from '@typeit/discord';
 
 // Global Extensions:
 declare global {
@@ -9,7 +10,7 @@ declare global {
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
 		CONFIG: Types.Config, SECRETS: any, KNOWN_COMMANDS: string[],
 		expand_alias: (operator: string, args: string[], message: Message) => string,
-		main: SimpOMatic;
+		CLIENT: Client, main: SimpOMatic;
 	};
 
 	namespace Types {
