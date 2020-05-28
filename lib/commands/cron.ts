@@ -137,6 +137,9 @@ export class Timer {
 		now.setUTCHours(now.getHours() % 12);
 		now.setSeconds(0);
 		now.setMilliseconds(0);
+
+		console.log('Now:', now);
+
 		return now.getTime();
 	}
 
@@ -151,14 +154,14 @@ export class Timer {
 		date.setSeconds(0);
 		date.setDate(Number(dayOfMonth) - 1);
 
+		console.log('Job #', job.id, 'time:', date);
+
 		return date.getTime();
 	}
 
 	compare(job: Cron): void {
 		if (this.now === this.timestamp(job))
 			this.dispatch(job, this.now);
-		else
-			console.log('SKIPPED', this.now, this.timestamp(job));
 	}
 
 	dispatch(job: Cron, timespan: number): void {
@@ -168,7 +171,7 @@ export class Timer {
 		console.log('Executed cron job #', job.id);
 
 		this.homescope.message.content =
-			`${this.homescope.CONFIG.commands.prefix}${job.command.name} ${job.command.args.join(' ')}`;
+			`${job.command.name} ${job.command.args.join(' ')}`;
 
 		job.executed_at = timespan;
 
