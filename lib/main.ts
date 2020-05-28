@@ -274,14 +274,17 @@ export class SimpOMatic {
 	}
 
 	process_command(message : Message, ignore_spam: boolean = false) {
+		console.log('[command] Processing.');
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
 		if (message.content.startsWith('..')) return;
 
 		if  (CONFIG.whitelistchannels
-		 &&  CONFIG.whitelistchannels.length > 0
-		 && !CONFIG.whitelistchannels.includes(message.channel.id))
+		&&   CONFIG.whitelistchannels.length > 0
+		&&  !CONFIG.whitelistchannels.includes(message.channel.id))
 			return;
+		
+		console.log('[command] Whitelisted.');
 
 		const last_command = this._COMMAND_HISTORY.last();
 		this._COMMAND_HISTORY.push(message);
@@ -312,6 +315,8 @@ Would you like to slow down a little?`.squeeze());
 			}
 		}
 
+		console.log('[command] Not spam.');
+
 		const content = message.content.trim().squeeze();
 		const words = content.tail().split(' ');
 		const args = words.tail();
@@ -324,6 +329,7 @@ Would you like to slow down a little?`.squeeze());
 			message.reply('The command you just used has aliases that go'
 				+ ' 300 levels deep, or the alias is cyclically dependant.'
 				+ '\n**Fix this immediately.**');
+			console.log('[command] Aliases cyclic. Aborting.');
 			return;
 		}
 
@@ -555,7 +561,7 @@ Would you like to slow down a little?`.squeeze());
 	}
 
 	@On("message")
-	async on_message(message : Message, client : Client) {
+	async on_message(message : Message, client : Client, ignore_spam=false) {
 		const guild_id = message.guild.id;
 
 		// Initialise completely new Guilds.
@@ -588,7 +594,7 @@ Would you like to slow down a little?`.squeeze());
 
 				if (message.content[0] === CONFIG.commands.prefix) {
 					console.log('Message type: command.');
-					this.process_command(message);
+					this.process_command(message, ignore_spam);
 				} else {
 					console.log('Message type: generic.');
 					this.process_generic(message);
