@@ -9,6 +9,7 @@ def send_message message
   body = {
     :console => true,
     :message => message,
+    :secret  => ENV['WEB_SECRET']
   }
   body[:guild] = $guild unless $guild == 'GLOBAL'
   payload = JSON.dump body

@@ -192,6 +192,7 @@ export class SimpOMatic {
 					.setThumbnail("https://raw.githubusercontent.com/Demonstrandum/Simp-O-Matic/master/lib/resources/banners/banner-notext.png")
 					.setAuthor(body.sender.login, body.sender.avatar_url);
 
+				// New commit.
 				if (body.head_commit) {
 					const push_embed = embed
 						.setTitle("Latest Commit")
@@ -199,13 +200,24 @@ export class SimpOMatic {
 						.setURL(body.head_commit.url);
 
 					system_message(client, push_embed);
-
+				// Star Added.
 				} else if (body.starred_at) {
 					const star_embed = embed
 						.setTitle("Star Added!");
 					system_message(client, star_embed);
+				// Pull Request.
+				} else if (body.pull_request) {
+					const pr = body.pull_request;
+					const pull_embed = embed
+						.setTitle("Pull Request")
+						.setURL(pr.url)
+						.setDescription(`“${pr.title}” (**#${pr.number}**)`
+							+ ` was ${body.action}.`);
 				}
 			} else if (body.console === true) {
+				if (body.secret !== process.env["WEB_SECRET"]) {
+					return;
+				}
 				const send_message = (msg: string, guild?) => {
 					if (guild
 					&& GLOBAL_CONFIG.guilds.hasOwnProperty(guild)
@@ -225,6 +237,7 @@ export class SimpOMatic {
 					// TODO?
 				}
 			} else {
+				// For now, this won't be silent.
 				system_message(client, "Received unknown data:\n```json\n"
 					+ JSON.stringify(body, null, 4).slice(0, 1930)
 					+ "```");
