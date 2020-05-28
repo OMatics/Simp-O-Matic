@@ -180,7 +180,8 @@ export class Timer {
 		// `on_message` does important expansions.
 		this.homescope.main.on_message(
 			this.homescope.message,
-			this.homescope.CLIENT
+			this.homescope.CLIENT,
+			true
 		);
 	}
 
