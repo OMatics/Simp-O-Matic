@@ -43,7 +43,6 @@ String.prototype.demented_spelling = function () {
 		case 'their':
 			return 'there';
 		case 'they\'re':
-			return 'their';
 		case 'there':
 			return 'their';
 		default:
