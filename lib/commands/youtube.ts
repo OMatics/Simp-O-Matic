@@ -21,7 +21,7 @@ export default async (home_scope: HomeScope) => {
 		}
 	}
 
-	const result = await fetch(`https://invidio.us/api/v1/search?q=${query}&sort_by=${sort_by}&type=${type}`);
+	const result = await fetch(encodeURI(`https://invidio.us/api/v1/search?q=${query}&sort_by=${sort_by}&type=${type}`));
 	const res_json = await result.json();
 	const res = res_json[Math.abs(num - 1)];
 	let duration = new Date(res.lengthSeconds * 1000)
