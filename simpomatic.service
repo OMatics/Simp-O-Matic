@@ -1,0 +1,15 @@
+[Unit]
+Description=Discord Bot
+After=network-online.target
+
+[Service]
+Type=forking
+User=git
+WorkingDirectory=/srv/simpomatic
+ExecStart=/bin/sh /srv/simpomatic/start.sh
+ExecStop=/bin/sh /srv/simpomatic/stop.sh
+GuessMainPID=no
+TimeoutStartSec=600
+
+[Install]
+WantedBy=multi-user.target
