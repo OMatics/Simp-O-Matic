@@ -12,7 +12,8 @@ const templater = (doc, vars): string => {
 	return new_doc;
 };
 
-const PORT = Number(process.env.PORT) || 8080;
+//const PORT = Number(process.env.PORT) || 8080;
+const PORT = 8181;  // This value is hardcoded now for the VPS.
 
 export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 	const request_listener: http.RequestListener = (req, res) => {
@@ -33,7 +34,7 @@ export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 			});
 			return;
 		}
-		
+
 		const url = req.url;
 		const relative = `./web/${url}`;
 		if (url.endsWith('.png')) {
@@ -135,6 +136,6 @@ export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 	};
 	const server = http.createServer(request_listener);
 	server.listen(PORT, '0.0.0.0', () => {
-		console.log(`Web server started on http://0.0.0.0:8080/`);
+		console.log(`Web server started on http://0.0.0.0:${PORT}/`);
 	});
 };
