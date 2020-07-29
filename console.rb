@@ -2,7 +2,7 @@
 require 'json'
 require 'readline'
 
-URL = 'simp-o-matic.herokuapp.com'
+URL = 'https://simp.knutsen.co'
 $guild = 'GLOBAL'
 
 def send_message message
