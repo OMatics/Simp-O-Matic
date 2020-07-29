@@ -47,6 +47,7 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'blacklist': 'ignore',
 			'whitelist': 'ignore whitelist',
 			'w': 'weather',
+			'website': ':clap: https://simp.knutsen.co/ :clap:',
 			'reply': 'respond',
 			'delete': 'reject',
 			'wa': 'wolfram',
