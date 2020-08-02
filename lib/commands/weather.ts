@@ -56,10 +56,9 @@ export default async (home_scope: HomeScope) => {
 			.GeoObjectCollection
 			.featureMember[0].GeoObject;
 
-		const lon_lat = geo_object.Point.pos
-			.split(' ');
-
-		weather_info = await fetch(`${WEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat{0}}`);
+		const lon_lat = geo_object.Point.pos.split(' ');
+		weather_info = await fetch(
+			`${WEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}`);
 	} catch (e) {
 		return error(e);
 	}
