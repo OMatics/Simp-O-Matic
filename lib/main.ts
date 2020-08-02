@@ -181,7 +181,7 @@ export class SimpOMatic {
 							|| member.user.tag.split('#').first()));
 			}
 		});
-		
+
 		// TODO: In web-server, check for correct secret.
 		// Send messages on web-hooks.
 		server(GLOBAL_CONFIG, body => {
@@ -214,6 +214,9 @@ export class SimpOMatic {
 						.setDescription(`“${pr.title}” (**#${pr.number}**)`
 							+ ` was ${body.action}.`);
 				}
+			} else if (body.ref) {
+				// Ignore this.
+				console.log("Non-master related git event.");
 			} else if (body.console === true) {
 				if (body.secret !== process.env["WEB_SECRET"]) {
 					return;
@@ -283,7 +286,7 @@ export class SimpOMatic {
 		&&   CONFIG.whitelistchannels.length > 0
 		&&  !CONFIG.whitelistchannels.includes(message.channel.id))
 			return;
-		
+
 		console.log('[command] Whitelisted.');
 
 		const last_command = this._COMMAND_HISTORY.last();
