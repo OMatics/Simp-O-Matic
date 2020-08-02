@@ -64,17 +64,22 @@ export default async (home_scope: HomeScope) => {
 	}
 
 	const d = await weather_info.json();
-	const date_string = d.properties.meta.updated_at.substr(11,5);
-	const temps = [...Array(24)].map((_, n) => d.timeseries[n].data.instant.details.air_temperature);
-	let embed = new MessageEmbed()
+	const { properties } = d;
+	const date_string = properties.meta.updated_at.substr(11,5);
+	const temps = [...Array(24)].map((_, n) =>
+		properties.timeseries[n].data.instant.details.air_temperature);
+
+	const embed = new MessageEmbed()
 		.setTitle(`Cannot get weather information from ${location}.`);
 
-	if (d && d.currently) embed = new MessageEmbed()
-		.setTitle(`${d.timeseries[0].data.instant.details.air_temperature}°C`)
+	if (properties && properties.meta) embed
+		.setTitle(
+			`${properties.timeseries[0].data.instant.details.air_temperature}°C`)
 		.setAuthor(`${date_string}`
 			+` ${geo_object.name},`
 			+` ${geo_object.description}`)
-		.setThumbnail(`https://api.met.no/images/weathericons/svg/${d.timeseries[0].data.next_1_hours}.svg`)
+		.setThumbnail(
+			`https://api.met.no/images/weathericons/svg/${properties.timeseries[0].data.next_1_hours}.svg`)
 		.addFields(
 			{ name: 'daytime',
 			  value: Math.max(...temps) + '°C',
@@ -83,13 +88,15 @@ export default async (home_scope: HomeScope) => {
 			  value: Math.min(...temps) + '°C',
 			  inline: true },
 			{ name: 'humidity',
-			  value: d.timeseries[0].data.instant.details.relative_humidity + '%',
+			  value: properties.timeseries[0].data.instant.details.relative_humidity + '%',
 			  inline: true },
 			{ name: 'wind',
-			  value: `${DIRECTIONS[Math.round(d.timeseries[0].data.instant.details.wind_from_direction / 45) % 8]}`
-				+ ` ${d.timeseries[0].data.instant.details.wind_speed} ㎧`,
+			  value: `${DIRECTIONS[Math.round(properties.timeseries[0].data.instant.details.wind_from_direction / 45) % 8]}`
+				+ ` ${properties.timeseries[0].data.instant.details.wind_speed} ㎧`,
 			  inline: true })
-		.setFooter('Data provided by meteorologisk institutt');
+		.setFooter(
+			'https://0x0.st/ixdO.png',
+			'Data provided by meteorologisk institutt');
 
 	message.channel.send(embed);
 };

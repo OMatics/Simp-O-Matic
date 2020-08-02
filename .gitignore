@@ -1,3 +1,7 @@
+# Runtime specific
+.pid
+.log
+
 # Secrets!
 secrets.json
 .env
