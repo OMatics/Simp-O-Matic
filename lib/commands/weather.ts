@@ -95,8 +95,8 @@ export default async (home_scope: HomeScope) => {
 				+ ` ${properties.timeseries[0].data.instant.details.wind_speed} ㎧`,
 			  inline: true })
 		.setFooter(
-			'https://0x0.st/ixdO.png',
-			'Data provided by meteorologisk institutt');
+			'Data provided by Meteorologisk institutt (met.no)',
+			'https://0x0.st/ixdO.png');
 
 	message.channel.send(embed);
 };
