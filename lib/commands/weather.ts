@@ -46,7 +46,7 @@ export default async (home_scope: HomeScope) => {
 		return e;
 	};
 
-	let geocoder_json, weather_info, geo_object;
+	let geocoder_json, weather_info, geo_object, country_code;
 	try {
 		const geocoder = await fetch(`${GEOCODE_URL}&apikey=${geokey}`
 			+`&geocode=${location}&lang=en-US`);
@@ -55,6 +55,12 @@ export default async (home_scope: HomeScope) => {
 		geo_object = geocoder_json.response
 			.GeoObjectCollection
 			.featureMember[0].GeoObject;
+
+		country_code = geo_object
+			.metaDataProperty
+			.GeocoderMetaData
+			.Address
+			.country_code;
 
 		const lon_lat = geo_object.Point.pos.split(' ');
 		weather_info = await fetch(
@@ -77,7 +83,8 @@ export default async (home_scope: HomeScope) => {
 			`${properties.timeseries[0].data.instant.details.air_temperature}°C`)
 		.setAuthor(`${date_string}`
 			+` ${geo_object.name},`
-			+` ${geo_object.description}`)
+			+` ${geo_object.description}`,
+			`https://www.countryflags.io/${country_code}/shiny/64.png`)
 		.setThumbnail(
 			`https://api.met.no/images/weathericons/png/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.png`)
 		.addFields(
@@ -96,7 +103,7 @@ export default async (home_scope: HomeScope) => {
 			  inline: true })
 		.setFooter(
 			'Data provided by Meteorologisk institutt (met.no)',
-			'https://0x0.st/ixdO.png');
+			'https://0x0.st/ixd6.png');
 
 	message.channel.send(embed);
 };
