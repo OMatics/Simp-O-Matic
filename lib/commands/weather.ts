@@ -23,7 +23,7 @@ const ICONS = {
 	'partly-cloudy-night': '⛅'
 };
 
-const WEATHER_URL = 'https://api.darksky.net/forecast';
+const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/compact';
 const GEOCODE_URL = 'https://geocode-maps.yandex.ru/1.x/?format=json';
 
 export default async (home_scope: HomeScope) => {
@@ -39,7 +39,6 @@ export default async (home_scope: HomeScope) => {
 		? args.join(' ')
 		: CONFIG.weather_locations[message.author.id] || 'Cuckfield';
 
-	const key = SECRETS.darksky.key;
 	const geokey = SECRETS.yandex.geocoder.key;
 
 	const error = (e: Error) => {
@@ -57,51 +56,41 @@ export default async (home_scope: HomeScope) => {
 			.GeoObjectCollection
 			.featureMember[0].GeoObject;
 
-		const lat_lon = geo_object.Point.pos
-			.split(' ').reverse();
+		const lon_lat = geo_object.Point.pos
+			.split(' ');
 
-		weather_info = await fetch(`${WEATHER_URL}/${key}/${lat_lon}`
-			+`?exclude=minutely,hourly,alerts,flags&units=si`);
+		weather_info = await fetch(`${WEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat{0}}`);
 	} catch (e) {
 		return error(e);
 	}
 
 	const d = await weather_info.json();
-	const date = new Date(d.currently.time * 1000);
-	const date_string = date.toLocaleTimeString('en-GB', {
-		hour: '2-digit',
-		minute: '2-digit',
-		timeZone: d.timezone
-	});
-
+	const date_string = d.properties.meta.updated_at.substr(11,5);
+	const temps = [...Array(24)].map((_, n) => d.timeseries[n].data.instant.details.air_temperature);
 	let embed = new MessageEmbed()
 		.setTitle(`Cannot get weather information from ${location}.`);
 
 	if (d && d.currently) embed = new MessageEmbed()
-		.setTitle(`${d.currently.temperature}°C`
-			+ ` (feels like ${d.currently.apparentTemperature}°C)`)
-		.setAuthor(`${ICONS[d.currently.icon]} ${date_string}`
+		.setTitle(`${d.timeseries[0].data.instant.details.air_temperature}°C`)
+		.setAuthor(`${date_string}`
 			+` ${geo_object.name},`
 			+` ${geo_object.description}`)
-		.setDescription(
-			MOON_PHASES[Math.round(d.daily.data[0].moonPhase * 7)]
-			+ ' ' + d.currently.summary + '.')
+		.setThumbnail(`https://api.met.no/images/weathericons/svg/${d.timeseries[0].data.next_1_hours}.svg`)
 		.addFields(
 			{ name: 'daytime',
-			  value: d.daily.data[0].temperatureHigh + '°C',
+			  value: Math.max(...temps) + '°C',
 			  inline: true },
 			{ name: 'nighttime',
-			  value: d.daily.data[0].temperatureLow + '°C',
+			  value: Math.min(...temps) + '°C',
 			  inline: true },
 			{ name: 'humidity',
-			  value: d.currently.humidity.toString().substring(2) + '%',
+			  value: d.timeseries[0].data.instant.details.relative_humidity + '%',
 			  inline: true },
 			{ name: 'wind',
-			  value: `${DIRECTIONS[Math.round(d.currently.windBearing / 45) % 8]}`
-				+ ` ${d.currently.windSpeed} ㎧`,
+			  value: `${DIRECTIONS[Math.round(d.timeseries[0].data.instant.details.wind_from_direction / 45) % 8]}`
+				+ ` ${d.timeseries[0].data.instant.details.wind_speed} ㎧`,
 			  inline: true })
-		.setFooter('Powered by Dark Sky',
-			'https://darksky.net/images/darkskylogo.png');
+		.setFooter('Data provided by meteorologisk institutt');
 
 	message.channel.send(embed);
 };
