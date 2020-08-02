@@ -79,7 +79,7 @@ export default async (home_scope: HomeScope) => {
 			+` ${geo_object.name},`
 			+` ${geo_object.description}`)
 		.setThumbnail(
-			`https://api.met.no/images/weathericons/svg/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.svg`)
+			`https://api.met.no/images/weathericons/png/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.png`)
 		.addFields(
 			{ name: 'daytime',
 			  value: Math.max(...temps) + '°C',
