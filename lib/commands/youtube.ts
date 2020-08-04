@@ -8,6 +8,7 @@ import fetch from "node-fetch";
 export default async (home_scope: HomeScope) => {
 	const { message, args } = home_scope;
 	var query = args.join(" ").trim();
+	query = encodeURI(query);
 	const sort_by = (args[0] == "new") ? "upload_date" : "relevance";
 	const type = (args[0] == "channel" || args[0] == "playlist") ? args.shift() : "video";
 	let num : number = 1;
