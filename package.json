@@ -6,7 +6,7 @@
         "bot",
         "simp"
     ],
-    "license": "GPL-3.0",
+    "license": "AGPL-3.0",
     "author": "Sammy, Danny, Bruno, et Frens",
     "version": "1.0.0",
     "engines": {

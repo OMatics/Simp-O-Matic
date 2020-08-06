@@ -133,4 +133,5 @@
 - `!fork` — Fork the repository and send me a pull-request for your patches. (https://github.com/Demonstrandum/Simp-O-Matic/fork)
 - `!issue` — Spot a bug, have an issue or want to request a new feature? There's a page for that. (https://github.com/Demonstrandum/Simp-O-Matic/issues)
 
-**Licenced under GNU GPLv3!  _Free_ as in Freedom!**
+**Licenced under GNU Affero GPLv3 (`AGPL-3.0`)!  _Free_ as in Freedom!**
+<:AGPL:740958423008411678>

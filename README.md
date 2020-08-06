@@ -1,7 +1,7 @@
 # The Simp'O'Matic
 
 <p align="center">
-  <img width="300" src="lib/resources/banners/logo-text-outlines.svg?sanitize=true">
+  <img width="300" src="https://raw.githubusercontent.com/Demonstrandum/Simp-O-Matic/master/lib/resources/banners/logo-text-outlines.svg">
 </p>
 
 ## Help Out
@@ -102,6 +102,10 @@ I can send you the secrets file, if I _really_ trust you.
 ```sh
 yarn --global-folder ./node_modules/ --cache-folder ./node_modules/
 ```
+
+## License
+See `LICENSE` file in repository root.
+![GNU Affero GPLv3 (AGPL-3.0)](https://upload.wikimedia.org/wikipedia/commons/0/06/AGPLv3_Logo.svg)
 
 ## Dependencies / Project Structure?
 
