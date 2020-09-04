@@ -142,7 +142,7 @@ export class SimpOMatic {
 	}
 
 	static events() {
-		console.log('Bot ready to do work!');
+		console.log('Bloated software ready to do work!');
 
 		const client = this._CLIENT;
 		system_message(client, "**We're back online baby!**");
