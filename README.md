@@ -10,7 +10,7 @@ Currently some of the features in the `HELP.md` page, have not yet been
 implemented.  Please my friend, if you have the time, send some pull
 requests our way.
 
-Yours, [Sammy](https://github.com/Demonstrandum), [Danny](https://github.com/danyisill), [Accelarion](https://github.com/Accelarion) and [Bruno](https://github.com/0-l).
+Yours, [Sammy](https://github.com/Demonstrandum), [Danny](https://github.com/danyisill), [Accelarion](https://github.com/Accelarion), [Bruno](https://github.com/0-l) and [jack-javana (Pinocchio Tortoise)](https://github.com/jack-javana).
 
 ## Why is it objectively superior
 
