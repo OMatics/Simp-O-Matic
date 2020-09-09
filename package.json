@@ -1,16 +1,17 @@
 {
-    "name": "simp-o-matic",
+    "name": "@demonstrandum/simp-o-matic",
     "description": "Simp'O'matic is a fren-ly Discord bot.",
     "keywords": [
         "discord",
         "bot",
         "simp"
     ],
+    "publishConfig": { "registry": "https://npm.pkg.github.com/" },
     "license": "AGPL-3.0",
-    "author": "Sammy, Danny, Bruno, et Frens",
-    "version": "1.0.0",
+    "author": "Sammy, Danny, Bruno, Accelarion, jack-javana and friends",
+    "version": "1.1.0",
     "engines": {
-        "node": "13.x",
+        "node": "14.x",
         "yarn": "1.22.x"
     },
     "main": "./build/main.js",
@@ -27,7 +28,7 @@
     "homepage": "https://github.com/Demonstrandum/simpomatic",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Demonstrandum/simpomatic.git"
+        "url": "git://github.com/Demonstrandum/Simp-O-Matic.git"
     },
     "bugs": {
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
