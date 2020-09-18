@@ -12,7 +12,7 @@ requests our way.
 
 Yours, [Sammy](https://github.com/Demonstrandum), [Danny](https://github.com/danyisill), [Accelarion](https://github.com/Accelarion), [Bruno](https://github.com/0-l) and [jack-javana (Pinocchio Tortoise)](https://github.com/jack-javana).
 
-## Why is it objectively superior
+## Why it is objectively superior
 
 Let's compare it to a similar discord bot, [moiph/ub3r-b0t](https://github.com/moiph/ub3r-b0t)
 

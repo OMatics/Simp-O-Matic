@@ -15,14 +15,14 @@ const file_authors = async (filename: string): Promise<Authors> => {
 
 	const repo = await git.Repository.open(GIT_DIR);
 	const blame = await git.Blame.file(repo, filename, ['p']);
-	
+
 	for (let i = 0; i < blame.getHunkCount(); i++) {
 		// Hunk has bad type signatures, someone should tell `nodegit'.
 		const hunk: any = blame.getHunkByIndex(i);
 		const oid = hunk.finalCommitId();
 		const commit = await repo.getCommit(oid);
 		const name = commit.author().name();
-			
+
 		if (authors.hasOwnProperty(name)) authors[name] += 1;
 		else                              authors[name]  = 1;
 	}
@@ -34,10 +34,10 @@ const file_authors = async (filename: string): Promise<Authors> => {
 export default async (homescope : HomeScope) => {
 	const { message, args, CONFIG } = homescope;
 	const p = CONFIG.commands.prefix;
-	
+
 	if (args.length < 1)
 		return message.answer('Please provide a command to introspect.');
-	
+
 	const command = args[0].startsWith(p) ? args[0].tail() : args[0];
 
 	if (command.match(/\//g))
@@ -45,10 +45,10 @@ export default async (homescope : HomeScope) => {
 
 	const expansion = CONFIG.commands.aliases[command];
 	if (expansion) return message.channel.send(`\`${p}${command}\``
-		+ `is an alias that expands to \`${p}${expansion}\`.`);
+		+ ` is an alias that expands to \`${p}${expansion}\`.`);
 
 	const filename = `lib/commands/${command}.ts`;
-	
+
 	try {
 		const source = read_file(`${process.cwd()}/${filename}`)
 			.toString();
@@ -58,7 +58,7 @@ export default async (homescope : HomeScope) => {
 			.join(', ');
 
 		const msg = `Source code for \`${p}${command}\`:\n`;
-		
+
 		const msg_len = [msg, source, author_str]
 			.reduce((acc, s) => acc + s.length, 0);
 

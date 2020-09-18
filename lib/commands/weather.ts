@@ -49,7 +49,7 @@ export default async (home_scope: HomeScope) => {
 	let geocoder_json, weather_info, geo_object, country_code;
 	try {
 		const geocoder = await fetch(`${GEOCODE_URL}&apikey=${geokey}`
-			+`&geocode=${location}&lang=en-US`);
+			+`&geocode=${encodeURI(location)}&lang=en-US`);
 
 		geocoder_json = await geocoder.json();
 		geo_object = geocoder_json.response
