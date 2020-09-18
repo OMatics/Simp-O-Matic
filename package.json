@@ -50,7 +50,7 @@
         "googleapis": "^48.0.0",
         "jimp": "^0.14.0",
         "node-fetch": "^2.6.0",
-        "nodegit": "^0.26.5",
+        "nodegit": "^0.27.0",
         "request": "^2.34",
         "scrape-youtube": "0.2.0",
         "tslib": "^1.11.1",
