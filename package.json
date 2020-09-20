@@ -6,7 +6,9 @@
         "bot",
         "simp"
     ],
-    "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
     "license": "AGPL-3.0",
     "author": "Sammy, Danny, Bruno, Accelarion, jack-javana and friends",
     "version": "1.1.0",

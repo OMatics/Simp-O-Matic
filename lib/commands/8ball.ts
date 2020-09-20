@@ -34,6 +34,9 @@ export default (home_scope: HomeScope) => {
 		"Yes.",
 		"Yes – definitely.",
 		"You may rely on it.",
+		"1%",
+		"50%",
+		"100%"
 	];
 
 	message.answer(":8ball: "
