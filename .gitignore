@@ -32,3 +32,6 @@ export*.json
 ehthumbs.db
 Thumbs.db
 desktop.ini
+
+# WebStorm ide project files
+.idea/
