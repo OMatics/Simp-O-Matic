@@ -33,5 +33,6 @@ ehthumbs.db
 Thumbs.db
 desktop.ini
 
-# WebStorm ide project files
+# Some ide/source code editor folders
 .idea/
+.vscode/
