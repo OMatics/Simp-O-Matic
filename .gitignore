@@ -32,3 +32,7 @@ export*.json
 ehthumbs.db
 Thumbs.db
 desktop.ini
+
+# Some ide/source code editor folders
+.idea/
+.vscode/
