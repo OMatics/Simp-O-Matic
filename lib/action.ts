@@ -1,7 +1,7 @@
 import { FORMATS } from './extensions';
 import { Message, MessageEmbed } from 'discord.js';
 
-type ActionType = 'kiss' | 'suck' | 'rape' | 'slap' | 'hug' | 'lick' | 'rim' | 'kill';
+type ActionType = 'kiss' | 'suck' | 'rape' | 'slap' | 'hug' | 'lick' | 'rim' | 'kill' | 'purr';
 
 interface Actions {
 	title: string;
@@ -147,7 +147,17 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://img2.gelbooru.com/images/7c/9c/7c9cdd15e03df0a2ba06b9bb9aa98180.png",
 		],
 		transitiveness: true
-	}	
+	},	
+	purr: {
+		title: "You are being purred at!",
+		message: ":3",
+		emoji: 'cat',
+		images: [
+			"https://cdn.discordapp.com/attachments/768154669037125712/773217352081735710/giphy.gif",
+			"https://cdn.discordapp.com/attachments/768154669037125712/773217347884417024/giphy_2.gif"
+		],
+		transitiveness: true
+	}		
 };
 
 export default class Action {
