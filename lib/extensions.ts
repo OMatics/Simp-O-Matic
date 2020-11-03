@@ -118,6 +118,7 @@ declare global {
 	interface String {
 		squeeze(): string;
 		capitalize(): string;
+		punctuation(): string | null;
 		leading_space(): string;
 		head(): string;
 		tail(): string;
@@ -196,6 +197,12 @@ String.prototype.leading_space = function () {
 String.prototype.capitalize = function () {
 	return this.charAt(0).toUpperCase() + this.slice(1);
 };
+
+String.prototype.punctuation = function () {
+	const punct = ';.,?!'.split('');
+	const mark = this.trimEnd().slice(-1);
+	return punct.includes(mark) ? mark : null;
+}
 
 String.prototype.emojify = function () { return `:${this}:`; };
 

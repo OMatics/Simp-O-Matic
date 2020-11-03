@@ -26,7 +26,7 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 	commands: {
 		prefix: '!',
 		max_history: 40,
-		not_understood: "Command not understood",
+		not_understood: "Command not understood...",
 		aliases: {
 			'img': 'image',
 			'i': 'image',

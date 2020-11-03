@@ -426,8 +426,10 @@ Would you like to slow down a little?`.squeeze());
 						\`${p}fork\`, and get started...`.squeeze());
 					break;
 				}
+
+				const has_punct = CONFIG.commands.not_understood.punctuation();
 				message.answer(`
-					:warning: ${CONFIG.commands.not_understood}.
+					:warning: ${CONFIG.commands.not_understood}${has_punct?'':'.'}
 					> \`${CONFIG.commands.prefix}${operator}\``.squeeze());
 				break;
 			}
