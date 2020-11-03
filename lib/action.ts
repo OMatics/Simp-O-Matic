@@ -150,7 +150,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 	},	
 	purr: {
 		title: "You are being purred at!",
-		message: ":3",
+		message: "purred at",
 		emoji: 'cat',
 		images: [
 			"https://cdn.discordapp.com/attachments/768154669037125712/773217352081735710/giphy.gif",
