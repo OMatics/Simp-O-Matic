@@ -62,6 +62,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://media1.tenor.com/images/8f668350ed3dca15ad95fcd2ae2d93bd/tenor.gif?itemid=5769476",
 			"https://media1.tenor.com/images/5e62e705a680e8f49ad0fb30e8e3c6dd/tenor.gif?itemid=15304437",
 			"https://media1.tenor.com/images/b1613fda51b951fe42453bf90f89b209/tenor.gif?itemid=13082428",
+			"https://cdn.discordapp.com/attachments/710852599208869910/775210248255307776/1568253225448.gif",
 		],
 		transitiveness: true
 	},
