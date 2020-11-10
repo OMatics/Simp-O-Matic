@@ -49,6 +49,10 @@ declare global {
 				[key: string]: string
 			},
 			stats: Stats,
+			vc: any,
+			vcc: any,
+			vcqueue: any[],
+			vcdispatcher: any,
 			commands: {
 				prefix: string,
 				max_history: number,
