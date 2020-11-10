@@ -1,5 +1,5 @@
 const ytdl = require("ytdl-core");
-export default async(home_scope: HomeScope){
+export default async(home_scope: HomeScope) => {
 	const { message, args, CONFIG } = home_scope;
 	if(!message.guild) {
 		message.answer("Just use youtube-dl at home.");
@@ -9,9 +9,10 @@ export default async(home_scope: HomeScope){
 		CONFIG.vcqueue = [];
 	switch(args[0]){
 		case "join":
-			if(message.member.voice.channel)
+			if(message.member.voice.channel){
 				CONFIG.vc = await message.member.voice.channel.join();
 				CONFIG.vcc = message.channel;
+			}
 			else
 				message.reply("Join A Channel First.");
 			break;
