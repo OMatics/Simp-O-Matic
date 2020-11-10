@@ -141,6 +141,26 @@ declare global {
 		to_abbrev(figures): string;
 		truncate(): number;
 	}
+
+	interface JSON {
+		dump(object: any,
+		     replacer?: (key: string, value: any) => any,
+		     space?: string | number): string;
+	}
+}
+
+// JSON Extensions:
+JSON.dump = function (object, replacer=null, space=4) {
+	const DEFAULT_REPLACER = replacer = (key, value) => {
+		if (key === 'vc') return null;
+		return value;
+	};
+
+	if (replacer === null) replacer = DEFAULT_REPLACER;
+	else replacer = (key, value) =>
+		replacer(key, DEFAULT_REPLACER(key, value));
+
+	return JSON.stringify(object, replacer, space);
 }
 
 // Array Extensions:

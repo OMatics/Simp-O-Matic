@@ -100,7 +100,7 @@ export const recursive_regex_to_string = o => {
 	}
 	if (type(o) === 'object' || type(o) === 'array') {
 		for (const key in o)
-			if (o.hasOwnProperty(key))
+			if (o.hasOwnProperty(key) && o != 'vc')
 				o[key] = recursive_regex_to_string(o[key]);
 		return o;
 	}
@@ -116,11 +116,11 @@ export const export_config = (obj: Types.GlobalConfig, { ugly = false }) => {
 		if (obj.guilds.hasOwnProperty(guild))
 			['respond', 'reject', 'replace', 'trigger']
 				.each(name => o.guilds[guild].rules[name] = o.guilds[guild].rules[name]
-					.map(JSON.stringify)
+					.map(JSON.dump)
 					.unique()
 					.map(JSON.parse));
 
-	return JSON.stringify(o, null, ugly ? null : 4);
+	return JSON.dump(o, null, ugly ? null : 4);
 };
 
 export const pastebin_pull = (global_conf: Types.GlobalConfig) =>

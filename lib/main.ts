@@ -242,7 +242,7 @@ export class SimpOMatic {
 			} else {
 				// For now, this won't be silent.
 				system_message(client, "Received unknown data:\n```json\n"
-					+ JSON.stringify(body, null, 4).slice(0, 1930)
+					+ JSON.dump(body, null, 4).slice(0, 1930)
 					+ "```");
 			}
 		});
@@ -408,7 +408,7 @@ Would you like to slow down a little?`.squeeze());
 				});
 				break;
 			} case 'ls': {
-			   const dirs = JSON.stringify({
+			   const dirs = JSON.dump({
 					'__dirname': __dirname,
 					'process.cwd()': process.cwd()
 				});
@@ -625,11 +625,11 @@ function on_termination(error_type, e?: Error) {
 		`Bot got \`${error_type}\` signal.\n`
 		+ `**Shutting down...**`);
 
-	write_file(
-		`${process.cwd()}/export-exit.json`,
-		export_config(GLOBAL_CONFIG, {}));
+	const exported = export_config(GLOBAL_CONFIG, {});
 
-	pastebin_update(export_config(GLOBAL_CONFIG, {}))
+	write_file(`${process.cwd()}/export-exit.json`, exported);
+
+	pastebin_update(exported)
 		.then(_ => {
 			console.log('Finished pastebin update.');
 			system_message(CLIENT, `Current configuration saved.`);

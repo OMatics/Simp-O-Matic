@@ -121,7 +121,7 @@ export default (GLOBAL_CONFIG : Types.GlobalConfig, handle_post) => {
 				res.writeHead(200, {
 					'Content-Type': 'application/json'
 				});
-				res.write(JSON.stringify(GLOBAL_CONFIG, null, 4));
+				res.write(JSON.dump(GLOBAL_CONFIG, null, 4));
 				res.end();
 				break;
 			default:

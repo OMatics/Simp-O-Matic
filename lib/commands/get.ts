@@ -12,7 +12,7 @@ export default (home_scope: HomeScope) => {
 	try {
 		const accessors = args[0].trim().split('.').squeeze();
 
-		const resolution = JSON.stringify(
+		const resolution = JSON.dump(
 			recursive_regex_to_string(
 				deep_copy(access(CONFIG, accessors))), null, 4);
 

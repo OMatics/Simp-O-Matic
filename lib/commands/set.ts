@@ -12,7 +12,7 @@ export default (home_scope: HomeScope) => {
 		const parent = accessors.pop();
 		const obj = access(CONFIG, accessors);
 		obj[parent] = JSON.parse(args.tail().join(' '));
-		const normal = JSON.stringify(obj[parent], null, 4);
+		const normal = JSON.dump(obj[parent], null, 4);
 
 		message.channel.send(`Assignment successful.
 			\`${args[0].trim()} = ${normal}\``.squeeze());
