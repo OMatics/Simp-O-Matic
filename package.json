@@ -41,6 +41,7 @@
         "@types/node-fetch": "^2.5.5",
         "@types/nodegit": "^0.26.3",
         "@types/ws": "^7.2.2",
+        "node-forge": "^0.10.0",
         "better-pastebin": "^0.4.1",
         "cowsay": "^1.4.0",
         "deepcopy": "^2.0.0",
