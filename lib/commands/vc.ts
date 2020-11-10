@@ -46,9 +46,10 @@ export default async(home_scope: HomeScope) => {
 			break;
 		case "d":
 		case "i":
-			CONFIG.vcqueue = CONFIG.vcqueue.splice(args[1], ...(args[0]=="d"?[1]:[0, args[2]]));
+			const splice_args : any = args[0] == 'd' ? [1] : [0, args[2]];
+			CONFIG.vcqueue = CONFIG.vcqueue.splice(Number(args[1]), ...splice_args);
 		case "ls":
-			message.answer(ls());
+			message.answer(ls(CONFIG));
 			break;
 		case "requeue":
 			CONFIG.vcqueue = [];
@@ -60,6 +61,6 @@ export default async(home_scope: HomeScope) => {
 			CONFIG.vcqueue.push(args[0]); //add checking for valid URIs?
 	}
 }
-function ls(){ //this could be more sophisticated
+function ls(CONFIG : Types.Config){ //this could be more sophisticated
 	return "length: " + CONFIG.vcqueue.length + CONFIG.vcqueue.map((a, b) => "\n" + b + ": " + a).join("");
 }
