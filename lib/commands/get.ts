@@ -24,6 +24,6 @@ export default (home_scope: HomeScope) => {
 			message.channel.send(msg);
 	} catch (e) {
 		message.channel.send(`Invalid object access-path\n`
-			+ `Problem: \`\`\`\n${e}\n\`\`\``);
+			+ `Problem: \`\`\`\n${e}\n${e.stack}\n\`\`\``);
 	}
 };
