@@ -14,6 +14,10 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			rape: 0
 		}
 	},
+	vc: null,
+        vcc: null,
+        vcqueue: null,
+        vcdispatcher: null,
 	pp_sizes: {
 		'541761315887120399': 16,
 		'265958795254038535': 36
