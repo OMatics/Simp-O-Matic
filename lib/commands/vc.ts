@@ -49,7 +49,7 @@ export default async(home_scope: HomeScope) => {
 					const next = CONFIG.vc_queue.pop();
 					if (next) {
 						GID.vc_dispatcher = GID.vc.play(
-							ytdl(CONFIG.vc_queue.pop(), DL_OPTIONS));
+							ytdl(next, DL_OPTIONS));
 						CLIENT.channels.fetch(CONFIG.vc_channel)
 							.then((ch: TextChannel) =>
 								ch.send(`Now playing: ${next}`));
@@ -58,10 +58,10 @@ export default async(home_scope: HomeScope) => {
 			}
 			break;
 		case "d":
-			CONFIG.vc_queue.splice(Number(args[1]), 1);
+			CONFIG.vc_queue.splice(Number(args[1]) - 1, 1);
 			break;
 		case "i":
-			CONFIG.vc_queue.splice(Number(args[1]), 0, args[2]);
+			CONFIG.vc_queue.splice(Number(args[1]) - 1, 0, args[2]);
 			break;
 		case "ls":
 			message.answer(ls(CONFIG.vc_queue));
