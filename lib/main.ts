@@ -623,7 +623,11 @@ Would you like to slow down a little?`.squeeze());
 
 let CLIENT: Client = null;
 
+let term_count = 0;
+
 function on_termination(error_type, e?: Error) {
+	if (term_count > 15) return;
+	term_count += 1;
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
 	if (e) console.warn(e);

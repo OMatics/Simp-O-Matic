@@ -164,13 +164,13 @@ declare global {
 // JSON Extensions:
 JSON.dump = function (object, replacer=null, space=4) {
 	const DEFAULT_REPLACER = replacer = (key, value) => {
-		if (key === 'vc') return null;
+		if (key === 'vc' || key === 'vcc'
+		 || key === 'vcqueue' || key === 'vcdispatcher')
+			return null;
 		return value;
 	};
 
 	if (replacer === null) replacer = DEFAULT_REPLACER;
-	else replacer = (key, value) =>
-		replacer(key, DEFAULT_REPLACER(key, value));
 
 	return JSON.stringify(object, replacer, space);
 }
