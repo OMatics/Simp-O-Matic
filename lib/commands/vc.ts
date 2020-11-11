@@ -18,7 +18,8 @@ export default async(home_scope: HomeScope) => {
 	const guild : string = message.guild.id;
 	const GID : Types.GuildInstanceData = INSTANCE_VARIABLES.guilds[guild];
 
-	if(!CONFIG.vc_queue) CONFIG.vc_queue = [];
+	if (!CONFIG.vc_queue) CONFIG.vc_queue = [];
+	if (!GID.vc_prefetch) GID.vc_prefetch = {};
 
 	const attempt_prefetch = (url: string): boolean => {
 		let stream = null;
