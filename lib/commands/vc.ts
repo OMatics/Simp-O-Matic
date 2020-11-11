@@ -4,7 +4,9 @@ import ytdl from 'ytdl-core';
 const DL_OPTIONS : any = {
 	filter: 'audioonly',
 	dlChunkSize: 0,
-	quality: 'highestaudio'
+	quality: 'highestaudio',
+	// Helps fix random cut-off towards end of playback.
+	highWaterMark: 1 << 25
 };
 
 export default async(home_scope: HomeScope) => {
@@ -39,7 +41,7 @@ export default async(home_scope: HomeScope) => {
 		if (message.member.voice.channel) {
 			GID.vc = await message.member.voice.channel.join();
 			CONFIG.vc_channel = message.channel.id;
-			message.reply("Joined your voice chat.");
+			message.reply("Joined voice chat.");
 		} else {
 			message.reply("Join a voice channel first.");
 		}
@@ -53,11 +55,10 @@ export default async(home_scope: HomeScope) => {
 		}
 		break;
 	} case "pause": {
-		if (GID.vc_dispatcher) {
+		if (GID.vc_dispatcher && !GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.pause();
 			message.answer("Paused playback.");
-		}
-		else {
+		} else {
 			message.answer("Nothing is playing");
 		}
 		break;
