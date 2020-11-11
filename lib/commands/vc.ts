@@ -62,7 +62,7 @@ export default async(home_scope: HomeScope) => {
 		}
 		break;
 	} case "play": {
-		if (GID.vc_dispatcher) {
+		if (GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.resume();
 			message.answer("Resuming playback.");
 		} else {
@@ -71,14 +71,20 @@ export default async(home_scope: HomeScope) => {
 				return;
 			}
 
-			const stream = GID.vc_prefetch[CONFIG.vc_queue.pop()];
+			const stream = GID.vc_prefetch[CONFIG.vc_queue.shift()];
 			GID.vc_current_stream = stream;
 			GID.vc_dispatcher = GID.vc.play(stream);
 			message.channel.send("Playing media from queue...");
 
 			const end_handler = () => {
 				GID.vc_dispatcher.destroy();
-				const next = CONFIG.vc_queue.pop();
+				if (CONFIG.vc_queue.length === 0) {
+					CLIENT.channels.fetch(CONFIG.vc_channel)
+						.then((ch: TextChannel) =>
+							ch.send("Media queue ended."));
+					return;
+				}
+				const next = CONFIG.vc_queue.shift();
 				if (next) {
 					const stream = GID.vc_prefetch[next];
 					GID.vc_current_stream = stream;
