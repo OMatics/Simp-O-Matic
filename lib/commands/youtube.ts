@@ -6,12 +6,15 @@ import fetch from "node-fetch";
  * !youtube x n, where 1 <= n <= 20
  * !youtube new x
  * !youtube {channel,playlist} x
+ * !youtube raw x
  */
 
 export default async (home_scope: HomeScope) => {
 	const { message, args } = home_scope;
 	let query = args.join(' ').trim();
-
+	
+	const rawOut = !!(args[0] == "raw" && args.shift());
+	
 	const sort_by = (args[0] == "new")
 		? (args.shift(), "upload_date")
 		:                "relevance";
@@ -44,7 +47,10 @@ export default async (home_scope: HomeScope) => {
 
 	const views : string = Number(res.viewCount).to_abbrev(1);
 
-	message.answer(`Search for '${query}' (result №${num}):`
+	if(rawOut)
+		message.channel.send("https://youtu.be/" + res.videoId);
+	else
+		message.answer(`Search for '${query}' (result №${num}):`
 		+ ` https://youtu.be/${res.videoId}`
 		+ `\npublished ${res.publishedText},`
 		+ ` view count: ${views}, duration: ${duration}`);
