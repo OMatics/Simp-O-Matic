@@ -59,7 +59,10 @@
         "tslib": "^1.11.1",
         "typescript": "^3.8.3",
         "unirest": "^0.6.0",
-        "ytdl-core": "^4.0.3"
+        "ytdl-core": "^4.0.3",
+        "@discordjs/opus": "^0.3.3",
+        "node-opus": "^0.3.3",
+        "opusscript": "0.0.7"
     },
     "devDependencies": {
         "tslint": "^6.1.0"
