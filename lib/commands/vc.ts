@@ -62,7 +62,7 @@ export default async(home_scope: HomeScope) => {
 		}
 		break;
 	} case "play": {
-		if (GID.vc_dispatcher.paused) {
+		if (GID.vc_dispatcher && GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.resume();
 			message.answer("Resuming playback.");
 		} else {
@@ -85,18 +85,19 @@ export default async(home_scope: HomeScope) => {
 					return;
 				}
 				const next = CONFIG.vc_queue.shift();
-				if (next) {
-					const stream = GID.vc_prefetch[next];
-					GID.vc_current_stream = stream;
-					GID.vc_dispatcher = GID.vc.play(stream);
-					CLIENT.channels.fetch(CONFIG.vc_channel)
-						.then((ch: TextChannel) =>
-							ch.send(`Now playing: ${next}`));
-				}
+				const stream = GID.vc_prefetch[next];
+				GID.vc_current_stream = stream;
+				GID.vc_dispatcher = GID.vc.play(stream);
+				CLIENT.channels.fetch(CONFIG.vc_channel)
+					.then((ch: TextChannel) =>
+						ch.send(`Now playing: ${next}`));
 			}
 
 			GID.vc_dispatcher.on('finish', end_handler);
 			GID.vc_current_stream.on('end', () => {
+				CLIENT.channels.fetch(CONFIG.vc_channel)
+					.then((ch: TextChannel) =>
+						ch.send("Stream ended."));
 				GID.vc_dispatcher.end();
 			});
 		}
