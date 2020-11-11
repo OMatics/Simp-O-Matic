@@ -1,6 +1,7 @@
 import { SimpOMatic } from './main';
 import { Client } from '@typeit/discord';
 import { VoiceConnection, StreamDispatcher } from 'discord.js';
+import stream from 'stream';
 
 // Global Extensions:
 declare global {
@@ -43,7 +44,9 @@ declare global {
 
 		export type GuildInstanceData = {
 			vc: VoiceConnection,
-			vc_dispatcher: StreamDispatcher
+			vc_dispatcher: StreamDispatcher,
+			vc_prefetch: { [key: string]: stream.Readable },
+			vc_current_stream: stream.Readable
 		};
 
 		export type InstanceVariables = {
