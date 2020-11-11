@@ -1,5 +1,6 @@
 import { SimpOMatic } from './main';
 import { Client } from '@typeit/discord';
+import { VoiceConnection, StreamDispatcher } from 'discord.js';
 
 // Global Extensions:
 declare global {
@@ -9,8 +10,12 @@ declare global {
 		GIT_URL: string, HELP_MESSAGES: string[],
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
 		CONFIG: Types.Config, SECRETS: any, KNOWN_COMMANDS: string[],
-		expand_alias: (operator: string, args: string[], message: Message) => string,
-		CLIENT: Client, main: SimpOMatic;
+		expand_alias:
+			(operator: string,
+			 args: string[],
+			 message: Message) => string,
+		CLIENT: Client, main: SimpOMatic,
+		INSTANCE_VARIABLES: Types.InstanceVariables
 	};
 
 	namespace Types {
@@ -36,9 +41,20 @@ declare global {
 			}
 		};
 
+		export type GuildInstanceData = {
+			vc: VoiceConnection,
+			vc_dispatcher: StreamDispatcher
+		};
+
+		export type InstanceVariables = {
+			guilds: { [key: string]: GuildInstanceData }
+		};
+
 		export type Config = {
 			main_channel: string,
 			system_channel: string,
+			vc_channel: string,
+			vc_queue: string[],
 			whitelistchannels: string[],
 			pp_sizes: {
 				[key: string]: number
@@ -49,10 +65,6 @@ declare global {
 				[key: string]: string
 			},
 			stats: Stats,
-			vc: any,
-			vcc: any,
-			vcqueue: any[],
-			vcdispatcher: any,
 			commands: {
 				prefix: string,
 				max_history: number,

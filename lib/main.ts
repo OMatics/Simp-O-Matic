@@ -6,6 +6,8 @@ import { Discord, On, Client } from '@typeit/discord';
 import { Message,
 		 MessageAttachment,
 		 MessageEmbed,
+		 VoiceConnection,
+		 StreamDispatcher,
 		 TextChannel } from 'discord.js';
 
 // System interaction modules.
@@ -31,6 +33,11 @@ import { pastebin_latest,
 		 pastebin_url } from './api/pastebin';
 import { Guild } from 'discord.js';
 import { Timer } from './commands/cron';
+
+// Global instance variables
+const INSTANCE_VARIABLES = {
+	guilds: {}
+}
 
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
@@ -349,7 +356,8 @@ Would you like to slow down a little?`.squeeze());
 			HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
 			CONFIG, SECRETS, KNOWN_COMMANDS,
 			expand_alias: this.expand_alias,
-			CLIENT: SimpOMatic._CLIENT, main: this
+			CLIENT: SimpOMatic._CLIENT, main: this,
+			INSTANCE_VARIABLES
 		};
 
 		const commands = read_dir(`${__dirname}/commands`)
