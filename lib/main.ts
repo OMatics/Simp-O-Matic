@@ -119,7 +119,7 @@ export class SimpOMatic {
 		const guild_id = guild.id;
 		// Set default configuration.
 		GLOBAL_CONFIG.guilds[guild_id] = deep_copy(DEFAULT_GUILD_CONFIG);
-
+		INSTANCE_VARIABLES.guilds[guild_id] = {};
 		// Set system-messages and main channels to some default.
 		const default_channel = guild.channels.cache.find(channel =>
 			channel.permissionsFor(guild.me).has("SEND_MESSAGES"));
@@ -188,6 +188,11 @@ export class SimpOMatic {
 							|| member.user.tag.split('#').first()));
 			}
 		});
+
+		for (const guild in GLOBAL_CONFIG.guilds)
+			if (GLOBAL_CONFIG.guilds.hasOwnProperty(guild))
+				INSTANCE_VARIABLES.guilds[guild] = {};
+
 
 		// TODO: In web-server, check for correct secret.
 		// Send messages on web-hooks.
