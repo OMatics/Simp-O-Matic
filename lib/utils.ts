@@ -2,7 +2,7 @@ import { inspect } from 'util';
 import deep_clone from 'deepcopy';
 
 import { HELP_SECTIONS, KNOWN_COMMANDS } from './main';
-import { pastebin_latest } from './api/pastebin';
+import * as JSONBlob from './api/jsonblob';
 import './extensions';
 
 export const deep_copy = deep_clone;
@@ -123,10 +123,10 @@ export const export_config = (obj: Types.GlobalConfig, { ugly = false }) => {
 	return JSON.dump(o, null, ugly ? null : 4);
 };
 
-export const pastebin_pull = (global_conf: Types.GlobalConfig) =>
+export const jsonblob_pull = (global_conf: Types.GlobalConfig) =>
 	new Promise((resolve, reject) => {
 		// GLOBAL_CONFIG will eventually update to the online version.
-		pastebin_latest().then(res => {
+		JSONBlob.latest().then(res => {
 			global_conf = deep_merge(global_conf, res);
 			// Remove any duplicates.
 			const gc_string = export_config(global_conf, { ugly: true });

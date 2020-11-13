@@ -52,9 +52,8 @@ cat <<- JSON
     "darksky": {
         "key": "$DARKSKY_KEY"
     },
-    "pastebin": {
-        "key": "$PASTEBIN_KEY",
-        "password": "$PASTEBIN_PASSWORD"
+    "jsonblob": {
+        "key": "$JSONBLOB_ID"
     }
 }
 JSON

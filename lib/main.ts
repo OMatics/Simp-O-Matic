@@ -22,15 +22,13 @@ import { execSync as shell, exec } from 'child_process';
 import './extensions';
 import { deep_merge, pp, compile_match,
 		 export_config, access, glue_strings,
-		 deep_copy, recursive_regex_to_string, pastebin_pull } from './utils';
+		 deep_copy, recursive_regex_to_string, jsonblob_pull } from './utils';
 
 // Default bot configuration for a Guild, JSON.
 import DEFAULT_GUILD_CONFIG from './default';
 
 // API specific modules.
-import { pastebin_latest,
-		 pastebin_update,
-		 pastebin_url } from './api/pastebin';
+import * as JSONBlob from './api/jsonblob';
 import { Guild } from 'discord.js';
 import { Timer } from './commands/cron';
 
@@ -285,7 +283,7 @@ export class SimpOMatic {
 			if (i > 300) return 'CYCLIC_ALIAS';
 			++i;
 		}
-		return expanded;
+		return expanded.toLowerCase();
 	}
 
 	process_command(message : Message, ignore_spam: boolean = false) {
@@ -398,7 +396,7 @@ Would you like to slow down a little?`.squeeze());
 				const file_name = `export-${today}.json`;
 				const file_dest = `${process.cwd()}/${file_name}`;
 				write_file(file_dest, export_config(GLOBAL_CONFIG, {}));
-				pastebin_update(export_config(GLOBAL_CONFIG, {}));
+				JSONBlob.update(export_config(GLOBAL_CONFIG, {}));
 
 				if (export_string.length < 1980) {
 					message.channel.send("```json\n" + export_string + "\n```");
@@ -406,17 +404,16 @@ Would you like to slow down a little?`.squeeze());
 				const attach = new MessageAttachment(file_dest, file_name);
 				message.channel.send("**Export:**", attach);
 
-				message.answer(`A copy of this export (\`export-${today}.json\`) \
-					has been saved to the local file system.
-					Pastebin file: ${pastebin_url}`.squeeze());
+				message.answer(`A copy of this export (\`export-${today}.json\`)`
+					+ ` has been saved to the local file system.`);
 				break;
 			} case 'refresh': {
-				message.reply('Pulling pastebin...');
-				pastebin_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
+				message.reply('Pulling JSON blob...');
+				jsonblob_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
 					GLOBAL_CONFIG = res;
 					message.reply('Dynamic configuration refresh succeded.');
 				}).catch(e => {
-					message.reply('Could not update from pastebin:\n```'
+					message.reply('Could not update from JSON blob:\n```'
 						+ e.toString() + '```');
 				});
 				break;
@@ -646,9 +643,9 @@ function on_termination(error_type, e?: Error) {
 
 	write_file(`${process.cwd()}/export-exit.json`, exported);
 
-	pastebin_update(exported)
+	JSONBlob.update(exported)
 		.then(_ => {
-			console.log('Finished pastebin update.');
+			console.log('Finished JSONBlob update.');
 			system_message(CLIENT, `Current configuration saved.`);
 		}).catch(e => {
 			console.warn('Pastebin not saved!', e);
@@ -677,7 +674,7 @@ process
 process.on('uncaughtException', (e) => e);
 
 // GLOBAL_CONFIG will eventually update to the online version.
-pastebin_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
+jsonblob_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
 	GLOBAL_CONFIG = res;
 	// Start The Simp'O'Matic.
 	CLIENT = SimpOMatic.start();

@@ -70,6 +70,11 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'save': 'export',
 			'trans': 'translate',
 			'cuddle': 'hug',
+			'abbr': 'abbreviate',
+			'abbrev': 'abbreviate',
+			't2s': 'tts',
+			'speak': 'tts',
+			'espeak': 'tts'
 		},
 	},
 

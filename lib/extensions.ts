@@ -19,6 +19,10 @@ declare global {
 		INSTANCE_VARIABLES: Types.InstanceVariables
 	};
 
+	type Mutable<O> = {
+		-readonly [K in keyof O]: O[K]
+	}
+
 	namespace Types {
 		export type Match = {
 			match: string | RegExp,
@@ -147,6 +151,7 @@ declare global {
 		emojify(): string;
 		shorten(width?: number): string;
 		lines(): string[];
+		utf8(): Promise<string>;
 	}
 
 	interface Number {
@@ -280,6 +285,28 @@ String.prototype.lines = function () {
 		.replace(/\n/g, '\n<-|LINE|->')
 		.split('<-|LINE|->');
 };
+
+String.prototype.utf8 = function () {
+	return Promise.resolve(String(this));
+};
+
+// Readable stream extensions:
+declare module "stream" {
+	interface Readable {
+		utf8(): Promise<string>;
+	}
+}
+
+stream.Readable.prototype.utf8 = function () {
+	const chunks = [];
+	return new Promise((resolve, reject) => {
+		this.on('data', chunk => chunks.push(chunk))
+		this.on('error', reject)
+		this.on('end', () =>
+			resolve(Buffer.concat(chunks).toString('utf8')))
+	});
+};
+
 
 // Number Extensions:
 Number.prototype.round_to = function (dp : number) {

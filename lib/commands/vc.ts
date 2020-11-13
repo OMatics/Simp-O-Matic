@@ -1,21 +1,18 @@
 import { TextChannel } from 'discord.js';
-import ytdl from 'ytdl-core';
+import * as cp from 'child_process';
 
-const DL_OPTIONS : any = {
-	filter: 'audioonly',
-	dlChunkSize: 0,
-	quality: 'highestaudio',
-	// Helps fix random cut-off towards end of playback.
-	highWaterMark: 1 << 25
-};
+const YTDL_OPTIONS = [
+	'--audio-format', 'opus',
+	'-i', '--no-continue', '-o', '-' // Send to STDOUT.
+];
 
-export default async(home_scope: HomeScope) => {
+export default async (home_scope: HomeScope) => {
 	const { message, args, CONFIG, CLIENT, INSTANCE_VARIABLES } = home_scope;
 
-	if(!message.guild) {
+	if (!message.guild) {
 		message.answer("Just use youtube-dl at home.");
 		return;
-	};
+	}
 
 	const guild : string = message.guild.id;
 	const GID : Types.GuildInstanceData = INSTANCE_VARIABLES.guilds[guild];
@@ -26,7 +23,21 @@ export default async(home_scope: HomeScope) => {
 	const attempt_prefetch = (url: string): boolean => {
 		let stream = null;
 		try {
-			stream = ytdl(url, DL_OPTIONS);
+			const child = cp.spawn('youtube-dl', [...YTDL_OPTIONS, url], {
+				stdio: ['ignore', 'pipe', 'pipe']
+			});
+			child.on('close', async (code) => {
+				if (code && code !== 0) {
+					console.log(`Exited with code ${code}:`);
+					console.log(await child.stderr.utf8());
+					stream = null;
+					child.stdout = null;
+					GID.vc_prefetch[url] = null;
+					CONFIG.vc_queue = CONFIG.vc_queue.filter(q => q !== url);
+					message.answer("Error downloading media.");
+				}
+			});
+			stream = child.stdout;
 		} catch (e) { console.log(e); }
 
 		if (stream) {
@@ -50,11 +61,13 @@ export default async(home_scope: HomeScope) => {
 		try {
 			GID.vc.disconnect();
 			GID.vc.channel.leave();
+			message.answer("Let's listen again some time :3");
 		} catch (error) {
 			message.answer("```" + `${error}` + "```");
 		}
 		break;
-	} case "pause": {
+	} case "stop":
+	  case "pause": {
 		if (GID.vc_dispatcher && !GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.pause();
 			message.answer("Paused playback.");
@@ -62,22 +75,26 @@ export default async(home_scope: HomeScope) => {
 			message.answer("Nothing is playing");
 		}
 		break;
-	} case "play": {
+	} case "resume":
+	  case "play": {
+		if (!GID.vc) {
+			message.answer("Let me join a voice channel first.");
+			return;
+		}
 		if (GID.vc_dispatcher && GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.resume();
 			message.answer("Resuming playback.");
-		} else {
-			if (CONFIG.vc_queue.length === 0) {
-				message.answer("Please add a URL to the queue first.");
-				return;
-			}
+			return;
+		}
 
-			const stream = GID.vc_prefetch[CONFIG.vc_queue.shift()];
-			GID.vc_current_stream = stream;
-			GID.vc_dispatcher = GID.vc.play(stream);
-			message.channel.send("Playing media from queue...");
+		if (CONFIG.vc_queue.length === 0) {
+			message.answer("Please add a URL to the queue first.");
+			return;
+		}
 
+		const set_event_listeners = () => {
 			const end_handler = () => {
+				console.log('VC dispatcher finished.')
 				GID.vc_dispatcher.destroy();
 				if (CONFIG.vc_queue.length === 0) {
 					CLIENT.channels.fetch(CONFIG.vc_channel)
@@ -89,58 +106,76 @@ export default async(home_scope: HomeScope) => {
 				const stream = GID.vc_prefetch[next];
 				GID.vc_current_stream = stream;
 				GID.vc_dispatcher = GID.vc.play(stream);
+				set_event_listeners();
+
 				CLIENT.channels.fetch(CONFIG.vc_channel)
 					.then((ch: TextChannel) =>
 						ch.send(`Now playing: ${next}`));
-			}
+			};
 
+			GID.vc_dispatcher.on('error', e => {
+				console.error(`Dispatcher error (${e}):\n${e.stack}`);
+				CLIENT.channels
+					.fetch(CONFIG.vc_channel).then((ch: TextChannel) =>
+						ch.send(`Got error during playback: \`${e}\``));
+			});
 			GID.vc_dispatcher.on('finish', end_handler);
 			GID.vc_current_stream.on('end', () => {
+				console.log('VC stream ended.');
 				CLIENT.channels.fetch(CONFIG.vc_channel)
 					.then((ch: TextChannel) =>
 						ch.send("Stream ended."));
 				GID.vc_dispatcher.end();
 			});
-		}
+		};
+
+		const stream = GID.vc_prefetch[CONFIG.vc_queue.shift()];
+		GID.vc_current_stream = stream;
+		GID.vc_dispatcher = GID.vc.play(stream);
+		message.channel.send("Playing media from queue...");
+		set_event_listeners();
+
 		break;
-	} case "d": {
+	} case "rm":
+	  case "remove":
+	  case "d":
+	  case "delete": {
 		const pos = Number(args[1]);
 		CONFIG.vc_queue.splice(pos - 1, 1);
 		message.answer(`Removed media from queue at index ${pos}.`);
 		break;
-	} case "i": {
+	} case "insert":
+	  case "i": {
 		const pos = Number(args[1]);
 		const url = args[2];
-		const success = attempt_prefetch(url);
-		if (success) {
+		if (attempt_prefetch(url)) {
 			CONFIG.vc_queue.splice(pos - 1, 0, url);
-			message.answer(`Inserted into queue at index ${pos}.`);
-		} else {
-			message.answer("URL or media-type not valid.");
+			message.answer(`Inserting into queue at index ${pos}.`);
 		}
 		break;
-	} case "ls": {
+	} case "queue":
+	  case "list":
+	  case "ls": {
 		message.answer(ls(CONFIG.vc_queue));
 		break;
-	} case "requeue": {
+	} case "clear":
+	  case "requeue": {
 		CONFIG.vc_queue = [];
 		GID.vc_current_stream = null;
 		message.answer("Queue cleared");
 		GID.vc_dispatcher.end();
 		break;
-	} case "skip": {
+	} case "next":
+	  case "skip": {
 		GID.vc_dispatcher.end();
 		GID.vc_current_stream.destroy();
 		message.answer("Skipping...");
 		break;
 	} default: {
 		const url = args[0];
-		const success = attempt_prefetch(url);
-		if (success) {
+		if (attempt_prefetch(url)) {
 			CONFIG.vc_queue.push(url);
-			message.answer("Succesfully added media to queue.");
-		} else {
-			message.answer("URL or media-type not valid.");
+			message.answer("Adding media to queue...");
 		}
 	}
 	}

@@ -4,7 +4,7 @@
 
 # Secrets!
 secrets.json
-.env
+.env*
 export_secrets.sh
 
 # Node / NPM / Yarn

@@ -54,6 +54,7 @@ export default (home_scope: HomeScope) => {
 
 		if (args[0][0] === CONFIG.commands.prefix)
 			args[0] = args[0].tail();
+		args[0] = args[0].toLowerCase();
 
 		if (args[1][0] === CONFIG.commands.prefix)
 			args[1] = args[1].tail();
