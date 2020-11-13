@@ -22,4 +22,6 @@ RUN /app/node_modules/.bin/tsc -b /app/tsconfig.json
 
 # Run
 ENTRYPOINT ["sh", "-c", "source /app/.env && \"$@\"", "-s"]
-CMD ["yarn", "start"]
+# Kill with `docker stop` for a graceful shutdown (saving configs, etc.)
+# or use `docker kill` to not follow the bot's shutdown procedur.
+CMD ["node", "."]
