@@ -27,7 +27,10 @@ export default async (hs : HomeScope) => {
 
 	const temp = GID.vc.play(stream);
 
-	temp.on('finish', () => {
+	child.on('close', () => child.kill());
+	stream.on('end', () => {
+		stream.pause();
+		child.kill();
 		temp.destroy();
 		if (GID.vc_current_stream) {
 			// THIS DOES NOT WORK.  I cannot seem to get the song to

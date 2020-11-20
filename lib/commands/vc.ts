@@ -26,6 +26,11 @@ export default async (home_scope: HomeScope) => {
 			const child = cp.spawn('youtube-dl', [...YTDL_OPTIONS, url], {
 				stdio: ['ignore', 'pipe', 'pipe']
 			});
+			child.stdout.on('end', () => {
+				child.stdout.pause();
+				child.stderr.pause();
+				child.kill();
+			});
 			child.on('close', async (code) => {
 				if (code && code !== 0) {
 					console.log(`Exited with code ${code}:`);
@@ -36,6 +41,7 @@ export default async (home_scope: HomeScope) => {
 					CONFIG.vc_queue = CONFIG.vc_queue.filter(q => q !== url);
 					message.answer("Error downloading media.");
 				}
+				child.kill();
 			});
 			stream = child.stdout;
 		} catch (e) { console.log(e); }
