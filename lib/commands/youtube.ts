@@ -31,7 +31,7 @@ export default async (home_scope: HomeScope) => {
 	}
 
 	const query_uri = encodeURI(query);
-	const result = await fetch(`https://vid.mint.lgbt/api/v1/search`
+	const result = await fetch(`https://invidious.snopyta.org/api/v1/search`
 		+ `?q=${query_uri}&sort_by=${sort_by}&type=${type}`);
 	const res_json = await result.json();
 	const res = res_json[Math.abs(num - 1)];
