@@ -62,7 +62,7 @@ export default async (home_scope: HomeScope) => {
 			return null
 		if (!fetched) {
 			attempt_prefetch(url);
-			fetcged = GID.vc_prefetch[url];
+			fetched = GID.vc_prefetch[url];
 		}
 		return fetched;
 	};
