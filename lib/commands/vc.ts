@@ -1,4 +1,5 @@
 import { TextChannel } from 'discord.js';
+import * as stream from 'stream';
 import * as cp from 'child_process';
 
 const YTDL_OPTIONS = [
@@ -51,6 +52,19 @@ export default async (home_scope: HomeScope) => {
 			return true;
 		}
 		return false;
+	};
+
+	const get_prefetch = (url: string): stream.Readable => {
+		let fetched = undefined;
+		if (GID.vc_prefetch.hasOwnProperty(url))
+			fetched = GID.vc_prefetch[url];
+		if (fetched === null)
+			return null
+		if (!fetched) {
+			attempt_prefetch(url);
+			fetcged = GID.vc_prefetch[url];
+		}
+		return fetched;
 	};
 
 	switch (args[0]) {
@@ -109,7 +123,7 @@ export default async (home_scope: HomeScope) => {
 					return;
 				}
 				const next = CONFIG.vc_queue.shift();
-				const stream = GID.vc_prefetch[next];
+				const stream = get_prefetch(next);
 				GID.vc_current_stream = stream;
 				GID.vc_dispatcher = GID.vc.play(stream);
 				set_event_listeners();
@@ -135,7 +149,7 @@ export default async (home_scope: HomeScope) => {
 			});
 		};
 
-		const stream = GID.vc_prefetch[CONFIG.vc_queue.shift()];
+		const stream = get_prefetch(CONFIG.vc_queue.shift());
 		GID.vc_current_stream = stream;
 		GID.vc_dispatcher = GID.vc.play(stream);
 		message.channel.send("Playing media from queue...");

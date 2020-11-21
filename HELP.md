@@ -81,6 +81,19 @@
   - `!git stars` — Get star count.
   - `!git watches` — Get watch count.
   - `!git forks` — Get fork count.
+- `!vc` — Voice Chat commands:
+  - `!vc [url]` — Downloads and media at URL and adds it to the media queue.
+  - `!vc join` — Joins the voice channel you are in.
+  - `!vc leave` — Leaves the voice channel.
+  - `!vc ls` — Lists the media in the queue.
+  - `!vc d [index]` — Deletes media from queue at index.
+  - `!vc i [index] [url]` — Inserts media from URL at index.
+  - `!vc play` — Start playing media from the queue.
+  - `!vc pause` — Pause playback.
+  - `!vc skip` — Skip the current media, and proceed to next.
+  - `!vc requeue` — Clears the queue.
+- `!tts` — Text To Speech (bot needs to have joined voice channel):
+  - `!tts [sentence ...]` — Say sentence.
 - `!choose [comma-separated-values]` — Choose randomly from a list of items, separated by commas.
 - `!define [word]` — Looks a word up in the Oxford English Dictionary.
 - `!urban [slang]` — Looks up a piece of slang in the _Urban Dictionary_.
@@ -125,6 +138,7 @@
 - `!emojis` — Lists all the emojis on the server.
 - `!hangman <options>` **〈not impl.〉** — Hangman game to play with your friends.
 - `!code [!command]` — Shows the source code of a certain command.
+- `!abbreviate [words]` — Abbreviates a series of words into an initialism/acronym.
 
 ▬▬▬
 
