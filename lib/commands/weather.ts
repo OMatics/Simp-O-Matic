@@ -48,7 +48,8 @@ export default async (home_scope: HomeScope) => {
 		return e;
 	};
 
-	let geocoder_json, weather_info, geo_object, country_code;
+	let geocoder_json, weather_info, geo_object,
+		country_code, tz, openweather_info;
 	try {
 		const geocoder = await fetch(`${GEOCODE_URL}&apikey=${geokey}`
 			+`&geocode=${encodeURI(location)}&lang=en-US`);
@@ -65,10 +66,12 @@ export default async (home_scope: HomeScope) => {
 			.country_code;
 
 		const lon_lat = geo_object.Point.pos.split(' ');
+		tz = tzlookup(...lon_lat.reverse())
 		weather_info = await fetch(
 			`${WEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}`);
 		openweather_info = await fetch(
-			`${OPENWEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}&units=metric&appid=${SECRETS.openweather.key}`);
+			`${OPENWEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}`
+			+ `&units=metric&appid=${SECRETS.openweather.key}`);
 	} catch (e) {
 		return error(e);
 	}
@@ -85,7 +88,9 @@ export default async (home_scope: HomeScope) => {
 	if (properties && properties.meta) embed
 		.setTitle(
 			`${properties.timeseries[0].data.instant.details.air_temperature}°C`)
-		.setAuthor(`${new Intl.DateTimeFormat("en", {timeZone: tzlookup(...lon_lat.reverse()), timeStyle: "short", hour12: false}).format(new Date)}`
+		.setAuthor(`${new Intl.DateTimeFormat('en',
+				{ timeZone: tz, timeZoneName: 'short', hour12: false })
+					.format(new Date)}`
 			+` ${geo_object.name},`
 			+` ${geo_object.description}`,
 			`https://www.countryflags.io/${country_code}/shiny/64.png`)
