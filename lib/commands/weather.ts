@@ -65,12 +65,12 @@ export default async (home_scope: HomeScope) => {
 			.Address
 			.country_code;
 
-		const lon_lat = geo_object.Point.pos.split(' ');
-		tz = tzlookup(...lon_lat.reverse())
+		const [lon, lat] = geo_object.Point.pos.split(' ');
+		tz = tzlookup(lat, lon)
 		weather_info = await fetch(
-			`${WEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}`);
+			`${WEATHER_URL}?lat=${lat}&lon=${lon}`);
 		openweather_info = await fetch(
-			`${OPENWEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}`
+			`${OPENWEATHER_URL}?lat=${lat}&lon=${lon}`
 			+ `&units=metric&appid=${SECRETS.openweather.key}`);
 	} catch (e) {
 		return error(e);
