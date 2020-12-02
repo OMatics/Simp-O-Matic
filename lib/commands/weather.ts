@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { MessageEmbed } from 'discord.js';
+const tzlookup = require("tz-lookup");
 
 const DIRECTIONS = [
 	'north', 'north east',
@@ -24,6 +25,7 @@ const ICONS = {
 };
 
 const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/compact';
+const OPENWEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const GEOCODE_URL = 'https://geocode-maps.yandex.ru/1.x/?format=json';
 
 export default async (home_scope: HomeScope) => {
@@ -65,13 +67,15 @@ export default async (home_scope: HomeScope) => {
 		const lon_lat = geo_object.Point.pos.split(' ');
 		weather_info = await fetch(
 			`${WEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}`);
+		openweather_info = await fetch(
+			`${OPENWEATHER_URL}?lat=${lon_lat[1]}&lon=${lon_lat[0]}&units=metric&appid=${SECRETS.openweather.key}`);
 	} catch (e) {
 		return error(e);
 	}
 
 	const d = await weather_info.json();
+	const c = await(openweather_info.json());
 	const { properties } = d;
-	const date_string = properties.meta.updated_at.substr(11,5);
 	const temps = [...Array(24)].map((_, n) =>
 		properties.timeseries[n].data.instant.details.air_temperature);
 
@@ -81,7 +85,7 @@ export default async (home_scope: HomeScope) => {
 	if (properties && properties.meta) embed
 		.setTitle(
 			`${properties.timeseries[0].data.instant.details.air_temperature}°C`)
-		.setAuthor(`${date_string}`
+		.setAuthor(`${new Intl.DateTimeFormat("en", {timeZone: tzlookup(...lon_lat.reverse()), timeStyle: "short", hour12: false}).format(new Date)}`
 			+` ${geo_object.name},`
 			+` ${geo_object.description}`,
 			`https://www.countryflags.io/${country_code}/shiny/64.png`)
@@ -89,10 +93,10 @@ export default async (home_scope: HomeScope) => {
 			`https://api.met.no/images/weathericons/png/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.png`)
 		.addFields(
 			{ name: 'daytime',
-			  value: Math.max(...temps) + '°C',
+			  value: c.main.temp_max + '°C',
 			  inline: true },
 			{ name: 'nighttime',
-			  value: Math.min(...temps) + '°C',
+			  value: c.main.temp_min + '°C',
 			  inline: true },
 			{ name: 'humidity',
 			  value: properties.timeseries[0].data.instant.details.relative_humidity + '%',
@@ -102,7 +106,7 @@ export default async (home_scope: HomeScope) => {
 				+ ` ${properties.timeseries[0].data.instant.details.wind_speed} ㎧`,
 			  inline: true })
 		.setFooter(
-			'Data provided by Meteorologisk institutt (met.no)',
+			'Data provided by Meteorologisk institutt (met.no) and OpenWeatherMap',
 			'https://0x0.st/ixd6.png');
 
 	message.channel.send(embed);
