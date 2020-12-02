@@ -59,7 +59,8 @@
         "tslib": "^1.11.1",
         "typescript": "^3.8.3",
         "unirest": "^0.6.0",
-        "@discordjs/opus": "^0.3.3"
+        "@discordjs/opus": "^0.3.3",
+        "tz-lookup": "^6.0.0"
     },
     "devDependencies": {
         "tslint": "^6.1.0"
