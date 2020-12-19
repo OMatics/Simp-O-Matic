@@ -82,17 +82,29 @@ export default async (home_scope: HomeScope) => {
 	const temps = [...Array(24)].map((_, n) =>
 		properties.timeseries[n].data.instant.details.air_temperature);
 
+	if (!geo_object.name)
+		geo_object.name = 'Somewhere';
+	if (!geo_object.description)
+		geo_object.description = 'Someplace';
+
 	const embed = new MessageEmbed()
 		.setTitle(`Cannot get weather information from ${location}.`);
 
 	if (properties && properties.meta) embed
 		.setTitle(
 			`${properties.timeseries[0].data.instant.details.air_temperature}°C`)
-		.setAuthor(`${new Intl.DateTimeFormat('en',
-				{ timeZone: tz, timeZoneName: 'short', hour12: false })
-					.format(new Date)}`
-			+` ${geo_object.name},`
-			+` ${geo_object.description}`,
+		.setAuthor(`${new Intl.DateTimeFormat('en-CA',
+				{ timeZone: tz,
+				  timeZoneName: 'short',
+				  hour: 'numeric',
+				  minute: 'numeric'
+				  year: 'numeric',
+				  month: 'numeric',
+				  day: 'numeric',
+				  hour12: false })
+					.format(new Date)},`
+			+ ` ${geo_object.name},`
+			+ ` ${geo_object.description}`,
 			`https://www.countryflags.io/${country_code}/shiny/64.png`)
 		.setThumbnail(
 			`https://api.met.no/images/weathericons/png/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.png`)
