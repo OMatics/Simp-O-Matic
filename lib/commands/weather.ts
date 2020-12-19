@@ -98,9 +98,9 @@ export default async (home_scope: HomeScope) => {
 				  timeZoneName: 'short',
 				  hour: 'numeric',
 				  minute: 'numeric',
-				  year: 'numeric',
-				  month: 'numeric',
-				  day: 'numeric',
+				  //year: 'numeric',
+				  //month: 'numeric',
+				  //day: 'numeric',
 				  hour12: false })
 					.format(new Date)},`
 			+ ` ${geo_object.name},`
