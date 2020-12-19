@@ -97,7 +97,7 @@ export default async (home_scope: HomeScope) => {
 				{ timeZone: tz,
 				  timeZoneName: 'short',
 				  hour: 'numeric',
-				  minute: 'numeric'
+				  minute: 'numeric',
 				  year: 'numeric',
 				  month: 'numeric',
 				  day: 'numeric',
