@@ -5,6 +5,6 @@ yarn build
 . ./.env
 
 # Starting the bot.
-PID="$(sh -c 'echo $$; exec yarn start >./.log 2>&1' &)"
+PID="$(sh -c 'echo $$; exec yarn start 2>&1 >./.log' &)"
 echo "$PID" > ./.pid
 
