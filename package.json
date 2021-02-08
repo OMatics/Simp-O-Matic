@@ -36,6 +36,7 @@
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
     },
     "dependencies": {
+        "DoseBot-Redux": "file:./lib/drug-o-matic",
         "@discordjs/opus": "^0.3.3",
         "@typeit/discord": "^1.0.3",
         "@types/node": "^13.9.3",

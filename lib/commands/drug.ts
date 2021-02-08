@@ -1,9 +1,12 @@
-export default (home_scope: HomeScope) => {
-	const { CLIENT, message, args } = home_scope;
+export default async (home_scope: HomeScope) => {
+	const { CLIENT, message, args, Drugs } = home_scope;
+	const arg = args.length > 0 ? args.shift() : 'help'
+
 	try {
-		var cmd = require('../drug-o-matic/commands/' + args.shift())();
-		cmd.run(CLIENT, message, args);
-	} catch(e) {
-		message.answer('Command not found')
+		message.content = `--${arg} ${args.join(' ')}`;
+		Drugs.execute(CLIENT, message);
+	} catch (e) {
+		message.answer(`Failed to execute \`${arg}\` command for Drug-O-Matic.`
+			+ "\n```\n" + `${e}` + "\n```")
 	}
 };

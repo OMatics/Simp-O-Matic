@@ -31,8 +31,11 @@ with GitHub rendering).
 
 ## Getting Up & Running
 
-Make sure you have `node` (`v13.11.x`) and `yarn` installed
-(`npm` also possible).
+Make sure you have `node` (`v14.x`) and `yarn` installed
+(`npm` also possible). Clone the repo, and init submodules:
+```sh
+git submodule update --init --recursive
+```
 
 - Clean up from previous build/install:
 ```sh

@@ -108,6 +108,13 @@ const system_message = async (client: Client, msg: any) => {
 
 import server from './web';
 
+// Load drug-o-matic 'sub-bot'
+import CommandSystem from 'DoseBot-Redux/command-system';
+const Drugs = CommandSystem()
+Drugs.load(() => {
+  console.log('`drug` command system loaded.');
+});
+
 @Discord
 export class SimpOMatic {
 	private static _CLIENT : Client;
@@ -360,7 +367,7 @@ Would you like to slow down a little?`.squeeze());
 			CONFIG, SECRETS, KNOWN_COMMANDS,
 			expand_alias: this.expand_alias,
 			CLIENT: SimpOMatic._CLIENT, main: this,
-			INSTANCE_VARIABLES
+			INSTANCE_VARIABLES, Drugs
 		};
 
 		const commands = read_dir(`${__dirname}/commands`)

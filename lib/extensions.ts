@@ -16,7 +16,8 @@ declare global {
 			 args: string[],
 			 message: Message) => string,
 		CLIENT: Client, main: SimpOMatic,
-		INSTANCE_VARIABLES: Types.InstanceVariables
+		INSTANCE_VARIABLES: Types.InstanceVariables,
+		Drugs: any
 	};
 
 	type Mutable<O> = {
