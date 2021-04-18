@@ -22,7 +22,8 @@ import { execSync as shell, exec } from 'child_process';
 import './extensions';
 import { deep_merge, pp, compile_match,
 		 export_config, access, glue_strings,
-		 deep_copy, recursive_regex_to_string, jsonblob_pull } from './utils';
+		 deep_copy, recursive_regex_to_string,
+		 jsonblob_pull, timestamp } from './utils';
 
 // Default bot configuration for a Guild, JSON.
 import DEFAULT_GUILD_CONFIG from './default';
@@ -393,13 +394,7 @@ Would you like to slow down a little?`.squeeze());
 					export_string = export_config(GLOBAL_CONFIG, { ugly: true });
 				}
 
-				const today = (new Date())
-					.toISOString()
-					.replace(/\..*/, '')
-					.split('T')
-					.reverse()
-					.join('_');
-
+				const today = timestamp();
 				const file_name = `export-${today}.json`;
 				const file_dest = `${process.cwd()}/${file_name}`;
 				write_file(file_dest, export_config(GLOBAL_CONFIG, {}));
@@ -649,13 +644,14 @@ function on_termination(error_type, e?: Error) {
 	const exported = export_config(GLOBAL_CONFIG, {});
 
 	write_file(`${process.cwd()}/export-exit.json`, exported);
+	write_file(`${process.cwd()}/export-${timestamp()}.json`, exported);
 
 	JSONBlob.update(exported)
 		.then(_ => {
 			console.log('Finished JSONBlob update.');
 			system_message(CLIENT, `Current configuration saved.`);
 		}).catch(e => {
-			console.warn('Pastebin not saved!', e);
+			console.warn('JSONBlob not saved!', e);
 			system_message(CLIENT, `Could not export configuration.\n${e}`);
 		});
 

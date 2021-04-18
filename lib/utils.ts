@@ -141,3 +141,11 @@ export const jsonblob_pull = (global_conf: Types.GlobalConfig) =>
 			return resolve(global_conf);
 		}).catch(reject);
 	});
+
+export const timestamp = () =>
+	(new Date())
+		.toISOString()
+		.replace(/\..*/, '')
+		.split('T')
+		.reverse()
+		.join('_');
