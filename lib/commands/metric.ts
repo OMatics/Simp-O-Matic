@@ -1,8 +1,12 @@
 const noop = (..._) => undefined;
-const ftoc = n => [5/9 * (n - 32), "C"];
-const ftom = n => [0.3048 * n, "m"];
+const ftoc = (n: number): [number, string] => [5/9 * (n - 32), "C"];
+const ftom = (n: number): [number, string] => [0.3048 * n, "m"];
 
-const UNITS = {
+type Conversions = {
+	[key: string]: (n: number) => [number, string]
+};
+
+const UNITS: Conversions = {
 	"fahrenheit": ftoc,
 	"inch": n => [2.54 * n, "cm"],
 	"feet": ftom,
@@ -29,10 +33,8 @@ export default async (homescope: HomeScope) => {
 	const msg = args.join(" ").match(QUANTITY_REGEX).map(s => {
 		s = s.toLowerCase();
 		if (s[s.length - 1] === "f") {
-			let c = Math.round(ftoc(s.slice(0, -1))[0]);
-			if(c){
-				return s + " = " + c + "C";
-			}
+			const c = Math.round(ftoc(Number(s.slice(0, -1)))[0]);
+			if (c) return s + " = " + c + "C";
 		}
 		if (s.split(" ")[1].startsWith("fl")) {
 			return s + " = " + Math.round(29.573 * Number(s.split(" ")[0])) + " ml"
