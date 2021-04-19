@@ -17,7 +17,8 @@ const UNITS: Conversions = {
 	"yd":   n => [0.9144 * n, "m"],
 	"acre": n => [4046.873 * n, "m^2"],
 	"pint": n => [473.176 * n, "ml"],
-	"quart": n => [0.946 * n, "l"],
+	"fl":   n => [29.573 * n, " ml"],
+	"quart":  n => [0.946 * n, "l"],
 	"gallon": n => [3.785 * n, "l"],
 	"oz"  :  n => [28.349 * n, "g"],
 	"ounce": n => [28.349 * n, "g"],
@@ -25,23 +26,31 @@ const UNITS: Conversions = {
 	"lb":    n => [0.453 * n, "kg"]
 };
 
-const QUANTITY_REGEX = /[\d.]+(F |F$|\s(mile|inch|feet|foot|ft|ounce|gallon|yard|oz|fl.?.?oz|yd|acre|pint|quart|pound|lb|fahrenheit))/gi;
+const QUANTITY_REGEX = /(\d*\.?\d+)\s*(mile|inch|feet|foot|ft|ounce|gallon|yard|oz|fl(?:.?.?oz)|yd|acre|pint|quart|pound|lb|fahrenheit|f)(?:es|s)?\b/gi;
 
 export default async (homescope: HomeScope) => {
 	const { message, args } = homescope;
 
-	const msg = args.join(" ").match(QUANTITY_REGEX).map(s => {
-		s = s.toLowerCase();
-		if (s[s.length - 1] === "f") {
-			const c = Math.round(ftoc(Number(s.slice(0, -1)))[0]);
-			if (c) return s + " = " + c + "C";
+	const sentence = args.join(" ");
+	const matches: [string, string][] = [];  // Pairs of a quantity with its unit.
+
+	let match = undefined;
+	while (match = QUANTITY_REGEX.exec(sentence))
+		matches.push([match[1], match[2]]);
+
+	const msg = matches.map(pair => {
+		let [quantity, unit] = [Number(pair[0]), pair[1].toLowerCase()];
+
+		if (unit === "f") {
+			const c = ftoc(quantity);
+			if (c) return `${quantity}${unit} = ${c[0]}${c[1]}`;
 		}
-		if (s.split(" ")[1].startsWith("fl")) {
-			return s + " = " + Math.round(29.573 * Number(s.split(" ")[0])) + " ml"
-		}
-		const out = (UNITS[s.split(" ")[1]] || noop)(Number(s.split(" ")[0]));
+		if (unit.startsWith("fl"))
+			unit = "fl";
+
+		const out = (UNITS[unit] || noop)(quantity);
 		if (out && !isNaN(out[0])) {
-			return `${s} = ${Math.round(out[0] * 10) / 10} ${out[1]}`;
+			return `${quantity} ${unit} = ${Math.round(out[0] * 10) / 10} ${out[1]}`;
 		} else {
 			return "";
 		}
