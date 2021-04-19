@@ -17,7 +17,7 @@ const UNITS: Conversions = {
 	"yd":   n => [0.9144 * n, "m"],
 	"acre": n => [4046.873 * n, "m^2"],
 	"pint": n => [473.176 * n, "ml"],
-	"fl":   n => [29.573 * n, " ml"],
+	"fl oz":   n => [29.573 * n, " ml"],
 	"quart":  n => [0.946 * n, "l"],
 	"gallon": n => [3.785 * n, "l"],
 	"oz"  :  n => [28.349 * n, "g"],
@@ -43,10 +43,10 @@ export default async (homescope: HomeScope) => {
 
 		if (unit === "f") {
 			const c = ftoc(quantity);
-			if (c) return `${quantity}${unit} = ${c[0]}${c[1]}`;
+			return `${quantity}F = ${Math.round(c[0])}${c[1]}`;
 		}
 		if (unit.startsWith("fl"))
-			unit = "fl";
+			unit = "fl oz";
 
 		const out = (UNITS[unit] || noop)(quantity);
 		if (out && !isNaN(out[0])) {
