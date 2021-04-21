@@ -30,7 +30,8 @@ const QUANTITY_REGEX = /(\d*\.?\d+)\s*(mile|inch|feet|foot|ft|ounce|gallon|yard|
 
 export default async (homescope: HomeScope) => {
 	const { message, args } = homescope;
-
+	if (message.author.bot) 
+		return;
 	const sentence = args.join(" ");
 	const matches: [string, string][] = [];  // Pairs of a quantity with its unit.
 
