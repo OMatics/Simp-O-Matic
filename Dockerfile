@@ -19,7 +19,7 @@ COPY heart.png generate_secrets.sh HELP.md lib \
 COPY lib/drug-o-matic /app/lib/drug-o-matic
 RUN yarn install
 # Build
-RUN cp /app/bot.json /app/generate_secrets.sh /app/HELP.md /app/build/
+RUN cp /app/bot.json /app/generate_secrets.sh /app/HELP.md /app/package.json /app/build/
 RUN /app/node_modules/.bin/tsc -b /app/tsconfig.json
 
 # Run

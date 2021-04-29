@@ -28,8 +28,8 @@ const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/compact'
 const OPENWEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const GEOCODE_URL = 'https://geocode-maps.yandex.ru/1.x/?format=json';
 
-export default async (home_scope: HomeScope) => {
-	const { message, args, SECRETS, CONFIG } = home_scope;
+export default async (homescope: HomeScope) => {
+	const { message, args, SECRETS, CONFIG, VERSION } = homescope;
 
 	if (args[0] === 'set' && args.length > 1) {
 		CONFIG.weather_locations[message.author.id] = args.tail().join(' ');
@@ -66,10 +66,18 @@ export default async (home_scope: HomeScope) => {
 			.Address
 			.country_code;
 
-		const [lon, lat] = geo_object.Point.pos.split(' ');
+		const [lon, lat] = geo_object.Point.pos
+			.split(' ')
+			.map(s => parseFloat(s).round_to(4));
 		tz = tzlookup(lat, lon)
 		weather_info = await fetch(
-			`${WEATHER_URL}?lat=${lat}&lon=${lon}`);
+			`${WEATHER_URL}?lat=${lat}&lon=${lon}`,
+			{
+				method: 'get',
+				headers:  {
+					'User-Agent': `Simp-O-Matic/${VERSION} simp.knutsen.co`
+				}
+			});
 		openweather_info = await fetch(
 			`${OPENWEATHER_URL}?lat=${lat}&lon=${lon}`
 			+ `&units=metric&appid=${SECRETS.openweather.key}`);

@@ -15,8 +15,8 @@ declare global {
 			(operator: string,
 			 args: string[],
 			 message: Message) => string,
-		CLIENT: Client, main: SimpOMatic,
-		INSTANCE_VARIABLES: Types.InstanceVariables,
+		CLIENT: Client, VERSION: string,
+		main: SimpOMatic, INSTANCE_VARIABLES: Types.InstanceVariables,
 		Drugs: any
 	};
 
@@ -103,6 +103,7 @@ declare global {
 		type GlobalConfig = {
 			name: string,
 			tag: string,
+			version: string,
 			permissions: number,
 			lang: 'en' | 'en-us' | 'en-gb',
 			guilds: { [key: string]: Config }

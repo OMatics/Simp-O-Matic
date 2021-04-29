@@ -8,7 +8,7 @@ rm -rf ./build
 mkdir -p ./build ./public
 
 echo "${bold}Copying config files...${reset}"
-cp ./bot.json ./generate_secrets.sh ./HELP.md ./build
+cp ./bot.json ./generate_secrets.sh ./HELP.md ./package.json ./build
 
 echo "${bold}Compiling TypeScript...${reset}"
 ./node_modules/.bin/tsc -b ./tsconfig.json

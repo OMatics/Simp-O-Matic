@@ -38,11 +38,15 @@ const INSTANCE_VARIABLES = {
 	guilds: {}
 }
 
+const PACKAGE = JSON.parse(read_file('./package.json').toString());
+export const VERSION = PACKAGE['version'] || "0.0.0";
+
 // Anything that hasn't been defined in `bot.json`
 //  will be taken care of by the defaults.
 let GLOBAL_CONFIG : Types.GlobalConfig = {
 	name: "Simp'O'Matic",
 	tag: "#1634",
+	version: VERSION,
 	permissions: 8,
 	lang: 'en',
 
@@ -367,8 +371,8 @@ Would you like to slow down a little?`.squeeze());
 			HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
 			CONFIG, SECRETS, KNOWN_COMMANDS,
 			expand_alias: this.expand_alias,
-			CLIENT: SimpOMatic._CLIENT, main: this,
-			INSTANCE_VARIABLES, Drugs
+			CLIENT: SimpOMatic._CLIENT, VERSION,
+			main: this, INSTANCE_VARIABLES, Drugs
 		};
 
 		const commands = read_dir(`${__dirname}/commands`)
