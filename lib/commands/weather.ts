@@ -81,7 +81,7 @@ export default async (home_scope: HomeScope) => {
 		c = JSON.parse(info_body);
 	} catch (e) {
 		console.warn("met.no response: ", weather_body);
-		console.warn("openweather response: "info_body);
+		console.warn("openweather response: ", info_body);
 		return error(e);
 	}
 
