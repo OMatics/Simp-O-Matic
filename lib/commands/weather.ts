@@ -49,7 +49,7 @@ export default async (home_scope: HomeScope) => {
 	};
 
 	let geocoder_json, weather_info, geo_object,
-		country_code, tz, openweather_info;
+		country_code, tz, openweather_info, d, c;
 	try {
 		const geocoder = await fetch(`${GEOCODE_URL}&apikey=${geokey}`
 			+`&geocode=${encodeURI(location)}&lang=en-US`);
@@ -72,12 +72,14 @@ export default async (home_scope: HomeScope) => {
 		openweather_info = await fetch(
 			`${OPENWEATHER_URL}?lat=${lat}&lon=${lon}`
 			+ `&units=metric&appid=${SECRETS.openweather.key}`);
+
+		d = await weather_info.json();
+		c = await(openweather_info.json());
 	} catch (e) {
+		console.warn("met.no response: ", weather_info.text());
 		return error(e);
 	}
 
-	const d = await weather_info.json();
-	const c = await(openweather_info.json());
 	const { properties } = d;
 	const temps = [...Array(24)].map((_, n) =>
 		properties.timeseries[n].data.instant.details.air_temperature);
