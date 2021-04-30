@@ -124,7 +124,7 @@ export default async (homescope: HomeScope) => {
 					.format(new Date)},`
 			+ ` ${geo_object.name},`
 			+ ` ${geo_object.description}`,
-			`https://flagcdn.com/64x48/${country_code}.png`)
+			`https://flagcdn.com/64x48/${country_code.toLowerCase()}.png`)
 		.setThumbnail(
 			`https://api.met.no/images/weathericons/png/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.png`)
 		.addFields(
