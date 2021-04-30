@@ -41,6 +41,10 @@ export default async (homescope: HomeScope) => {
 		? args.join(' ')
 		: CONFIG.weather_locations[message.author.id] || 'Cuckfield';
 
+	if (location == 'Cuckfield')
+		message.answer("You should set your default weather location."
+		             + ` Use \`${CONFIG.commands.prefix}weather set <location>\`.`);
+
 	const geokey = SECRETS.yandex.geocoder.key;
 
 	const error = (e: Error) => {
@@ -120,7 +124,7 @@ export default async (homescope: HomeScope) => {
 					.format(new Date)},`
 			+ ` ${geo_object.name},`
 			+ ` ${geo_object.description}`,
-			`https://www.countryflags.io/${country_code}/shiny/64.png`)
+			`https://flagcdn.com/64x48/${country_code}.png`)
 		.setThumbnail(
 			`https://api.met.no/images/weathericons/png/${properties.timeseries[0].data.next_1_hours.summary.symbol_code}.png`)
 		.addFields(
