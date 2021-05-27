@@ -36,12 +36,12 @@ export default async (homescope : HomeScope) => {
 	const p = CONFIG.commands.prefix;
 
 	if (args.length < 1)
-		return message.answer('Please provide a command to introspect.');
+		return message.reply('Please provide a command to introspect.');
 
 	const command = args[0].startsWith(p) ? args[0].tail() : args[0];
 
 	if (command.match(/\//g))
-		return message.answer("No paths allowed...");
+		return message.reply("No paths allowed...");
 
 	const expansion = CONFIG.commands.aliases[command];
 	if (expansion) return message.channel.send(`\`${p}${command}\``
@@ -77,7 +77,7 @@ export default async (homescope : HomeScope) => {
 		}
 	} catch (error) {
 		console.log(`Error in code.ts: ${error}`);
-		message.answer(`Source for \`${p}${command}\``
+		message.reply(`Source for \`${p}${command}\``
 			+ ` (\`${process.cwd()}/${filename}\`), was not found.`);
 	}
 };

@@ -2,9 +2,9 @@ import { Message } from 'discord.js';
 import { MessageAttachment } from 'discord.js';
 import Action from '../action';
 
-export default (home_scope: HomeScope) => {
+export default (homescope: HomeScope) => {
 	const { message, args }
-			: { message: Message, args: string[] } = home_scope;
+			: { message: Message, args: string[] } = homescope;
 	
 	const attached = new MessageAttachment(
 			'https://img2.gelbooru.com/images/12/86/1286caaa436406cc4e283e8fd0277a74.png', 

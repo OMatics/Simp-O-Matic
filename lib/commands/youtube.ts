@@ -8,8 +8,8 @@ import fetch from "node-fetch";
  * !youtube {channel,playlist} x
  */
 
-export default async (home_scope: HomeScope) => {
-	const { message, args } = home_scope;
+export default async (homescope: HomeScope) => {
+	const { message, args } = homescope;
 	let query = args.join(' ').trim();
 
 	const sort_by = (args[0] == "new")
@@ -44,7 +44,7 @@ export default async (home_scope: HomeScope) => {
 
 	const views : string = Number(res.viewCount).to_abbrev(1);
 
-	message.answer(`Search for '${query}' (result №${num}):`
+	message.reply(`Search for '${query}' (result №${num}):`
 		+ ` https://youtu.be/${res.videoId}`
 		+ `\npublished ${res.publishedText},`
 		+ ` view count: ${views}, duration: ${duration}`);
@@ -54,6 +54,6 @@ export default async (home_scope: HomeScope) => {
 	/* // Old (actual) YT scraping.
 	yt_search({ query })
 		.then(message.reply.bind(message))
-		.catch(message.answer.bind(message));
+		.catch(message.reply.bind(message));
 	 */
 };

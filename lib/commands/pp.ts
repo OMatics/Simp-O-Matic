@@ -1,5 +1,5 @@
-export default (home_scope: HomeScope) => {
-	const { message, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, CONFIG } = homescope;
 
 	let user = message.author.id;
 	try {
@@ -7,6 +7,6 @@ export default (home_scope: HomeScope) => {
 	} finally {
 		const shaft = '='.repeat(CONFIG.pp_sizes[user]
 			|| (CONFIG.pp_sizes[user] = Math.ceil(Math.random() * 16)));
-		message.answer(`8${shaft}>`);
+		message.reply(`8${shaft}>`);
 	}
 };

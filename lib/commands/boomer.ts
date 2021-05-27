@@ -74,7 +74,7 @@ const boomerfy = (original: string): string => {
 	return string;
 };
 
-export default (home_scope: HomeScope) => {
-	const { message, args } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args } = homescope;
 	message.channel.send(boomerfy(args.join(' ')));
 };

@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 
-export default (home_scope: HomeScope) => {
-	const { message } : { message : Message } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message } : { message : Message } = homescope;
 	const rep = [];
 	['channel', 'user', 'role'].forEach(n =>
 		message.mentions[`${n}s`].forEach(o => rep.push(`${n} id: \`${o.id}\``)));
@@ -10,5 +10,5 @@ export default (home_scope: HomeScope) => {
 		Author: ${message.author}
 		Message ID: \`${message.id}\``.squeeze();
 	console.log(`Replied: ${reply}`);
-	message.answer(reply);
+	message.reply(reply);
 };

@@ -95,20 +95,20 @@ export default async (homescope : HomeScope) => {
 	const repo_info = await res.json();
 
 	if (args[0].startsWith('star')) {
-		return message.answer(
+		return message.reply(
 			`GitHub Stars: :star2: ${repo_info.stargazers_count}`);
 	}
 
 	if (args[0].startsWith('watch')) {
-		return message.answer(
+		return message.reply(
 			`GitHub Watch Count: :eyes: ${repo_info.watchers_count}`);
 	}
 
 	if (args[0].startsWith('fork')) {
-		return message.answer(
+		return message.reply(
 			`GitHub Forks: :writing_hand: ${repo_info.forks_count}`);
 	}
 
-	message.answer("That's not how you use that command, here's how:\n"
+	message.reply("That's not how you use that command, here's how:\n"
 		+ help_info('git', CONFIG.commands.prefix));
 };

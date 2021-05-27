@@ -33,7 +33,7 @@ export default async (homescope: HomeScope) => {
 
 	if (args[0] === 'set' && args.length > 1) {
 		CONFIG.weather_locations[message.author.id] = args.tail().join(' ');
-		return message.answer(`Your weather location has \
+		return message.reply(`Your weather location has \
 			been set to ${args.tail().join(' ')}`.squeeze());
 	}
 
@@ -42,13 +42,13 @@ export default async (homescope: HomeScope) => {
 		: CONFIG.weather_locations[message.author.id] || 'Cuckfield';
 
 	if (location == 'Cuckfield')
-		message.answer("You should set your default weather location."
+		message.reply("You should set your default weather location."
 		             + ` Use \`${CONFIG.commands.prefix}weather set <location>\`.`);
 
 	const geokey = SECRETS.yandex.geocoder.key;
 
 	const error = (e: Error) => {
-		message.answer(`Error getting weather\n\`\`\`${e.message}\`\`\``);
+		message.reply(`Error getting weather\n\`\`\`${e.message}\`\`\``);
 		return e;
 	};
 

@@ -33,8 +33,8 @@ const read512bitsBigIntBigEndian = (buffer : Buffer) : bigint => {
 	return val;
 };
 
-export default (home_scope : HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope : HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 
 	if (args.length === 0 || args[0] === 'help'
 		|| message.mentions.users.size === 0
@@ -87,7 +87,7 @@ export default (home_scope : HomeScope) => {
 	const response = `${get_percentage(die)} ${get_response(die)}`;
 
 	const error_msg = (e: Error) =>
-		message.answer("Unable to calculate the love grade :("
+		message.reply("Unable to calculate the love grade :("
 			+ `:\n${e.message}`.format('```'));
 
 	const compose_images = async ({ first, second }) => {

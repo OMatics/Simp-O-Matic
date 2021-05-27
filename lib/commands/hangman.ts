@@ -106,8 +106,8 @@ const MESSAGES: Types.Messages = {
 		`Scored: ${scored}`,
 };
 
-// export default (home_scope: HomeScope) => {
-//	const { message, args } = home_scope;
+// export default (homescope: HomeScope) => {
+//	const { message, args } = homescope;
 
 	// if (args.length === 0 || args[0] === 'help')
 	//	message.channel.send(MESSAGES.help);

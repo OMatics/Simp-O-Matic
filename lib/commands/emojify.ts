@@ -5,10 +5,10 @@ const NUMBER_NAMES = [
 	'six', 'seven', 'eight', 'nine', 'keycap_ten'
 ];
 
-export default (home_scope: HomeScope) => {
+export default (homescope: HomeScope) => {
 	const { message, args }
 		: { message: Message,
-			args: string[] } = home_scope;
+			args: string[] } = homescope;
 
 	const input = args.length === 0
 		? "nibba"

@@ -1,7 +1,7 @@
 import { FORMATS } from '../extensions';
 
-export default (home_scope : HomeScope) => {
-	const { message } = home_scope;
+export default (homescope : HomeScope) => {
+	const { message } = homescope;
 
 	const { uptime } = message.client;
 	let seconds = uptime / 1000;

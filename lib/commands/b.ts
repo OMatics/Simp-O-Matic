@@ -1,8 +1,8 @@
 import { Message } from 'discord.js';
 
-export default (home_scope: HomeScope) => {
+export default (homescope: HomeScope) => {
     const { message, args }
-        : { message: Message, args: string[] } = home_scope;
+        : { message: Message, args: string[] } = homescope;
 
     const input = (args.length === 0)
         ? "b"

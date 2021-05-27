@@ -1,10 +1,10 @@
 import { access } from '../utils';
 
-export default (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 
 	if (args.length < 2)
-		return message.answer(`Please provide two arguments.\n`
+		return message.reply(`Please provide two arguments.\n`
 			+ `See \`${CONFIG.commands.prefix}help set\`.`);
 
 	try {

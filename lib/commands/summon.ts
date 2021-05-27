@@ -1,7 +1,7 @@
 import { help_info } from '../utils';
 
-export default (home_scope : HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope : HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 
 	if (args.length === 0 || args[0] === 'help'
 	|| message.mentions.users.size === 0)

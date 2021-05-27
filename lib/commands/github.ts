@@ -1,4 +1,4 @@
-export default (home_scope: HomeScope) => {
-	const { message, GIT_URL } = home_scope;
-	message.answer(`${GIT_URL}/`);
+export default (homescope: HomeScope) => {
+	const { message, GIT_URL } = homescope;
+	message.reply(`${GIT_URL}/`);
 };

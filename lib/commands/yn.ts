@@ -1,5 +1,5 @@
-export default (home_scope: HomeScope) => {
-	const { message } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message } = homescope;
 	Promise.all(
 		['✅', '❎']
 			.map(message.react.bind(message)))

@@ -1,7 +1,7 @@
 import { prefix_friendly, help_info } from '../utils';
 
-export default (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 
 	if (args.length === 0 || args[0] === 'help') {
 		message.channel.send(help_info('8ball', CONFIG.commands.prefix));
@@ -39,6 +39,6 @@ export default (home_scope: HomeScope) => {
 		"100%"
 	];
 
-	message.answer(":8ball: "
+	message.reply(":8ball: "
 		+ responses[Math.floor(Math.random() * responses.length)]);
 };

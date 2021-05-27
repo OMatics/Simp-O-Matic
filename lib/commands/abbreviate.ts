@@ -1,5 +1,5 @@
-export default async (home_scope: HomeScope) => {
-	const { message, args } = home_scope;
+export default async (homescope: HomeScope) => {
+	const { message, args } = homescope;
 	const words = args.map(w => w.trim().capitalize());
 	message.channel.send(words.map(w =>
 		[...w].find(c =>

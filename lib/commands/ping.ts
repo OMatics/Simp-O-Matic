@@ -1,4 +1,4 @@
-export default (home_scope: HomeScope) => {
-	const { message } = home_scope;
-	message.answer('PONGGERS!');
+export default (homescope: HomeScope) => {
+	const { message } = homescope;
+	message.reply('PONGGERS!');
 };

@@ -1,11 +1,11 @@
 import { recursive_regex_to_string, deep_copy,
 		 glue_strings, access} from '../utils';
 
-export default (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 
 	if (args.length === 0) {  // Or use '.' as argument.
-		message.answer('To view the entire object, use the `!export` command.');
+		message.reply('To view the entire object, use the `!export` command.');
 		return;
 	}
 	// Accessing invalid fields will be caught.

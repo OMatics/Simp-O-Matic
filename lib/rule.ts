@@ -1,7 +1,7 @@
 import { glue_strings, help_info } from './utils';
 
-export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export const rule = (rule_kind: string) => (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 	const rules_array = CONFIG.rules[rule_kind];
 
 	if (args.length === 0 || args[0] === 'ls') {
@@ -22,15 +22,15 @@ export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
 		// Remove a rule.
 		const match = args[1].match(/#?(\d+)/);
 		if (!match || !match[1])
-			return message.answer('Please provide a numerical index'
+			return message.reply('Please provide a numerical index'
 				+ ' as to which rule to remove.');
 
 		const index = Number(match[1]) - 1;
 		if (index >= rules_array.length)
-			return message.answer(`Cannot delete rule at index ${index + 1}...`
+			return message.reply(`Cannot delete rule at index ${index + 1}...`
 				+ ` There are only ${rules_array.length} ${rule_kind} rules.`);
 
-		message.answer(`Rule matching \`${rules_array[index].match}\``
+		message.reply(`Rule matching \`${rules_array[index].match}\``
 			+ ` at index location number ${index + 1} has been deleted.`);
 
 		delete CONFIG.rules[rule_kind][index];
@@ -47,7 +47,7 @@ export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
 				if (phrase.slice(i, i + 2) === '\\/') i += 2; // escaped /.
 				else if (phrase[i] === '/') break; // end of regex.
 				if (i >= phrase.length) {
-					message.answer('Having real trouble parsing that m8...');
+					message.reply('Having real trouble parsing that m8...');
 					return;
 				}
 				else i += 1; // nothing interesting.
@@ -86,7 +86,7 @@ export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
 				response: response.length ? response : null
 			});
 		} catch (e) {
-			message.answer('**Error** creating regular expression!\n'
+			message.reply('**Error** creating regular expression!\n'
 				+ e.message.toString().format('`'));
 			return;
 		}
@@ -94,7 +94,7 @@ export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
 			+ `/${regex}/${options}`.format('```')
 			+ `\nhas been added to the list of ${rule_kind} rules.`);
 	} else {
-		message.answer('Insufficient or nonsensical arguments provided.');
+		message.reply('Insufficient or nonsensical arguments provided.');
 		message.reply(`Here's how you use the command:\n`
 			+ help_info(rule_kind, CONFIG.commands.prefix));
 	}

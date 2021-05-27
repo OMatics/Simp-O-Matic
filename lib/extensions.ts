@@ -364,12 +364,13 @@ Number.prototype.truncate = function() {
 
 declare module 'discord.js' {
 	interface Message {
-		answer(...args: any): void;
+		answer(content: any, options?: any): void;
 	}
 }
 import { Message } from 'discord.js';
 
-Message.prototype.answer = function (...args) {
-	return this.channel.send(`${this.author}, ${args[0]}`,
-		...(args.slice(1)));
+Message.prototype.answer = function (content, options) {
+	return this.channel.send(
+		`${this.author}, ${content}`,
+	    options);
 };

@@ -5,8 +5,8 @@ import Jimp from 'jimp';
 
 const TEMPLATE = "./lib/resources/templates/pat.png";
 
-export default (home_scope: HomeScope) => {
-	const { message, args } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args } = homescope;
 
 	if (args.length === 0 || message.mentions.users.size === 0) {
 		message.channel.send(

@@ -1,5 +1,5 @@
-export default (home_scope: HomeScope) => {
-	const { message } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message } = homescope;
 	const now = new Date();
 	message.channel.send(`Local time relative to bot:
 		${now.toString()} / ${now.toISOString().format('`')}

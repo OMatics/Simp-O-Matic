@@ -1,8 +1,8 @@
 import { Message } from 'discord.js';
 import Action from '../action';
 
-export default (home_scope: HomeScope) => {
-	const { message, args } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args } = homescope;
 
 	if (args.length === 0 || message.mentions.users.size === 0)
 		return message.channel.send(

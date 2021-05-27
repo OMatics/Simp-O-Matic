@@ -1,13 +1,13 @@
 import { glue_strings } from '../utils';
 
-export default (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 	const p = CONFIG.commands.prefix;
 
 	if (args.length === 0 || args[0] === 'ls') {
 		const lines = Object.keys(CONFIG.commands.aliases)
 			.map((e, i) => `${i + 1}.  \`${p}${e}\` ↦ \`${p}${CONFIG.commands.aliases[e].shorten(60)}\`\n`);
-		message.answer('List of **Aliases**:\n');
+		message.reply('List of **Aliases**:\n');
 		lines.unshift('**KEY:  `alias` ↦ `command it maps to`**\n\n');
 
 		for (const msg of glue_strings(lines))
@@ -24,7 +24,7 @@ export default (home_scope: HomeScope) => {
 		if (match = args[1].match(/^#?(\d+)/)) {
 			index = Number(match[1]) - 1;
 			if (index >= keys.length) {
-				message.answer('No alias exists at such an index'
+				message.reply('No alias exists at such an index'
 					+ ` (there are only ${keys.length} indices).`);
 				return;
 			}
@@ -34,7 +34,7 @@ export default (home_scope: HomeScope) => {
 			if (alias[0] === p) alias = alias.tail();
 			index = keys.indexOf(alias);
 			if (index === -1) {
-				message.answer(`There does not exist any alias \
+				message.reply(`There does not exist any alias \
 								with the name \`${p}${alias}\`.`.squeeze());
 				return;
 			}
@@ -42,7 +42,7 @@ export default (home_scope: HomeScope) => {
 		keys.each((_, i) => i === index
 			? delete aliases[alias]
 			: null);
-		message.answer(`Alias \`${p}${alias}\` at index \
+		message.reply(`Alias \`${p}${alias}\` at index \
 						number ${index + 1}, has been deleted.`.squeeze());
 		return;
 	}
@@ -71,14 +71,14 @@ export default (home_scope: HomeScope) => {
 			if (args[0] in CONFIG.commands.aliases) {
 				const aliases = Object.keys(CONFIG.commands.aliases);
 				const n = aliases.indexOf(args[0]) + 1;
-				message.answer(`${n}.  \`${p}${args[0]}\` ↦ \`${p}${CONFIG.commands.aliases[args[0]]}\``);
+				message.reply(`${n}.  \`${p}${args[0]}\` ↦ \`${p}${CONFIG.commands.aliases[args[0]]}\``);
 				return;
 			} else {
-				message.answer('No such alias found.');
+				message.reply('No such alias found.');
 				return;
 			}
 		}
-		message.answer('Invalid number of arguments to alias,\n'
+		message.reply('Invalid number of arguments to alias,\n'
 			+ `Please see \`${CONFIG.commands.prefix}help alias\`.`);
 	}
 };

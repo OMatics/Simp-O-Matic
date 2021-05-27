@@ -1,9 +1,10 @@
 import urban_search from '../api/urban';
 import '../extensions';
-export default (home_scope: HomeScope) => {
-	const { message, args, SECRETS } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, SECRETS } = homescope;
 	const query = args.join(' ');
-	message.answer('Searching Urban Dictionary...');
+
+	const ping = message.reply('Searching Urban Dictionary...');
 	urban_search({ query, key: SECRETS.rapid.key }).then(res => {
 		if (res['list'].length === 0) {
 			message.channel.send(`Congratulations, not even Urban \
@@ -22,5 +23,8 @@ export default (home_scope: HomeScope) => {
 			message.channel.send(`\n**Example**:\n>>> ${example.trim()}`);
 		}
 		message.channel.send(`Link: ${entry.permalink}`);
-	}).catch(e => message.answer(`Error fetching definition:\n${e}`));
+
+		// Definition sent, delete ping.
+		ping.then(msg => msg.delete());
+	}).catch(e => message.reply(`Error fetching definition:\n${e}`));
 };

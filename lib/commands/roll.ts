@@ -1,4 +1,4 @@
-export default (home_scope: HomeScope) => {
-	const { message, args } = home_scope;
-	message.answer(Math.floor(Math.random() * ((+args[0] || 6) + 1)));
+export default (homescope: HomeScope) => {
+	const { message, args } = homescope;
+	message.reply(Math.floor(Math.random() * ((+args[0] || 6) + 1)));
 };

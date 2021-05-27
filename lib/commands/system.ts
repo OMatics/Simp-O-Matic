@@ -4,8 +4,8 @@ const sys_channel = (channel_id: string) =>
 		? `is set to <#${channel_id}>.`
 		: `has not been set.`;
 
-export default (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 	const { uptime } = message.client;
 
 	if (args.length === 0 || args[0] === 'status') {

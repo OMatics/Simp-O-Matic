@@ -7,11 +7,11 @@ const YTDL_OPTIONS = [
 	'-i', '--no-continue', '-o', '-' // Send to STDOUT.
 ];
 
-export default async (home_scope: HomeScope) => {
-	const { message, args, CONFIG, CLIENT, INSTANCE_VARIABLES } = home_scope;
+export default async (homescope: HomeScope) => {
+	const { message, args, CONFIG, CLIENT, INSTANCE_VARIABLES } = homescope;
 
 	if (!message.guild) {
-		message.answer("Just use youtube-dl at home.");
+		message.reply("Just use youtube-dl at home.");
 		return;
 	}
 
@@ -40,7 +40,7 @@ export default async (home_scope: HomeScope) => {
 					child.stdout = null;
 					GID.vc_prefetch[url] = null;
 					CONFIG.vc_queue = CONFIG.vc_queue.filter(q => q !== url);
-					message.answer("Error downloading media.");
+					message.reply("Error downloading media.");
 				}
 				child.kill();
 			});
@@ -81,34 +81,34 @@ export default async (home_scope: HomeScope) => {
 		try {
 			GID.vc.disconnect();
 			GID.vc.channel.leave();
-			message.answer("Let's listen again some time :3");
+			message.reply("Let's listen again some time :3");
 		} catch (error) {
-			message.answer("```" + `${error}` + "```");
+			message.reply("```" + `${error}` + "```");
 		}
 		break;
 	} case "stop":
 	  case "pause": {
 		if (GID.vc_dispatcher && !GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.pause();
-			message.answer("Paused playback.");
+			message.reply("Paused playback.");
 		} else {
-			message.answer("Nothing is playing");
+			message.reply("Nothing is playing");
 		}
 		break;
 	} case "resume":
 	  case "play": {
 		if (!GID.vc) {
-			message.answer("Let me join a voice channel first.");
+			message.reply("Let me join a voice channel first.");
 			return;
 		}
 		if (GID.vc_dispatcher && GID.vc_dispatcher.paused) {
 			GID.vc_dispatcher.resume();
-			message.answer("Resuming playback.");
+			message.reply("Resuming playback.");
 			return;
 		}
 
 		if (CONFIG.vc_queue.length === 0) {
-			message.answer("Please add a URL to the queue first.");
+			message.reply("Please add a URL to the queue first.");
 			return;
 		}
 
@@ -162,7 +162,7 @@ export default async (home_scope: HomeScope) => {
 	  case "delete": {
 		const pos = Number(args[1]);
 		CONFIG.vc_queue.splice(pos - 1, 1);
-		message.answer(`Removed media from queue at index ${pos}.`);
+		message.reply(`Removed media from queue at index ${pos}.`);
 		break;
 	} case "insert":
 	  case "i": {
@@ -170,32 +170,32 @@ export default async (home_scope: HomeScope) => {
 		const url = args[2];
 		if (attempt_prefetch(url)) {
 			CONFIG.vc_queue.splice(pos - 1, 0, url);
-			message.answer(`Inserting into queue at index ${pos}.`);
+			message.reply(`Inserting into queue at index ${pos}.`);
 		}
 		break;
 	} case "queue":
 	  case "list":
 	  case "ls": {
-		message.answer(ls(CONFIG.vc_queue));
+		message.reply(ls(CONFIG.vc_queue));
 		break;
 	} case "clear":
 	  case "requeue": {
 		CONFIG.vc_queue = [];
 		GID.vc_current_stream = null;
-		message.answer("Queue cleared");
+		message.reply("Queue cleared");
 		GID.vc_dispatcher.end();
 		break;
 	} case "next":
 	  case "skip": {
 		GID.vc_dispatcher.end();
 		GID.vc_current_stream.destroy();
-		message.answer("Skipping...");
+		message.reply("Skipping...");
 		break;
 	} default: {
 		const url = args[0];
 		if (attempt_prefetch(url)) {
 			CONFIG.vc_queue.push(url);
-			message.answer("Adding media to queue...");
+			message.reply("Adding media to queue...");
 		}
 	}
 	}

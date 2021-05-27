@@ -1,11 +1,11 @@
 import oed_lookup from '../api/oxford';
 import format_oed from '../format_oed';  // O.E.D. JSON entry to markdown.
 
-export default (home_scope : HomeScope) => {
+export default (homescope : HomeScope) => {
 	const { message, args,
-			CONFIG, SECRETS } = home_scope;
+			CONFIG, SECRETS } = homescope;
 
-	message.answer('Looking in the Oxford English Dictionary...');
+	const ping = message.reply('Looking in the Oxford English Dictionary...');
 	const query = args.join(' ');
 
 	const p = CONFIG.commands.prefix;
@@ -28,7 +28,7 @@ export default (home_scope : HomeScope) => {
 			|| res['results'][0].lexicalEntries.length === 0
 			|| res['results'][0].lexicalEntries[0].entries.length === 0
 			|| res['results'][0].lexicalEntries[0].entries[0].senses.length === 0) {
-			message.answer(nasty_reply);
+			message.reply(nasty_reply);
 			return;
 		}
 		// Format the dictionary entry as a string.
@@ -49,6 +49,8 @@ export default (home_scope : HomeScope) => {
 			return;
 		}
 		message.channel.send(msg);
+		// Delete the ping.
+		ping.then(msg => msg.delete());
 	}).catch(e => {
 		if (e.status === 404) {
 			message.channel.send(`That 404'd.  ${nasty_reply}`);

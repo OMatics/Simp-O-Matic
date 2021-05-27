@@ -45,8 +45,8 @@ interface Scope {
     args: string[];
 }
 
-export default (home_scope: HomeScope) => {
-    const { message, args } : Scope = home_scope;
+export default (homescope: HomeScope) => {
+    const { message, args } : Scope = homescope;
 
     if (args.length === 0 || args[0] === 'help') {
         message.channel.send("OwO *notices text* What's this?");

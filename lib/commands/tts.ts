@@ -5,7 +5,7 @@ export default async (hs : HomeScope) => {
 	const { message, args, INSTANCE_VARIABLES } = hs;
 
 	if (!message.guild) {
-		message.answer("Stop talkingQ to yourself, loser.");
+		message.reply("Stop talkingQ to yourself, loser.");
 		return;
 	}
 
@@ -13,7 +13,7 @@ export default async (hs : HomeScope) => {
 	const GID = INSTANCE_VARIABLES.guilds[guild];
 
 	if (!GID.vc) {
-		message.answer("Let me join your voice-chat first.");
+		message.reply("Let me join your voice-chat first.");
 	}
 
 	const text = args.join(' ');

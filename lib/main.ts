@@ -329,13 +329,13 @@ export class SimpOMatic {
 				if (last_command.content === current_command.content
 					&& delta <= 1400) {
 					if (delta <= 400) return;
-					return message.answer(`I can't help but notice you're running \
+					return message.reply(`I can't help but notice you're running \
 the same commands over in rather rapid succession.
 Would you like to slow down a little?`.squeeze());
 				}
 				if (delta <= 900) {
 					if (delta <= 300) return;
-					return message.answer('Slow down there bucko.');
+					return message.reply('Slow down there bucko.');
 				}
 			}
 		}
@@ -410,7 +410,7 @@ Would you like to slow down a little?`.squeeze());
 				const attach = new MessageAttachment(file_dest, file_name);
 				message.channel.send("**Export:**", attach);
 
-				message.answer(`A copy of this export (\`export-${today}.json\`)`
+				message.reply(`A copy of this export (\`export-${today}.json\`)`
 					+ ` has been saved to the local file system.`);
 				break;
 			} case 'refresh': {
@@ -431,7 +431,7 @@ Would you like to slow down a little?`.squeeze());
 				message.channel.send(`Directories:\n\`\`\`json\n${dirs}\n\`\`\``);
 				break;
 			} case '': {
-				message.answer("That's an empty command...");
+				message.reply("That's an empty command...");
 				break;
 			} default: {
 				if (KNOWN_COMMANDS.includes(operator)) {
@@ -444,7 +444,7 @@ Would you like to slow down a little?`.squeeze());
 				}
 
 				const has_punct = CONFIG.commands.not_understood.punctuation();
-				message.answer(`
+				message.reply(`
 					:warning: ${CONFIG.commands.not_understood}${has_punct?'':'.'}
 					> \`${CONFIG.commands.prefix}${operator}\``.squeeze());
 				break;
@@ -467,7 +467,7 @@ Would you like to slow down a little?`.squeeze());
 			&& !responder.listens.includes(message.author.id))
 				continue;
 
-			if (match && response) message.answer(response);
+			if (match && response) message.reply(response);
 		}
 		for (const triggerer of CONFIG.rules.trigger) {
 			if (!triggerer) continue; // Sparse arrays!
@@ -497,7 +497,7 @@ Would you like to slow down a little?`.squeeze());
 				continue;
 
 			if (match) {
-				if (response) message.answer(response);
+				if (response) message.reply(response);
 				if (message.deletable) {
 					message.delete();
 					break;
@@ -606,7 +606,7 @@ Would you like to slow down a little?`.squeeze());
 			// When finished expanding...
 			this.expand(message).then(content => {
 				if (content.length >= 2000) {
-					message.answer("The expansion for that message was"
+					message.reply("The expansion for that message was"
 					+ " over 2000 characters, what the fuck is wrong with you?");
 					return;
 				}
@@ -623,7 +623,7 @@ Would you like to slow down a little?`.squeeze());
 			});
 		} catch (e) {
 			console.warn(e);
-			message.answer(`Something went very wrong (\`${e.message}\`):\n`
+			message.reply(`Something went very wrong (\`${e.message}\`):\n`
 				+ `${e.stack}`.format('```'));
 		}
 	}

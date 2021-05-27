@@ -1,10 +1,10 @@
 import { prefix_friendly } from '../utils';
 
 
-export default (home_scope: HomeScope) => {
+export default (homescope: HomeScope) => {
 	const { message, args, HELP_SECTIONS,
 			KNOWN_COMMANDS, CONFIG, ALL_HELP,
-			HELP_KEY, HELP_SOURCE, expand_alias } = home_scope;
+			HELP_KEY, HELP_SOURCE, expand_alias } = homescope;
 
 	const p = CONFIG.commands.prefix;
 
@@ -38,8 +38,8 @@ export default (home_scope: HomeScope) => {
 	const help_index = KNOWN_COMMANDS.indexOf(command);
 
 	if (help_index === -1)
-		return message.answer(`No such command/help-page (\`${p}${command}\`).`);
+		return message.reply(`No such command/help-page (\`${p}${command}\`).`);
 
-	message.answer(`**Help (\`${p}${command}\`):**\n`
+	message.reply(`**Help (\`${p}${command}\`):**\n`
 		+ help_sections[help_index].trim());
 };

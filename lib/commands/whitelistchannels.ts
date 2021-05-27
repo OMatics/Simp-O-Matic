@@ -1,7 +1,7 @@
 // .whitelistchannels #channel1 #channel2
 // .whitelistchannels without any arguments turns off the function
-export default async (home_scope: HomeScope) => {
-	const { message, CONFIG } = home_scope;
+export default async (homescope: HomeScope) => {
+	const { message, CONFIG } = homescope;
 
 	if (!CONFIG.whitelistchannels)
 		CONFIG.whitelistchannels = [];

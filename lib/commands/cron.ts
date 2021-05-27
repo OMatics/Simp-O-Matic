@@ -175,7 +175,7 @@ export class Timer {
 
 		job.executed_at = timespan;
 
-		this.homescope.message.answer("Ran cron #" + job.id);
+		this.homescope.message.reply("Ran cron #" + job.id);
 
 		// `on_message` does important expansions.
 		this.homescope.main.on_message(
@@ -190,8 +190,8 @@ export class Timer {
 	}
 }
 
-export default (home_scope: HomeScope) => {
-	const { message, args, CONFIG } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message, args, CONFIG } = homescope;
 
 	if (args.length === 0 || args[0] === 'help') {
 		return message.channel.send(
@@ -207,7 +207,7 @@ export default (home_scope: HomeScope) => {
 		});
 
 	let crons: Cron[] = cleanup(CONFIG.cron_jobs);
-	const timer = new Timer(home_scope);
+	const timer = new Timer(homescope);
 
 	setInterval(() => {
 		timer.verify(crons);
@@ -223,18 +223,18 @@ export default (home_scope: HomeScope) => {
 		delete crons[crons.map(x => x.id).indexOf(job)];
 		crons = cleanup(crons);
 		submit();
-		message.answer(RESPONSES.removed(job));
+		message.reply(RESPONSES.removed(job));
 	};
 
 	const clear = () => {
 		crons = crons.filter(f => !f?.executed_at);
 		submit();
-		message.answer(RESPONSES.clear);
+		message.reply(RESPONSES.clear);
 	};
 
 	const list = () => {
 		if (crons.length === 0)
-			return message.answer(RESPONSES.empty);
+			return message.reply(RESPONSES.empty);
 
 		message.channel.send(
 			crons
@@ -396,7 +396,7 @@ export default (home_scope: HomeScope) => {
 		const job: number = Number(args[1]);
 
 		isNaN(job)
-			? message.answer(RESPONSES.help.rm)
+			? message.reply(RESPONSES.help.rm)
 			: rm(job);
 	}
 	else if (args[0] === 'clear') {
@@ -406,13 +406,13 @@ export default (home_scope: HomeScope) => {
 		const cron: Cron = tokenize(args);
 
 		if (!cron?.command)
-			message.answer(RESPONSES.help.command);
+			message.reply(RESPONSES.help.command);
 		else if (!cron?.schedule)
-			message.answer(RESPONSES.help.schedule);
+			message.reply(RESPONSES.help.schedule);
 		else {
 			crons.push(cron);
 			submit();
-			message.answer(RESPONSES.added(cron));
+			message.reply(RESPONSES.added(cron));
 		}
 	}
 };

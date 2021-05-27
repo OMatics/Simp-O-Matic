@@ -1,7 +1,7 @@
 import { MessageAttachment } from 'discord.js';
 
-export default (home_scope: HomeScope) => {
-	const { message } = home_scope;
+export default (homescope: HomeScope) => {
+	const { message } = homescope;
 	const attached = new MessageAttachment(
 		'./lib/resources/crabbing.jpg',
 		'crabbing.jpg');
