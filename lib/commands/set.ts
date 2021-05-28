@@ -1,23 +1,31 @@
 import { access } from '../utils';
 
-export default (homescope: HomeScope) => {
-	const { message, args, CONFIG } = homescope;
-
-	if (args.length < 2)
-		return message.reply(`Please provide two arguments.\n`
-			+ `See \`${CONFIG.commands.prefix}help set\`.`);
+exports.description = "Set a value in the runtime JavaScript configuration object.";
+exports.options = [{
+    name: "accessor",
+    type: "STRING",
+    description: "[accessor]",
+    required: true
+}, {
+	name: "value",
+	type: "STRING",
+	description: "[json-value]",
+	required: true
+}];
+exports.main = (home_scope: HomeScope) => {
+	const { message, CONFIG } = home_scope;
 
 	try {
-		const accessors = args[0].trim().split('.').squeeze();
+		const accessors = message.options[0].value.trim().split('.').squeeze();
 		const parent = accessors.pop();
 		const obj = access(CONFIG, accessors);
-		obj[parent] = JSON.parse(args.tail().join(' '));
+		obj[parent] = JSON.parse(message.options[1].value);
 		const normal = JSON.dump(obj[parent], null, 4);
 
-		message.channel.send(`Assignment successful.
-			\`${args[0].trim()} = ${normal}\``.squeeze());
+		message.reply(`Assignment successful.
+			\`${message.options[0].value} = ${normal}\``.squeeze());
 	} catch (e) {
-		message.channel.send(`Invalid object access-path or JSON value,`
+		message.reply(`Invalid object access-path,`
 			+ `nothing set.\nProblem: \`\`\`\n${e}\n\`\`\``);
 	}
 };

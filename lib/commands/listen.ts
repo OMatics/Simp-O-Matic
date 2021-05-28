@@ -3,36 +3,38 @@ const RULES = [
 	'replace', 'trigger'
 ];
 
-export default (homescope: HomeScope) => {
-	const { message, args, CONFIG } = homescope;
+exports.description = "Specify rules only to listen to specific users";
+exports.options = [{
+    name: "ruletype",
+    type: "STRING",
+    description: "Specify rule-type",
+    choices: [{respond: "respond"}, {reject: "reject"}, {replace: "replace"}, {trigger: "trigger"}],
+    required: true
+}, {
+	name: "index",
+	type: "INTEGER",
+	description: "Rule at index",
+	required: true
+}, {
+	name: "user",
+	type: "USER",
+	description: "Apply only to this user",
+	required: true
+}];
 
-	const rule_type = args[0];
-	if (!RULES.includes(rule_type))
-		return message.reply("`listen` command first argument must"
-			+ " be either `respond`, `reject`, `replace` or `trigger`"
-			+ "\nSee `help` page for `listen` for more information.");
+exports.main = (home_scope: HomeScope) => {
+	const { message, CONFIG } = home_scope;
 
-	const index_str = args[1] || "NaN";
-	const index = Number(index_str[0] === '#'
-		? index_str.tail()
-		: index_str);
+	const rule_type = message.options[0].value;
 
-	if (!index)
-		return message.reply("Second argument must be a number"
-			+ " (greater than zero), that represents the index of the rule");
+	const index = message.options[1].value;
 
 	const rule_no = CONFIG.rules[rule_type].length;
 	if (index > rule_no || CONFIG.rules[rule_type][index - 1] === undefined)
 		return message.reply(`Index (${index}) is out of range.\n`
 			+ `Only ${rule_no} elements exist in ${rule_type} rules.`);
 
-	const ids = message.mentions.users
-		.map(user => user.id);
-
-	if (args.length < 3 || ids.length === 0)
-		return message.reply("Please provide at least one username"
-			+ " (in form of a mention).");
-
+	const ids = message.options[2].user;
 	const rule = CONFIG.rules[rule_type][index - 1];
 
 	if (!rule.listens)

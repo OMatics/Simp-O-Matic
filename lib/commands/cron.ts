@@ -175,13 +175,13 @@ export class Timer {
 
 		job.executed_at = timespan;
 
-		this.homescope.message.reply("Ran cron #" + job.id);
+		this.homescope.message.answer("Ran cron #" + job.id);
 
 		// `on_message` does important expansions.
 		this.homescope.main.on_message(
-			[this.homescope.message],
+			this.homescope.message,
 			this.homescope.CLIENT,
-			null, true
+			true
 		);
 	}
 
@@ -190,14 +190,41 @@ export class Timer {
 	}
 }
 
-export default (homescope: HomeScope) => {
-	const { message, args, CONFIG } = homescope;
-
-	if (args.length === 0 || args[0] === 'help') {
-		return message.channel.send(
-			help_info('cron', CONFIG.commands.prefix)
-		);
+exports.description = "n/a";
+exports.options = [{
+    	name: "cmd",
+	    type: "SUB_COMMAND",
+	    description: "Runs a command (with or without arguments) repeatedly as specified by the schedule signature.",
+	    options: [
+	    	{
+	    		name: "cmd",
+	    		type: "STRING",
+	    		description: "[minute] [hour] [day-of-month] [month] [day-of-week] ![command] <...>",
+	    		required: true
+	    	}
+	    ]
+	}, {
+		name: "clear",
+		type: "SUB_COMMAND",
+		description: "Clears all executed cron-jobs."
+	}, {
+		name: "rm",
+		type: "SUB_COMMAND",
+		description: "Removes a cron-job by index.",
+		options: [
+			{
+				name: "n",
+				type: "INTEGER",
+				description: "Index",
+				required: true,
+				choices: []
+			}
+		]
 	}
+];
+
+exports.main = (home_scope: HomeScope) => {
+	const { message, CONFIG } = home_scope;
 
 	const cleanup = (jobs: Cron[]): Cron[] => jobs
 		.filter(x => x != null)
@@ -207,14 +234,20 @@ export default (homescope: HomeScope) => {
 		});
 
 	let crons: Cron[] = cleanup(CONFIG.cron_jobs);
-	const timer = new Timer(homescope);
+	const timer = new Timer(home_scope);
 
 	setInterval(() => {
 		timer.verify(crons);
 	}, DEFAULT_GUILD_CONFIG.cron_interval);
 
-	const submit = () =>
+	const submit = () => {
 		CONFIG.cron_jobs = crons;
+		let options = Object.assign({}, exports.options);
+		options[2].options[0].choices = crons.filter(x => x !== null).map(x => {
+			return {name: RESPONSES.list(x), value: x.id}
+		});
+		message.guild.commands.edit(CONFIG.appcmd.cron, options);
+	}
 
 	const matches = (value: string, regex: string): string | undefined =>
 		(value.match(new RegExp(regex)) || {})?.input;
@@ -236,7 +269,7 @@ export default (homescope: HomeScope) => {
 		if (crons.length === 0)
 			return message.reply(RESPONSES.empty);
 
-		message.channel.send(
+		message.reply(
 			crons
 				.filter(x => x !== null)
 				.map(x => RESPONSES.list(x))
@@ -390,20 +423,15 @@ export default (homescope: HomeScope) => {
 		return cron;
 	};
 
-	if (args[0] === 'ls')
-		list();
-	else if (args[0] === 'rm') {
-		const job: number = Number(args[1]);
-
-		isNaN(job)
-			? message.reply(RESPONSES.help.rm)
-			: rm(job);
+	if (message.options[0].name == "rm") {
+		const job: number = message.options[0].options[0].value;
+		rm(job);
 	}
-	else if (args[0] === 'clear') {
+	else if (message.options[0].name == "clear") {
 		clear();
 	}
 	else {
-		const cron: Cron = tokenize(args);
+		const cron: Cron = tokenize(message.options[0].options[0].value.split(" "));
 
 		if (!cron?.command)
 			message.reply(RESPONSES.help.command);

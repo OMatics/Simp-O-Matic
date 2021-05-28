@@ -1,9 +1,7 @@
-FROM node:14-alpine
+FROM node:16-alpine
 
 # Dependencies
-RUN apk add --update curl alpine-sdk bash libtool autoconf automake libsodium g++
-RUN apk add nodejs git ffmpeg espeak yarn python3
-RUN npm install -g node-gyp@latest
+RUN apk add --update nodejs git ffmpeg espeak yarn python3
 
 # Prepare /app
 RUN mkdir /app
@@ -20,7 +18,6 @@ COPY heart.png generate_secrets.sh HELP.md lib \
 # Install deps
 COPY lib/drug-o-matic /app/lib/drug-o-matic
 RUN yarn install
-
 # Build
 RUN cp /app/bot.json /app/generate_secrets.sh /app/HELP.md /app/package.json /app/build/
 RUN /app/node_modules/.bin/tsc -b /app/tsconfig.json
@@ -29,4 +26,4 @@ RUN /app/node_modules/.bin/tsc -b /app/tsconfig.json
 ENTRYPOINT ["sh", "-c", "source /app/.env && \"$@\"", "-s"]
 # Kill with `docker stop` for a graceful shutdown (saving configs, etc.)
 # or use `docker kill` to not follow the bot's shutdown procedur.
-CMD ["node", ".", "--unhandled-rejections=none"]
+CMD ["node", "."]

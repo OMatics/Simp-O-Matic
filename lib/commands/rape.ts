@@ -1,13 +1,18 @@
 import { Message } from 'discord.js';
 import Action from '../action';
 
-export default (homescope: HomeScope) => {
-	const { message, args }
-		: { message: Message, args: string[] } = homescope;
+exports.description = "Rape someone.";
+exports.options = [{
+    name: "username",
+    type: "USER",
+    description: "RAPE",
+}];
+exports.main = (home_scope: HomeScope) => {
+	const { message } = home_scope;
 
-	if (args.length === 0 || message.mentions.users.size === 0)
-		return message.channel.send(
+	if(!message.options[0].user || message.user.id == message.options[0].user.id)
+		return message.reply(
 			"You fisted yourself. :point_right: :ok_hand:");
 
-	message.channel.send(Action.get('rape', message));
+	Action.get(message);
 };

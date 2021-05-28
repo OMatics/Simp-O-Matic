@@ -3,6 +3,7 @@
 ///  laid out.  All fields are accounted for here.
 
 const DEFAULT_GUILD_CONFIG : Types.Config = {
+	appcmd: {},
 	main_channel: null,
 	system_channel: null,
 	vc_channel: null,
@@ -29,7 +30,6 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 		prefix: '!',
 		max_history: 40,
 		not_understood: "Command not understood...",
-		bot_issued: false,
 		aliases: {
 			'img': 'image',
 			'i': 'image',
@@ -69,11 +69,8 @@ const DEFAULT_GUILD_CONFIG : Types.Config = {
 			'whatis': 'code',
 			'which': 'code',
 			'save': 'export',
-			'reload': 'refresh',
 			'trans': 'translate',
-			'tr': 'translate',
 			'cuddle': 'hug',
-			'abb': 'abbreviate',
 			'abbr': 'abbreviate',
 			'abbrev': 'abbreviate',
 			't2s': 'tts',

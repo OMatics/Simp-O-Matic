@@ -1,46 +1,21 @@
 import { glue_strings, help_info } from './utils';
 
-export const rule = (rule_kind: string) => (homescope: HomeScope) => {
-	const { message, args, CONFIG } = homescope;
+export const rule = (rule_kind: string) => (home_scope: HomeScope) => {
+	const { message, CONFIG } = home_scope;
+	const presentation = message.guild.commands.resolve(CONFIG.appcmd[rule_kind]);
 	const rules_array = CONFIG.rules[rule_kind];
 
-	if (args.length === 0 || args[0] === 'ls') {
-		// Make a pretty list.
-		let str = `**${rule_kind.capitalize()} Rules:**\n`;
-		if (rules_array.squeeze().length === 0)
-			str += "There are none.";
+	if (message.options[0].name == "rm"){
+		delete CONFIG.rules[rule_kind][message.options[0].options[0].value];
+	}
 
-		rules_array.each((entry, i) => {
-			str += `${i + 1}.  Matches: \`${entry.match}\``;
-			if (entry.response)
-				str += `\n     Responds with: ‘${entry.response.shorten()}’`;
-			str += '\n';
-		});
-		for (const msg of glue_strings(str.lines()))
-			message.channel.send(msg);
-	} else if (args[0] === 'rm') {
-		// Remove a rule.
-		const match = args[1].match(/#?(\d+)/);
-		if (!match || !match[1])
-			return message.reply('Please provide a numerical index'
-				+ ' as to which rule to remove.');
-
-		const index = Number(match[1]) - 1;
-		if (index >= rules_array.length)
-			return message.reply(`Cannot delete rule at index ${index + 1}...`
-				+ ` There are only ${rules_array.length} ${rule_kind} rules.`);
-
-		message.reply(`Rule matching \`${rules_array[index].match}\``
-			+ ` at index location number ${index + 1} has been deleted.`);
-
-		delete CONFIG.rules[rule_kind][index];
-	} else if (args.length >= 1) {
+	if (message.options[0].name = "add") {
 		// Add a rule.
 		let regex, options, response;
 		// Eat up the regex/word...
-		if (args[0][0] === '/') { // Slash means we're looking at regex.
+		if (message.options[0].options[0].value[0] === '/') { // Slash means we're looking at regex.
 			// We look for a non escaped end slash.
-			const phrase: string = args.join(' ').tail(); // Exclude the slash.
+			const phrase: string = message.options[0].options[0].value; // Exclude the slash.
 
 			let i = 0;
 			do {
@@ -69,10 +44,10 @@ export const rule = (rule_kind: string) => (homescope: HomeScope) => {
 			//  such that it will have to be matched on its own, not
 			//  surrounded by other letters or numbers, OR, it may exits
 			//  at the begging or end of the line.
-			regex = `(^|[^\\p{L}\\p{N}])+${args[0]}s?([^\\p{L}\\p{N}]|$)+`,
+			regex = `(^|[^\\p{L}\\p{N}])+${message.options[0].options[0].value}s?([^\\p{L}\\p{N}]|$)+`,
 				options = 'ui';
-			response = args.tail().join(' ').trim();
 		}
+		response = message.options[0].options[1].value;
 		const p = CONFIG.commands.prefix;
 		if (response.startsWith(p) && rule_kind === 'trigger') {
 			response = response.slice(p.length);
@@ -90,12 +65,22 @@ export const rule = (rule_kind: string) => (homescope: HomeScope) => {
 				+ e.message.toString().format('`'));
 			return;
 		}
-		message.channel.send(`Rule with regular expression matching:\n`
+		message.reply(`Rule with regular expression matching:\n`
 			+ `/${regex}/${options}`.format('```')
 			+ `\nhas been added to the list of ${rule_kind} rules.`);
 	} else {
 		message.reply('Insufficient or nonsensical arguments provided.');
-		message.reply(`Here's how you use the command:\n`
+		message.webhook.send(`Here's how you use the command:\n`
 			+ help_info(rule_kind, CONFIG.commands.prefix));
 	}
+
+	presentation.options[1].options[0].choices = rules_array.map((entry, i) => {
+		return {
+			name: i + `.  Matches: \`${entry.match}\`` + entry.response ? `     Responds with: ‘${entry.response.shorten()}` : "",
+			value: i
+		}
+	});
+
+	message.guild.commands.edit(CONFIG.appcmd[rule_kind], presentation);
+
 };

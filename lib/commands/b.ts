@@ -1,8 +1,13 @@
-import { Message } from 'discord.js';
+exports.description = "Replace some elements of your text with a certain U+1F171.";
+exports.options = [{
+    name: "toptext",
+    type: "STRING",
+    description: "Bottom text",
+    required: true
+}];
 
-export default (homescope: HomeScope) => {
-    const { message, args }
-        : { message: Message, args: string[] } = homescope;
+exports.main = (home_scope: HomeScope) => {
+    const { message, args } = home_scope;
 
     const input = (args.length === 0)
         ? "b"
@@ -15,5 +20,5 @@ export default (homescope: HomeScope) => {
             ? `b`.emojify()
             : chr);
 
-    message.channel.send(letters.join(' '));
+    message.reply(letters.join(' '));
 };

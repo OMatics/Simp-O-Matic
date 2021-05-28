@@ -1,15 +1,23 @@
 import oed_lookup from '../api/oxford';
 import format_oed from '../format_oed';  // O.E.D. JSON entry to markdown.
 
-export default (homescope : HomeScope) => {
-	const { message, args,
-			CONFIG, SECRETS } = homescope;
+exports.description = "Looks a word up in the Oxford English Dictionary.";
+exports.options = [{
+    name: "word",
+    type: "STRING",
+    description: "Looks a word up in the Oxford English Dictionary.",
+    required: true
+}];
 
-	const ping = message.reply('Looking in the Oxford English Dictionary...');
+exports.main = (home_scope : HomeScope) => {
+	const { message, args,
+			CONFIG, SECRETS } = home_scope;
+
+	message.reply('Looking in the Oxford English Dictionary...');
 	const query = args.join(' ');
 
 	const p = CONFIG.commands.prefix;
-	const nasty_reply = `Your word (‘${query}’) is nonsense, either \
+	const nasty_editReply = `Your word (‘${query}’) is nonsense, either \
 					that or they've forgotten to index it.
 					I'll let you decide.
 
@@ -28,7 +36,7 @@ export default (homescope : HomeScope) => {
 			|| res['results'][0].lexicalEntries.length === 0
 			|| res['results'][0].lexicalEntries[0].entries.length === 0
 			|| res['results'][0].lexicalEntries[0].entries[0].senses.length === 0) {
-			message.reply(nasty_reply);
+			message.editReply(nasty_editReply);
 			return;
 		}
 		// Format the dictionary entry as a string.
@@ -40,22 +48,20 @@ export default (homescope : HomeScope) => {
 			//   amount to more than 2000 characters.
 			for (const line of msg.split(/\n/g))
 				if (part_msg.length + line.length >= 2000) {
-					message.channel.send(part_msg);
+					message.editReply(part_msg);
 					part_msg = line + '\n';
 				} else { part_msg += line + '\n'; }
 			// Send what's left over, and not >2000 characters.
-			message.channel.send(part_msg);
+			message.editReply(part_msg);
 
 			return;
 		}
-		message.channel.send(msg);
-		// Delete the ping.
-		ping.then(msg => msg.delete());
+		message.editReply(msg);
 	}).catch(e => {
 		if (e.status === 404) {
-			message.channel.send(`That 404'd.  ${nasty_reply}`);
+			message.editReply(`That 404'd.  ${nasty_editReply}`);
 		} else {
-			message.channel.send(`Error getting definition:\n${e}`);
+			message.editReply(`Error getting definition:\n${e}`);
 		}
 	});
 }

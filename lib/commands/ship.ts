@@ -33,19 +33,26 @@ const read512bitsBigIntBigEndian = (buffer : Buffer) : bigint => {
 	return val;
 };
 
-export default (homescope : HomeScope) => {
-	const { message, args, CONFIG } = homescope;
+exports.description = "Shows the love grade between two people.";
+exports.options = [{
+    name: "user",
+    type: "USER",
+    description: "Shows the love grade between two people.",
+    required: true
+}, {
+    name: "user",
+    type: "USER",
+    description: "Shows the love grade between two people."
+}];
+exports.main = (home_scope : HomeScope) => {
+	const { message, args, CONFIG } = home_scope;
 
-	if (args.length === 0 || args[0] === 'help'
-		|| message.mentions.users.size === 0
-		|| message.mentions.users.size > 2) {
-		message.channel.send(help_info('ship', CONFIG.commands.prefix));
-		return;
-	}
-	const users = [message.mentions.users.size === 1
-		? message.author
-		: message.mentions.users.first(), message.mentions.users.last()];
-
+	var users;
+	if(message.options[1].user)
+		users = [message.options[0].user, message.options[1].user];
+	else
+		users = [message.user, message.options[0].user];
+	
 	const user_avatars = {
 		first:  users[0].avatarURL({ 'format': 'png' }),
 		second: users[1].avatarURL({ 'format': 'png' })
@@ -118,7 +125,7 @@ export default (homescope : HomeScope) => {
 				.attachFiles([attachment])
 				.setImage(`attachment://${filename}`);
 
-			message.channel.send(embed);
+			message.reply(embed);
 		});
 	};
 

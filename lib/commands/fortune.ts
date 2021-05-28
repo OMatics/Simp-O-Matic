@@ -1,6 +1,8 @@
 import { fortune } from 'fortune-teller';
 
-export default (homescope: HomeScope) => {
-	const { message } = homescope;
-	message.channel.send(fortune());
+exports.description = "Brings you fortune.";
+exports.options = [];
+exports.main = (home_scope: HomeScope) => {
+	const { message } = home_scope;
+	message.reply(fortune());
 };

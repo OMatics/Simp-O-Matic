@@ -1,14 +1,14 @@
+exports.description = "Say something, but in the way your demented boomer uncle would write it on Facebook.";
+
 // From here: https://github.com/Demonstrandum/boomer/blob/master/boomerfy.js
 
-declare global {
-	interface Array<T> {
-		demented_join(sep: string, sep_alt: string, prob: number): string;
+interface Array<T> {
+	demented_join(sep: string, sep_alt: string, prob: number): string;
 	}
 	interface String {
 		demented_upcase(prob: number): string;
 		demented_spelling(): string;
 	}
-}
 
 Array.prototype.demented_join = function (sep = ', ', sep_alt = ' ', prob = 0.2) {
 	let s = "";
@@ -74,7 +74,7 @@ const boomerfy = (original: string): string => {
 	return string;
 };
 
-export default (homescope: HomeScope) => {
-	const { message, args } = homescope;
-	message.channel.send(boomerfy(args.join(' ')));
+exports.main = (home_scope: HomeScope) => {
+	const { message, args } = home_scope;
+	message.reply(boomerfy(message.options[0].value));
 };

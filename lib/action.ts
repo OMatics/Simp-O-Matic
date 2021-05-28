@@ -1,5 +1,5 @@
 import { FORMATS } from './extensions';
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed, CommandInteraction } from 'discord.js';
 
 type ActionType = 'kiss' | 'suck' | 'rape' | 'slap' | 'hug' | 'lick' | 'rim' | 'kill' | 'purr';
 
@@ -148,7 +148,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://img2.gelbooru.com/images/7c/9c/7c9cdd15e03df0a2ba06b9bb9aa98180.png",
 		],
 		transitiveness: true
-	},
+	},	
 	purr: {
 		title: "You are being purred at!",
 		message: "purred at",
@@ -158,7 +158,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.discordapp.com/attachments/768154669037125712/773217347884417024/giphy_2.gif"
 		],
 		transitiveness: true
-	}
+	}		
 };
 
 export default class Action {
@@ -176,13 +176,11 @@ export default class Action {
 			: description;
 	}
 
-	static get(action: ActionType, message: Message): MessageEmbed {
-		const [author, to] = [message.author, message.mentions.users.first()]
-			.map(m => message.guild.members.resolve(m))
-			.map(u => u.displayName);
-		const reaction: Actions = ACTIONS[action];
+	static get(message: CommandInteraction) {
+		const [author, to] = [message.user.username, message.options[0].user.username];
+		const reaction: Actions = ACTIONS[message.commandName];
 		const images = reaction.images;
-		const image = images[(Number(message.cleanContent.split(' ')[1]) || (Math.floor(Math.random() * images.length) + 1)) - 1];
+		const image = images[Math.floor(Math.random() * images.length)];
 
 		const embed = new MessageEmbed()
 			.setColor('#ba3d8a')
@@ -195,6 +193,6 @@ export default class Action {
 			)
 			.setImage(image);
 
-		return embed;
+		message.reply(embed);
 	}
 }

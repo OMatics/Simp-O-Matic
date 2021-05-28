@@ -5,23 +5,24 @@ import Jimp from 'jimp';
 
 const TEMPLATE = "./lib/resources/templates/pat.png";
 
-export default (homescope: HomeScope) => {
-	const { message, args } = homescope;
-
-	if (args.length === 0 || message.mentions.users.size === 0) {
-		message.channel.send(
-			"Pat someone!\n" + ".pat [@user-name]".format(FORMATS.block)
-		);
-	}
+exports.description = "Give someone a pat on the head.";
+exports.options = [{
+    name: "user",
+    type: "USER",
+    description: "*pats*",
+    required: true
+}];
+exports.main = (home_scope: HomeScope) => {
+	const { message } = home_scope;
 
 	const size = 200;
 	const [x, y] = [200, 108];
 	const filename = "patted.png";
 
 	const description =
-		`${message.mentions.users.first().username}`.format(FORMATS.bold)
+		`${message.options[0].user.username}`.format(FORMATS.bold)
 		+ ', you got a pat from '
-		+ `${message.author.username}`.format(FORMATS.bold)
+		+ `${message.user.username}`.format(FORMATS.bold)
 		+ ' :blush:';
 
 	const pat = async (image: string) => {
@@ -37,8 +38,8 @@ export default (homescope: HomeScope) => {
 
 		composed.getBuffer(Jimp.MIME_PNG, (e : Error, buffer: Buffer) => {
 			if (e?.message) {
-				message.channel.send(
-					`Unable to pat ${message.mentions.users.first().username} :(`
+				message.reply(
+					`Unable to pat ${message.options[0].user.username.username} :(`
 				);
 				return;
 			}
@@ -51,7 +52,7 @@ export default (homescope: HomeScope) => {
 				.attachFiles([attachment])
 				.setImage(`attachment://${filename}`);
 
-			message.channel.send(embed);
+			message.reply(embed);
 		});
 	};
 

@@ -6,7 +6,7 @@ import stream from 'stream';
 // Global Extensions:
 declare global {
 	type HomeScope = {
-		message: Message, args: string[],
+		message: any, args: any[],
 		HELP_SOURCE: string, HELP_KEY: string,
 		GIT_URL: string, HELP_MESSAGES: string[],
 		HELP_SECTIONS: string[] , ALL_HELP: string[],
@@ -77,9 +77,8 @@ declare global {
 				prefix: string,
 				max_history: number,
 				not_understood: string,
-				bot_issued: boolean,
-				aliases: { [key: string]: string },
-			}
+				aliases: { [key: string]: string }
+			},
 			rules: {
 				respond: Match[],
 				reject:  Match[],
@@ -98,7 +97,8 @@ declare global {
 					users: string[],
 					groups: string[]
 				}
-			}
+			},
+			appcmd: {[key: string]: string}
 		};
 
 		type GlobalConfig = {
@@ -365,13 +365,7 @@ Number.prototype.truncate = function() {
 
 declare module 'discord.js' {
 	interface Message {
-		answer(content: any, options?: any): void;
+		
 	}
 }
 import { Message } from 'discord.js';
-
-Message.prototype.answer = function (content, options) {
-	return this.channel.send(
-		`${this.author}, ${content}`,
-	    options);
-};

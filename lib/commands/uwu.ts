@@ -45,13 +45,10 @@ interface Scope {
     args: string[];
 }
 
-export default (homescope: HomeScope) => {
-    const { message, args } : Scope = homescope;
+exports.description = "“uwuify” your text.";
 
-    if (args.length === 0 || args[0] === 'help') {
-        message.channel.send("OwO *notices text* What's this?");
-        return;
-    }
+exports.main = (home_scope: HomeScope) => {
+    const { message, args } : Scope = home_scope;
 
     const uwuify = (word: string) => {
         const tail = word[word.length - 1];
@@ -141,5 +138,5 @@ export default (homescope: HomeScope) => {
         .split(' ')
         .map(uwuify);
 
-    message.channel.send(result.join(''));
+    message.reply(result.join(''));
 };

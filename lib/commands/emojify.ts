@@ -5,10 +5,16 @@ const NUMBER_NAMES = [
 	'six', 'seven', 'eight', 'nine', 'keycap_ten'
 ];
 
-export default (homescope: HomeScope) => {
-	const { message, args }
-		: { message: Message,
-			args: string[] } = homescope;
+exports.description = "Turn your text into discord-style emoji.";
+exports.options = [{
+    name: "phrase",
+    type: "STRING",
+    description: "Turn your text into discord-style emoji.",
+    required: true
+}];
+
+exports.main = (home_scope: HomeScope) => {
+	const { message, args } = home_scope;
 
 	const input = args.length === 0
 		? "nibba"
@@ -25,5 +31,5 @@ export default (homescope: HomeScope) => {
 		return chr;
 	});
 
-	message.channel.send(letters.join(' '));
+	message.reply(letters.join(' '));
 };

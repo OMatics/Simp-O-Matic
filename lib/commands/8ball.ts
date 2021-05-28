@@ -1,12 +1,15 @@
+exports.description = "Ask a question, receive a response.";
+exports.options = [{
+	name: "question",
+	type: "STRING",
+	description: "Ask a question, receive a response.",
+	required: true
+}];
+
 import { prefix_friendly, help_info } from '../utils';
 
-export default (homescope: HomeScope) => {
-	const { message, args, CONFIG } = homescope;
-
-	if (args.length === 0 || args[0] === 'help') {
-		message.channel.send(help_info('8ball', CONFIG.commands.prefix));
-		return;
-	}
+exports.main = (home_scope: HomeScope) => {
+	const { message } = home_scope;
 
 	const responses: string[] = [
 		"Perhaps.",

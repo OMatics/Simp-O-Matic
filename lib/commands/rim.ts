@@ -1,13 +1,18 @@
 import { Message } from 'discord.js';
 import Action from '../action';
 
-export default (homescope: HomeScope) => {
-	const { message, args }
-		: { message: Message, args: string[] } = homescope;
+exports.description = "Rim someones butthole!";
+exports.options = [{
+    name: "username",
+    type: "USER",
+    description: "*rim*",
+}];
+exports.main = (home_scope: HomeScope) => {
+	const { message } = home_scope;
 
-	if (args.length === 0 || message.mentions.users.size === 0)
-		return message.channel.send(
+	if(!message.options[0].user || message.user.id == message.options[0].user.id)
+		return message.reply(
 			"You rimmed yourself, bet that tasted soft and warm :stuck_out_tongue_closed_eyes:");
 
-	message.channel.send(Action.get('rim', message));
+	Action.get(message);
 };

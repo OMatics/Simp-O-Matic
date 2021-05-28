@@ -1,7 +1,9 @@
 import { FORMATS } from '../extensions';
 
-export default (homescope : HomeScope) => {
-	const { message } = homescope;
+exports.description = "Display how long the bot has been running for.";
+exports.options = [];
+exports.main = (home_scope : HomeScope) => {
+	const { message } = home_scope;
 
 	const { uptime } = message.client;
 	let seconds = uptime / 1000;
@@ -18,7 +20,7 @@ export default (homescope : HomeScope) => {
 		Math.round(seconds % 60)
 	];
 
-	message.channel.send(
+	message.reply(
 		`I've been running for: ` +
 			(`${days} days, ` +
 			 `${hours} hours, ` +

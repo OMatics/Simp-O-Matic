@@ -1,7 +1,4 @@
-export default (homescope: HomeScope) => {
-	const { message, args } = homescope;
-
-	const reply = args.join(' ').trim();
-	if (reply.length === 0) return;
-	message.channel.send(reply);
+exports.main = (home_scope: HomeScope) => {
+	const { message, args } = home_scope;
+	message.reply(args.join(' ').trim());
 };

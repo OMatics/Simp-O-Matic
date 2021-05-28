@@ -1,6 +1,7 @@
 import { execFileSync as exec_file_sync } from 'child_process';
-export default (homescope: HomeScope) => {
-	let { message, args } = homescope;
+exports.description = "Print text in ASCII format, using Unix-like command-line arguments.";
+exports.main = (home_scope: HomeScope) => {
+	let { message, args } = home_scope;
 	if (args.length === 0)
 		args = ['-f', 'Train', 'Simp'];
 	// This is safe because no shell is spawned:

@@ -1,4 +1,5 @@
-export default (homescope: HomeScope) => {
-	const { message, args } = homescope;
-	message.channel.send(args.join('').split('').join(' '));
+exports.description = "A e s t h e t i c  t e x t";
+exports.main = (home_scope: HomeScope) => {
+	const { message, args } = home_scope;
+	message.reply(args.join('').split('').join(' '));
 };

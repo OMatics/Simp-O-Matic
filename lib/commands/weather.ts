@@ -28,27 +28,49 @@ const WEATHER_URL = 'https://api.met.no/weatherapi/locationforecast/2.0/compact'
 const OPENWEATHER_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const GEOCODE_URL = 'https://geocode-maps.yandex.ru/1.x/?format=json';
 
-export default async (homescope: HomeScope) => {
-	const { message, args, SECRETS, CONFIG, VERSION } = homescope;
+exports.description = "Check the weather";
+exports.options = [{
+    name: "get",
+    type: "SUB_COMMAND",
+    options: [{
+    	name: "location",
+    	type: "string",
+    	description: "Gives you the weather in a certain location."
+    }],
+    description: "Gives you the weather in a certain location, if location is left blank, it will either give you the weather in the default location, or in the area you set previously.",
+}, {
+	name: "set",
+	type: "SUB_COMMAND",
+	options: [{
+		name: "location",
+		type: "STRING",
+		description: "A house, city, natural landmark, etc...",
+		required: true
+	}],
+	description: "Sets your weather location"
+}];
+exports.main = async (homescope: HomeScope) => {
+	const { message, SECRETS, CONFIG, VERSION } = homescope;
 
-	if (args[0] === 'set' && args.length > 1) {
-		CONFIG.weather_locations[message.author.id] = args.tail().join(' ');
-		return message.reply(`Your weather location has \
-			been set to ${args.tail().join(' ')}`.squeeze());
+	message.defer().then(console.log);
+
+	if (message.options[0].name == "set") {
+		CONFIG.weather_locations[message.user.id] = message.options[0].options[0].value;
+		return message.editReply(`Your weather location has been set to ${message.options[0].options[0].value}`);
 	}
 
-	const location = args[0]
-		? args.join(' ')
-		: CONFIG.weather_locations[message.author.id] || 'Cuckfield';
+	const location = message.options[0].options[0].value
+		? message.options[0].options[0].value
+		: CONFIG.weather_locations[message.user.id] || 'Cuckfield';
 
 	if (location == 'Cuckfield')
-		message.reply("You should set your default weather location."
+		message.editReply("You should set your default weather location."
 		             + ` Use \`${CONFIG.commands.prefix}weather set <location>\`.`);
 
 	const geokey = SECRETS.yandex.geocoder.key;
 
 	const error = (e: Error) => {
-		message.reply(`Error getting weather\n\`\`\`${e.message}\`\`\``);
+		message.editReply(`Error getting weather\n\`\`\`${e.message}\`\`\``);
 		return e;
 	};
 
@@ -145,5 +167,6 @@ export default async (homescope: HomeScope) => {
 			'Data provided by Meteorologisk institutt (met.no) and OpenWeatherMap',
 			'https://0x0.st/ixd6.png');
 
-	message.channel.send(embed);
+	console.log("Weather")
+	message.editReply(embed);
 };

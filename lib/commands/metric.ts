@@ -28,7 +28,14 @@ const UNITS: Conversions = {
 
 const QUANTITY_REGEX = /(\d*\.?\d+)\s*(mile|inch|feet|foot|ft|ounce|gallon|yard|oz|fl(?:.?.?oz)|yd|acre|pint|quart|pound|lb|fahrenheit|f)(?:es|s)?\b/gi;
 
-export default async (homescope: HomeScope) => {
+exports.description = "Convert to metric";
+exports.options = [{
+    name: "input",
+    type: "STRING",
+    description: "non metric value",
+    required: true
+}];
+exports.main = async (homescope: HomeScope) => {
 	const { message, args } = homescope;
 	if (message.author.bot) 
 		return;
@@ -57,5 +64,5 @@ export default async (homescope: HomeScope) => {
 		}
 	}).join("\n").trim();
 
-	if (msg.length > 0) message.channel.send(msg);
+	if (msg.length > 0) message.reply(msg);
 };

@@ -1,9 +1,14 @@
-export default (homescope: HomeScope) => {
-	const { message, CONFIG } = homescope;
+exports.options = [{
+	name: "user",
+	type: "USER",
+	description: "pp"
+}];
+exports.main = (home_scope: HomeScope) => {
+	const { message, CONFIG } = home_scope;
 
-	let user = message.author.id;
+	let user = message.user.id;
 	try {
-		user = message.mentions.users.first().id;
+		user = message.options[0].user.id;
 	} finally {
 		const shaft = '='.repeat(CONFIG.pp_sizes[user]
 			|| (CONFIG.pp_sizes[user] = Math.ceil(Math.random() * 16)));

@@ -2,15 +2,12 @@
 process.stdin.resume();
 
 // Discord Bot API.
+import { Discord, On, Client } from '@typeit/discord';
 import { Message,
 		 MessageAttachment,
 		 MessageEmbed,
-		 VoiceConnection,
 		 StreamDispatcher,
-		 TextChannel,
-		 Guild,
-		 Intents } from 'discord.js';
-import { Discord, On, Client, ArgsOf } from '@typeit/discord';
+		 TextChannel } from 'discord.js';
 
 // System interaction modules.
 import {
@@ -32,6 +29,7 @@ import DEFAULT_GUILD_CONFIG from './default';
 
 // API specific modules.
 import * as JSONBlob from './api/jsonblob';
+import { Guild } from 'discord.js';
 import { Timer } from './commands/cron';
 
 // Global instance variables
@@ -95,8 +93,6 @@ const FAREWELL_MESSAGES = [
 	"Bye USER_TAG, we won't miss you."
 ];
 
-const MAX_ALIAS_DEPTH = 100;
-
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
 	'__dirname': __dirname,
@@ -123,8 +119,8 @@ Drugs.load(() => {
   console.log('`drug` command system loaded.');
 });
 
-@Discord()
-export abstract class SimpOMatic {
+@Discord
+export class SimpOMatic {
 	private static _CLIENT : Client;
 	private _COMMAND_HISTORY : Message[] = [];
 
@@ -145,20 +141,12 @@ export abstract class SimpOMatic {
 	}
 
 	static start() {
-		const client = this._CLIENT = new Client({
-			intents: [
-				Intents.FLAGS.GUILDS,
-				Intents.FLAGS.GUILD_MESSAGES,
-				Intents.FLAGS.GUILD_VOICE_STATES,
-				Intents.FLAGS.GUILD_EMOJIS,
-				Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-				Intents.FLAGS.DIRECT_MESSAGES,
-				Intents.FLAGS.DIRECT_MESSAGE_TYPING,
-				Intents.FLAGS.GUILD_PRESENCES,
-				Intents.FLAGS.GUILD_MEMBERS
-			],
-		});
-		const logged_in = client.login(SECRETS.api.token);
+		console.log("Start()")
+		const client = this._CLIENT = new Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_INTEGRATIONS", "GUILD_WEBHOOKS", "GUILD_INVITES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS", "DIRECT_MESSAGE_TYPING"] });
+		const logged_in = client.login(
+			SECRETS.api.token,
+			`${__dirname}/*Discord.ts`
+		);
 		logged_in.then(() => console.log('Bot logged in.'));
 		client.on('ready', () => this.events());
 
@@ -174,7 +162,43 @@ export abstract class SimpOMatic {
 		console.log('Bloated software ready to do work!');
 
 		const client = this._CLIENT;
+
 		system_message(client, "**We're back online baby!**");
+		read_dir(`${__dirname}/commands`).filter(n => n.endsWith(".js")).map(n => n.slice(0, -3)).forEach(c => {
+			var CONFIG = GLOBAL_CONFIG.guilds["265959157612412948"];
+			console.log(c);
+			if(CONFIG.appcmd[c])
+				return;
+			let mod = require(`${__dirname}/commands/${c}.js`);
+			console.log(mod.description);
+			client.guilds.cache.get("265959157612412948").commands.create({
+				name: c,
+				description: mod.description || c,
+				options: mod.options || [{
+					name: "input",
+					type: "STRING",
+					description: "input",
+					required: true
+				}]
+			}).then(a => CONFIG.appcmd[c] = a.id);
+			/*
+			import(`${__dirname}/commands/${c}`).then(mod => {
+				console.log(mod.description);
+				client.guilds.cache.get("265959157612412948").commands.create({
+				name: c,
+				description: mod.description || c,
+				options: mod.options || [{
+					name: "input",
+					type: "STRING",
+					description: "input",
+					required: true
+				}]
+				}).then(a => CONFIG.appcmd[c] = a.id);
+				console.log(mod.description);
+			});*/
+		})
+
+
 		client.on('guildCreate', guild => {
 			if (!GLOBAL_CONFIG.guilds.hasOwnProperty(guild.id))
 				this.init_guild(guild);
@@ -304,13 +328,13 @@ export abstract class SimpOMatic {
 		while (expanded !== operator) {
 			operator = expanded;
 			expanded = expander(operator);
-			if (i > MAX_ALIAS_DEPTH) return 'CYCLIC_ALIAS';
+			if (i > 300) return 'CYCLIC_ALIAS';
 			++i;
 		}
 		return expanded.toLowerCase();
 	}
 
-	process_command(message : Message, ignoreSpam: boolean = false) {
+	process_command(message : Message, ignore_spam: boolean = false) {
 		console.log('[command] Processing.');
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
@@ -330,7 +354,7 @@ export abstract class SimpOMatic {
 		}
 		const current_command = this._COMMAND_HISTORY.last();
 
-		if (!ignoreSpam) {
+		if (!ignore_spam) {
 			// Try and slow the fellas down a little.
 			if (!!last_command
 				&& last_command.channel === current_command.channel
@@ -360,12 +384,11 @@ Would you like to slow down a little?`.squeeze());
 
 		let operator = words[0].toLowerCase();
 		// Expansion of aliases will expand aliases used within
-		//   the alias definition too.  Yay.
+		//   the alias definition too. Yay.
 		operator = this.expand_alias(operator, args, message);
 		if (operator === 'CYCLIC_ALIAS') {
 			message.reply('The command you just used has aliases that go'
-				+ ` ${MAX_ALIAS_DEPTH} levels deep, `
-				+ 'or the alias is cyclically/recursively defined.'
+				+ ' 300 levels deep, or the alias is cyclically dependant.'
 				+ '\n**Fix this immediately.**');
 			console.log('[command] Aliases cyclic. Aborting.');
 			return;
@@ -393,7 +416,7 @@ Would you like to slow down a little?`.squeeze());
 
 		if (commands.includes(operator))
 			return import(`./commands/${operator}`).then(mod =>
-				mod.default(homescope));
+				mod.main(homescope));
 
 		switch (operator) {
 			case 'commands': {
@@ -496,7 +519,7 @@ Would you like to slow down a little?`.squeeze());
 				const p = CONFIG.commands.prefix;
 				message.content = `${p}${response}`;
 				// Send it back as a command.
-				this.on_message([message], SimpOMatic._CLIENT);
+				this.on_message(message, SimpOMatic._CLIENT);
 			}
 		}
 		for (const rejecter of CONFIG.rules.reject) {
@@ -594,15 +617,35 @@ Would you like to slow down a little?`.squeeze());
 		return expansions.join('');
 	}
 
-	@On("message")
-	async on_message([message]: ArgsOf<'message'>,
-	                 client : Client, guardPayload: any = null,
-	                 ignoreSpam = false) {
-		if (!message.guild) {
-			console.warn("Message not in a guild channel.");
-			console.log(message);
+	
+	@On("interaction")
+	async on_interaction(interaction, client : Client) {
+		if(!interaction.isCommand())
 			return;
+		const CONFIG = GLOBAL_CONFIG.guilds[interaction.guild.id];
+		console.log(interaction)
+		var args : any[];
+		if (interaction.options[0] && interaction.options[0].type == "STRING" && !interaction.options[0].options[0]){
+			args = interaction.options[0].value.split(" ");
+			console.log(args);
 		}
+		else
+			args = [];
+
+		const homescope : HomeScope = {  // Basic 'home-scope' is passed in.
+			message: interaction, args,
+			HELP_SOURCE, HELP_KEY, GIT_URL,
+			HELP_MESSAGES, HELP_SECTIONS, ALL_HELP,
+			CONFIG, SECRETS, KNOWN_COMMANDS,
+			expand_alias: this.expand_alias,
+			CLIENT: SimpOMatic._CLIENT, VERSION,
+			main: this, INSTANCE_VARIABLES, Drugs
+		};
+		
+		import(`./commands/${interaction.commandName}`).then(mod => mod.main(homescope));
+	}
+	@On("message")
+	async on_message(message : Message, client : Client, ignore_spam=false) {
 		const guild_id = message.guild.id;
 
 		// Initialise completely new Guilds.
@@ -635,16 +678,7 @@ Would you like to slow down a little?`.squeeze());
 
 				if (message.content[0] === CONFIG.commands.prefix) {
 					console.log('Message type: command.');
-					if (message.author.bot && !CONFIG.commands.bot_issued) {
-						message.reply("**I am dubious about letting other bots "
-							+ "isssue commands.**\n "
-							+ "Say `" + CONFIG.commands.prefix
-							+ "set commands.bot_issued true`, "
-							+ "if you want other bots to be able to "
-							+ "issue commands.");
-						return;
-					}
-					this.process_command(message, ignoreSpam);
+					this.process_command(message, ignore_spam);
 				} else {
 					console.log('Message type: generic.');
 					this.process_generic(message);
@@ -661,12 +695,10 @@ Would you like to slow down a little?`.squeeze());
 let CLIENT: Client = null;
 
 let term_count = 0;
-let shutdown_saved = false;
 
 function on_termination(error_type, e?: Error) {
 	if (term_count > 15) return;
 	term_count += 1;
-	if (shutdown_saved) return;
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
 	if (e) console.warn(e);
@@ -685,7 +717,6 @@ function on_termination(error_type, e?: Error) {
 		.then(_ => {
 			console.log('Finished JSONBlob update.');
 			system_message(CLIENT, `Current configuration saved.`);
-			shutdown_saved = true;
 		}).catch(e => {
 			console.warn('JSONBlob not saved!', e);
 			system_message(CLIENT, `Could not export configuration.\n${e}`);
@@ -711,10 +742,12 @@ process
 		on_termination.bind(global_this, 'exception', e));
 
 process.on('uncaughtException', (e) => e);
-
+/*
 // GLOBAL_CONFIG will eventually update to the online version.
 jsonblob_pull(GLOBAL_CONFIG).then((res: Types.GlobalConfig) => {
 	GLOBAL_CONFIG = res;
 	// Start The Simp'O'Matic.
 	CLIENT = SimpOMatic.start();
 }).catch(console.warn);
+*/
+CLIENT = SimpOMatic.start();

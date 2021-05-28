@@ -1,13 +1,15 @@
 import { Message } from 'discord.js';
 import Action from '../action';
 
-export default (homescope: HomeScope) => {
-	const { message, args }
-		: { message: Message, args: string[] } = homescope;
-
-	if (args.length === 0 || message.mentions.users.size === 0)
-		return message.channel.send(
-			"You can't hug yourself :(");
-
-	message.channel.send(Action.get('hug', message));
+exports.description = "Give someone a warm hug!";
+exports.options = [{
+    name: "username",
+    type: "USER",
+    description: "You can't hug yourself :(",
+}];
+exports.main = (home_scope: HomeScope) => {
+	const { message } = home_scope;
+	if(!message.options[0].user || message.user.id == message.options[0].user.id)
+		return message.reply("You can't hug yourself :(");
+	Action.get(message);
 };
