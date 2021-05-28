@@ -17,7 +17,7 @@ export default (homescope: HomeScope) => {
 		message.channel.send(`Assignment successful.
 			\`${args[0].trim()} = ${normal}\``.squeeze());
 	} catch (e) {
-		message.channel.send(`Invalid object access-path,`
+		message.channel.send(`Invalid object access-path or JSON value,`
 			+ `nothing set.\nProblem: \`\`\`\n${e}\n\`\`\``);
 	}
 };

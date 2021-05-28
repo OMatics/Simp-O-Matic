@@ -77,6 +77,7 @@ declare global {
 				prefix: string,
 				max_history: number,
 				not_understood: string,
+				bot_issued: boolean,
 				aliases: { [key: string]: string },
 			}
 			rules: {

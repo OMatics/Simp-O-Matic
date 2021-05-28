@@ -2,13 +2,15 @@
 process.stdin.resume();
 
 // Discord Bot API.
-import { Discord, On, Client } from '@typeit/discord';
 import { Message,
 		 MessageAttachment,
 		 MessageEmbed,
 		 VoiceConnection,
 		 StreamDispatcher,
-		 TextChannel } from 'discord.js';
+		 TextChannel,
+		 Guild,
+		 Intents } from 'discord.js';
+import { Discord, On, Client, ArgsOf } from '@typeit/discord';
 
 // System interaction modules.
 import {
@@ -30,7 +32,6 @@ import DEFAULT_GUILD_CONFIG from './default';
 
 // API specific modules.
 import * as JSONBlob from './api/jsonblob';
-import { Guild } from 'discord.js';
 import { Timer } from './commands/cron';
 
 // Global instance variables
@@ -94,6 +95,8 @@ const FAREWELL_MESSAGES = [
 	"Bye USER_TAG, we won't miss you."
 ];
 
+const MAX_ALIAS_DEPTH = 100;
+
 // Log where __dirname and cwd are for deployment.
 console.log('File/Execution locations:', {
 	'__dirname': __dirname,
@@ -120,8 +123,8 @@ Drugs.load(() => {
   console.log('`drug` command system loaded.');
 });
 
-@Discord
-export class SimpOMatic {
+@Discord()
+export abstract class SimpOMatic {
 	private static _CLIENT : Client;
 	private _COMMAND_HISTORY : Message[] = [];
 
@@ -142,11 +145,20 @@ export class SimpOMatic {
 	}
 
 	static start() {
-		const client = this._CLIENT = new Client();
-		const logged_in = client.login(
-			SECRETS.api.token,
-			`${__dirname}/*Discord.ts`
-		);
+		const client = this._CLIENT = new Client({
+			intents: [
+				Intents.FLAGS.GUILDS,
+				Intents.FLAGS.GUILD_MESSAGES,
+				Intents.FLAGS.GUILD_VOICE_STATES,
+				Intents.FLAGS.GUILD_EMOJIS,
+				Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+				Intents.FLAGS.DIRECT_MESSAGES,
+				Intents.FLAGS.DIRECT_MESSAGE_TYPING,
+				Intents.FLAGS.GUILD_PRESENCES,
+				Intents.FLAGS.GUILD_MEMBERS
+			],
+		});
+		const logged_in = client.login(SECRETS.api.token);
 		logged_in.then(() => console.log('Bot logged in.'));
 		client.on('ready', () => this.events());
 
@@ -292,13 +304,13 @@ export class SimpOMatic {
 		while (expanded !== operator) {
 			operator = expanded;
 			expanded = expander(operator);
-			if (i > 300) return 'CYCLIC_ALIAS';
+			if (i > MAX_ALIAS_DEPTH) return 'CYCLIC_ALIAS';
 			++i;
 		}
 		return expanded.toLowerCase();
 	}
 
-	process_command(message : Message, ignore_spam: boolean = false) {
+	process_command(message : Message, ignoreSpam: boolean = false) {
 		console.log('[command] Processing.');
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
@@ -318,7 +330,7 @@ export class SimpOMatic {
 		}
 		const current_command = this._COMMAND_HISTORY.last();
 
-		if (!ignore_spam) {
+		if (!ignoreSpam) {
 			// Try and slow the fellas down a little.
 			if (!!last_command
 				&& last_command.channel === current_command.channel
@@ -348,11 +360,12 @@ Would you like to slow down a little?`.squeeze());
 
 		let operator = words[0].toLowerCase();
 		// Expansion of aliases will expand aliases used within
-		//   the alias definition too. Yay.
+		//   the alias definition too.  Yay.
 		operator = this.expand_alias(operator, args, message);
 		if (operator === 'CYCLIC_ALIAS') {
 			message.reply('The command you just used has aliases that go'
-				+ ' 300 levels deep, or the alias is cyclically dependant.'
+				+ ` ${MAX_ALIAS_DEPTH} levels deep, `
+				+ 'or the alias is cyclically/recursively defined.'
 				+ '\n**Fix this immediately.**');
 			console.log('[command] Aliases cyclic. Aborting.');
 			return;
@@ -483,7 +496,7 @@ Would you like to slow down a little?`.squeeze());
 				const p = CONFIG.commands.prefix;
 				message.content = `${p}${response}`;
 				// Send it back as a command.
-				this.on_message(message, SimpOMatic._CLIENT);
+				this.on_message([message], SimpOMatic._CLIENT);
 			}
 		}
 		for (const rejecter of CONFIG.rules.reject) {
@@ -582,7 +595,14 @@ Would you like to slow down a little?`.squeeze());
 	}
 
 	@On("message")
-	async on_message(message : Message, client : Client, ignore_spam=false) {
+	async on_message([message]: ArgsOf<'message'>,
+	                 client : Client, guardPayload: any = null,
+	                 ignoreSpam = false) {
+		if (!message.guild) {
+			console.warn("Message not in a guild channel.");
+			console.log(message);
+			return;
+		}
 		const guild_id = message.guild.id;
 
 		// Initialise completely new Guilds.
@@ -615,7 +635,16 @@ Would you like to slow down a little?`.squeeze());
 
 				if (message.content[0] === CONFIG.commands.prefix) {
 					console.log('Message type: command.');
-					this.process_command(message, ignore_spam);
+					if (message.author.bot && !CONFIG.commands.bot_issued) {
+						message.reply("**I am dubious about letting other bots "
+							+ "isssue commands.**\n "
+							+ "Say `" + CONFIG.commands.prefix
+							+ "set commands.bot_issued true`, "
+							+ "if you want other bots to be able to "
+							+ "issue commands.");
+						return;
+					}
+					this.process_command(message, ignoreSpam);
 				} else {
 					console.log('Message type: generic.');
 					this.process_generic(message);
@@ -632,10 +661,12 @@ Would you like to slow down a little?`.squeeze());
 let CLIENT: Client = null;
 
 let term_count = 0;
+let shutdown_saved = false;
 
 function on_termination(error_type, e?: Error) {
 	if (term_count > 15) return;
 	term_count += 1;
+	if (shutdown_saved) return;
 	// Back-up the resultant CONFIG to an external file.
 	console.warn(`Received ${error_type}, shutting down.`);
 	if (e) console.warn(e);
@@ -654,6 +685,7 @@ function on_termination(error_type, e?: Error) {
 		.then(_ => {
 			console.log('Finished JSONBlob update.');
 			system_message(CLIENT, `Current configuration saved.`);
+			shutdown_saved = true;
 		}).catch(e => {
 			console.warn('JSONBlob not saved!', e);
 			system_message(CLIENT, `Could not export configuration.\n${e}`);

@@ -148,7 +148,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://img2.gelbooru.com/images/7c/9c/7c9cdd15e03df0a2ba06b9bb9aa98180.png",
 		],
 		transitiveness: true
-	},	
+	},
 	purr: {
 		title: "You are being purred at!",
 		message: "purred at",
@@ -158,7 +158,7 @@ const ACTIONS: Record<ActionType, Actions> = {
 			"https://cdn.discordapp.com/attachments/768154669037125712/773217347884417024/giphy_2.gif"
 		],
 		transitiveness: true
-	}		
+	}
 };
 
 export default class Action {
@@ -178,7 +178,7 @@ export default class Action {
 
 	static get(action: ActionType, message: Message): MessageEmbed {
 		const [author, to] = [message.author, message.mentions.users.first()]
-			.map(m => message.guild.member(m))
+			.map(m => message.guild.members.resolve(m))
 			.map(u => u.displayName);
 		const reaction: Actions = ACTIONS[action];
 		const images = reaction.images;

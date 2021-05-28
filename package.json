@@ -13,15 +13,15 @@
     "author": "Sammy, Danny, Bruno, Accelarion, jack-javana and friends",
     "version": "1.2.0",
     "engines": {
-        "node": "14.x",
-        "yarn": "1.22.x"
+        "node": ">=14.0.0",
+        "yarn": ">=1.22.0"
     },
     "main": "./build/main.js",
     "types": "./build/main.d.ts",
     "scripts": {
         "build": "node -v && . ./build.sh",
         "reset": "rm -rf ./build ./node_modules ./yarn.lock ./packages-lock.json",
-        "start": "node .",
+        "start": "node . --unhandled-rejections=none",
         "quick": ". ./build.sh && yarn run start",
         "deploy-scale": "heroku scale web=0 worker=1 -a simp-o-matic",
         "deploy-restart": "heroku restart -a simp-o-matic",
@@ -36,16 +36,18 @@
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
     },
     "dependencies": {
-        "DoseBot-Redux": "file:./lib/drug-o-matic",
         "@discordjs/opus": "^0.3.3",
-        "@typeit/discord": "^1.0.3",
+        "@typeit/discord": "^5.0.0",
         "@types/node": "^13.9.3",
         "@types/node-fetch": "^2.5.5",
         "@types/nodegit": "^0.26.3",
         "@types/ws": "^7.2.2",
+        "DoseBot-Redux": "file:./lib/drug-o-matic",
         "cowsay": "^1.4.0",
         "deepcopy": "^2.0.0",
-        "discord.js": "12.5.3",
+        "discord-api-types": "discordjs/discord-api-types#main",
+        "discord.js": "discordjs/discord.js#master",
+        "erlpack": "discord/erlpack",
         "figlet": "^1.3.0",
         "figlet-cli": "^0.1.1",
         "fortune-teller": "^0.1.2",
@@ -56,11 +58,15 @@
         "node-fetch": "^2.6.1",
         "node-forge": "^0.10.0",
         "nodegit": "^0.27.0",
+        "reflect-metadata": "^0.1.13",
         "request": "^2.34",
+        "sodium": "^3.0.2",
         "tslib": "^1.11.1",
-        "typescript": "^3.8.3",
+        "typescript": "^4.2.4",
         "tz-lookup": "^6.0.0",
-        "unirest": "^0.6.0"
+        "unirest": "^0.6.0",
+        "utf-8-validate": "^5.0.5",
+        "zlib-sync": "^0.1.7"
     },
     "devDependencies": {
         "tslint": "^6.1.0"
