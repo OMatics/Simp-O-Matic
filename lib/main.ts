@@ -346,16 +346,20 @@ export abstract class SimpOMatic {
 				// Only give spam warning if commands are coming
 				//  fast _in the same channel_.
 				const delta = current_command.createdTimestamp - last_command.createdTimestamp;
+				// Be a bit stricter if the command is *the exact same*.
 				if (last_command.content === current_command.content
 					&& delta <= 1400) {
+					console.log("[command] Very much spam.");
 					if (delta <= 400) return;
-					return message.reply(`I can't help but notice you're running \
+					message.reply(`I can't help but notice you're running \
 the same commands over in rather rapid succession.
 Would you like to slow down a little?`.squeeze());
+					return;
 				}
 				if (delta <= 900) {
+					console.log("[command] Very much spam.");
 					if (delta <= 300) return;
-					return message.reply('Slow down there bucko.');
+					message.reply('Slow down there bucko.');
 				}
 			}
 		}
@@ -506,7 +510,7 @@ Would you like to slow down a little?`.squeeze());
 				// Send it back as a command.
 				this.on_message([message],
 					SimpOMatic._CLIENT,
-					null, false,
+					null, true,  // Ignore 'spam' since time-delta = 0.
 					true);  // Ignore author constraints = true.
 			}
 		}
