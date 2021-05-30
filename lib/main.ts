@@ -253,6 +253,9 @@ export abstract class SimpOMatic {
 				console.log("Non-master related git event.");
 			} else if (body.console === true) {
 				if (body.secret !== process.env["WEB_SECRET"]) {
+					console.warn(
+						"Console message was sent,",
+						"but web secret was wrong!");
 					return;
 				}
 				const send_message = (msg: string, guild?) => {
@@ -314,12 +317,17 @@ export abstract class SimpOMatic {
 		console.log('[command] Processing.');
 		const CONFIG = GLOBAL_CONFIG.guilds[message.guild.id];
 
-		if (message.content.startsWith('..')) return;
+		if (message.content.startsWith('..')) {
+			console.log("`..' was probably an ellipses.");
+			return;
+		}
 
 		if  (CONFIG.whitelistchannels
 		&&   CONFIG.whitelistchannels.length > 0
-		&&  !CONFIG.whitelistchannels.includes(message.channel.id))
+		&&  !CONFIG.whitelistchannels.includes(message.channel.id)) {
+			console.log("[command] Channel was not whitelisted!");
 			return;
+		}
 
 		console.log('[command] Whitelisted.');
 
@@ -496,7 +504,10 @@ Would you like to slow down a little?`.squeeze());
 				const p = CONFIG.commands.prefix;
 				message.content = `${p}${response}`;
 				// Send it back as a command.
-				this.on_message([message], SimpOMatic._CLIENT);
+				this.on_message([message],
+					SimpOMatic._CLIENT,
+					null, false,
+					true);  // Ignore author constraints = true.
 			}
 		}
 		for (const rejecter of CONFIG.rules.reject) {
@@ -597,7 +608,8 @@ Would you like to slow down a little?`.squeeze());
 	@On("message")
 	async on_message([message]: ArgsOf<'message'>,
 	                 client : Client, guardPayload: any = null,
-	                 ignoreSpam = false) {
+	                 ignoreSpam = false,
+	                 ignoreConstraints = false) {
 		if (!message.guild) {
 			console.warn("Message not in a guild channel.");
 			console.log(message);
@@ -611,13 +623,18 @@ Would you like to slow down a little?`.squeeze());
 
 		const CONFIG = GLOBAL_CONFIG.guilds[guild_id];
 		// Ignore empty messages...
-		if (!message.content) return;
+		if (!message.content) {
+			console.log("Empty (text) messages are ignored.");
+			return;
+		}
 
 		console.log('Message acknowledged.');
 		console.log('Message from Guild ID:', guild_id);
-		if (SimpOMatic._CLIENT.user.id === message.author.id) {
+		if (!ignoreConstraints && SimpOMatic._CLIENT.user.id === message.author.id) {
+			console.log("Messages from self are ignored.");
 			return;
 		}
+
 		console.log('Message received:', message.content);
 
 		try {
@@ -635,7 +652,9 @@ Would you like to slow down a little?`.squeeze());
 
 				if (message.content[0] === CONFIG.commands.prefix) {
 					console.log('Message type: command.');
-					if (message.author.bot && !CONFIG.commands.bot_issued) {
+					if (!ignoreConstraints
+						&& message.author.bot
+						&& !CONFIG.commands.bot_issued) {
 						message.reply("**I am dubious about letting other bots "
 							+ "isssue commands.**\n "
 							+ "Say `" + CONFIG.commands.prefix

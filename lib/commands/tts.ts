@@ -5,7 +5,7 @@ export default async (hs : HomeScope) => {
 	const { message, args, INSTANCE_VARIABLES } = hs;
 
 	if (!message.guild) {
-		message.reply("Stop talkingQ to yourself, loser.");
+		message.reply("Stop talking to yourself, loser.");
 		return;
 	}
 
@@ -14,6 +14,10 @@ export default async (hs : HomeScope) => {
 
 	if (!GID.vc) {
 		message.reply("Let me join your voice-chat first.");
+		return;
+	} else if (GID.vc_dispatcher && GID.vc_current_stream) {
+		GID.vc_dispatcher.pause();
+		GID.vc_current_stream.pause();
 	}
 
 	const text = args.join(' ');
@@ -22,21 +26,20 @@ export default async (hs : HomeScope) => {
 	const child = cp.spawn('espeak', ['-s170', text, '--stdout'], {
 		stdio: ['ignore', 'pipe', 'ignore']
 	});
-
 	const stream = child.stdout;
 
-	const temp = GID.vc.play(stream);
+	const dispatcher = GID.vc.play(stream);
 
-	child.on('close', () => child.kill());
-	stream.on('end', () => {
-		stream.pause();
+	dispatcher.on('finish', () => {
 		child.kill();
-		temp.destroy();
+		dispatcher.destroy();
+
 		if (GID.vc_current_stream) {
 			// THIS DOES NOT WORK.  I cannot seem to get the song to
 			// resume (if there was a song playing).  I've tried
 			// many ways, but someone else is going to have to figure
 			// it out.
+			GID.vc_current_stream.resume();
 			GID.vc_dispatcher = GID.vc.play(GID.vc_current_stream);
 			console.log("Resumed playback.");
 		}

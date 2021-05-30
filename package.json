@@ -48,6 +48,7 @@
         "discord-api-types": "discordjs/discord-api-types#main",
         "discord.js": "discordjs/discord.js#master",
         "erlpack": "discord/erlpack",
+        "ffmpeg-static": "^4.3.0",
         "figlet": "^1.3.0",
         "figlet-cli": "^0.1.1",
         "fortune-teller": "^0.1.2",

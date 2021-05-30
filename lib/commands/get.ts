@@ -20,7 +20,8 @@ export default (homescope: HomeScope) => {
 			.replace(/\n/g, '\n@@@').split('@@@'), 1980)
 			.map(s => '```js\n' + s + '\n```');
 
-		for (const msg of msgs)
+		message.reply(msgs[0]);
+		for (const msg of msgs.slice(1))
 			message.channel.send(msg);
 	} catch (e) {
 		message.channel.send(`Invalid object access-path\n`

@@ -27,24 +27,22 @@ export default async (homescope: HomeScope) => {
 			const child = cp.spawn('youtube-dl', [...YTDL_OPTIONS, url], {
 				stdio: ['ignore', 'pipe', 'pipe']
 			});
-			child.stdout.on('end', () => {
-				child.stdout.pause();
-				child.stderr.pause();
-				child.kill();
-			});
 			child.on('close', async (code) => {
 				if (code && code !== 0) {
 					console.log(`Exited with code ${code}:`);
-					console.log(await child.stderr.utf8());
 					stream = null;
 					child.stdout = null;
 					GID.vc_prefetch[url] = null;
 					CONFIG.vc_queue = CONFIG.vc_queue.filter(q => q !== url);
 					message.reply("Error downloading media.");
 				}
+				console.log("Child exited fine!  Dead now...")
 				child.kill();
 			});
 			stream = child.stdout;
+			child.stderr.on('data', chunk => {
+				console.warn(`stderr: ${chunk}`);
+			});
 		} catch (e) { console.log(e); }
 
 		if (stream) {
@@ -149,10 +147,14 @@ export default async (homescope: HomeScope) => {
 			});
 		};
 
-		const stream = get_prefetch(CONFIG.vc_queue.shift());
+
+		message.reply("Playing media from queue...");
+		const url = CONFIG.vc_queue.shift();
+		const stream = get_prefetch(url);
+		console.log('Stream:', stream);
 		GID.vc_current_stream = stream;
 		GID.vc_dispatcher = GID.vc.play(stream);
-		message.channel.send("Playing media from queue...");
+		message.channel.send(`Starting off with: ${url}.`);
 		set_event_listeners();
 
 		break;

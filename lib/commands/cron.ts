@@ -181,7 +181,7 @@ export class Timer {
 		this.homescope.main.on_message(
 			[this.homescope.message],
 			this.homescope.CLIENT,
-			null, true
+			null, true, true
 		);
 	}
 
