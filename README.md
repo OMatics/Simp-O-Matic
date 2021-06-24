@@ -62,41 +62,49 @@ Make sure locally, you have the following secrets exported
 as environment variables:
 ```sh
 # Discord
-export BOT_API_TOKEN="exampleExampleExample"
-export CLIENT_KEY="exampleExampleExample"
-export CLIENT_ID="exampleExampleExample"
+export BOT_API_TOKEN="..."
+export CLIENT_KEY="..."
+export CLIENT_ID="..."
 
 # RapidAPI for Urban Dictionary and ContextualWeb
-export RAPID_API_KEY="exampleExampleExample"
+export RAPID_API_KEY="..."
 
 # Oxford English Dictionary
-export OXFORD_ID="exampleExampleExample"
-export OXFORD_KEY="exampleExampleExample"
+export OXFORD_ID="..."
+export OXFORD_KEY="..."
 
 # Google APIs
-export GOOGLE_API_KEY="exampleExampleExample"
-export GOOGLE_SEARCH_ID="exampleExampleExample"
-export GOOGLE_OAUTH_ID="exampleExampleExample"
-export GOOGLE_OAUTH_SECRET="exampleExampleExample"
-export GOOGLE_PERSONAL_CODE="exampleExampleExample"
-export GOOGLE_TYPE="exampleExampleExample"
-export GOOGLE_PROJECT_ID="exampleExampleExample"
-export GOOGLE_PRIVATE_KEY_ID="exampleExampleExample"
-export GOOGLE_PRIVATE_KEY="exampleExampleExample"
-export GOOGLE_CLIENT_EMAIL="exampleExampleExample"
-export GOOGLE_CLIENT_ID="exampleExampleExample"
-export GOOGLE_AUTH_URI="exampleExampleExample"
-export GOOGLE_TOKEN_URI="exampleExampleExample"
-export GOOGLE_AUTH_PROVIDER_X509_CERT_URL="exampleExampleExample"
-export GOOGLE_CLIENT_X509_CERT_URL="exampleExampleExample"
+export GOOGLE_API_KEY="..."
+export GOOGLE_SEARCH_ID="..."
+export GOOGLE_OAUTH_ID="..."
+export GOOGLE_OAUTH_SECRET="..."
+export GOOGLE_PERSONAL_CODE="..."
+export GOOGLE_TYPE="..."
+export GOOGLE_PROJECT_ID="..."
+export GOOGLE_PRIVATE_KEY_ID="..."
+export GOOGLE_PRIVATE_KEY="..."
+export GOOGLE_CLIENT_EMAIL="..."
+export GOOGLE_CLIENT_ID="..."
+export GOOGLE_AUTH_URI="..."
+export GOOGLE_TOKEN_URI="..."
+export GOOGLE_AUTH_PROVIDER_X509_CERT_URL="..."
+export GOOGLE_CLIENT_X509_CERT_URL="..."
 
-# OpenWeather
-export OPENWEATHER_KEY="exampleExampleExample"
+# Yandex
+export YANDEX_GEOCODER_KEY="..."
+export YANDEX_TRANSLATE_KEY="..."
 
-# Pastebin
-export PASTEBIN_KEY="exampleExampleExample"
-export PASTEBIN_PASSWORD="exampleExampleExample"
+# MapBox
+export MAPBOX_KEY="..."
 
+# DarkSky Weather
+export DARKSKY_KEY="..."
+
+# JsonBlob
+export JSONBLOB_ID="..."
+
+# Web-hooks
+export WEB_SECRET="..."
 ```
 
 I can send you the secrets file, if I _really_ trust you.
