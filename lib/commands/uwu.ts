@@ -101,6 +101,7 @@ export default (homescope: HomeScope) => {
                     }
                 }
             }
+            return stream;
         };
 
         const stutter = (stream: string) => {
@@ -126,7 +127,7 @@ export default (homescope: HomeScope) => {
 
         let transformed = transform(word);
 
-        if (typeof transformed === 'undefined')
+        if (!transformed)
             transformed = enclose(word);
 
         transformed = replace_swearwords(transformed);
