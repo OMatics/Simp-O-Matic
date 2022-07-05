@@ -37,7 +37,7 @@
         "url": "https://github.com/Demonstrandum/simpomatic/issues"
     },
     "dependencies": {
-        "@discordjs/opus": "^0.3.3",
+        "@discordjs/opus": "^0.8.0",
         "@typeit/discord": "^5.0.0",
         "@types/node": "^13.9.3",
         "@types/node-fetch": "^2.5.5",
