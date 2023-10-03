@@ -137,6 +137,7 @@
 - `!pat [@user-name]` — Give someone a pat on the head.
 - `!emojis` — Lists all the emojis on the server.
 - `!hangman <options>` **〈not impl.〉** — Hangman game to play with your friends.
+- `!femboy` - Ask a femboy a question and recieve a cute response.
 - `!code [!command]` — Shows the source code of a certain command.
 - `!abbreviate [words]` — Abbreviates a series of words into an initialism/acronym.
 
